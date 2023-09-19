@@ -1,0 +1,4 @@
+menu__start    = "Nowa gra"
+menu__load     = "Załaduj grę"
+menu__settings = "Opcje"
+menu__quit     = "Zakończ grę"
