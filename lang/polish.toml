@@ -2,3 +2,7 @@ menu__start    = "Nowa gra"
 menu__load     = "Załaduj grę"
 menu__settings = "Opcje"
 menu__quit     = "Zakończ grę"
+
+menu__lang     = "Polski" # write your language's name in your lang
+menu__langcur  = "Obecnie używany język:"
+menu__langav   = "Dostępne języki:"

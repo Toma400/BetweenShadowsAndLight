@@ -2,3 +2,7 @@ menu__start    = "New game"
 menu__load     = "Load game"
 menu__settings = "Settings"
 menu__quit     = "Quit game"
+
+menu__lang     = "English" # write your language's name in your lang
+menu__langcur  = "Currently used language:"
+menu__langav   = "Available languages:"
