@@ -6,3 +6,17 @@ menu__quit     = "Quit game"
 menu__lang     = "English" # write your language's name in your lang
 menu__langcur  = "Currently used language:"
 menu__langav   = "Available languages:"
+
+# tutorial tips
+game__tut_1 = "Welcome in Between Shadows and Light! This tutorial will guide you through game's interface."
+game__tut_2 = "Pierwszym elementem gry jest stworzenie postaci, stąd za chwilę do tego przejdziemy - jest to dość istotna kwestia, jednak nie musisz się stresować, gdy nie wiesz, co dokładnie zrobić: gra stara się być tak dostosowana, by gracz z dowolnymi statystykami mógł ją względnie miło ukończyć"
+game__tut_3 = "Istotne wspomnieć jest, że każda statystyka, umiejętność, cecha czy klasa, którą wybierzesz, będzie miała niemały wpływ na dalszy przebieg rozgrywki - wiele tych różnic jednak będziesz mógł zatrzeć w miarę gry, gdyż pierwsze wybory są na równi znaczące, jak i dalej: styl gry i wybory w niej dokonywane"
+
+# creation of character
+game__crq_1 = "How should your hero be named?"
+game__crq_2 = "Jakiej ma być płci?"
+game__crq_3 = "Jaką rasę reprezentujesz?"
+game__crq_4 = "Jaką klasę wybierasz?"
+# level up
+game__up_atr = "Wybierz, którą cechę chcesz wzmocnić"
+game__up_skl = "Wybierz, którą umiejętność chcesz wzmocnić"
