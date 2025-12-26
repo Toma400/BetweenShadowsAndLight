@@ -1,0 +1,2 @@
+-d:release
+-o:"Between Shadows and Light.exe"

@@ -33,6 +33,7 @@ while isRunning(g):
             var player_tuple = (
                                 name   : "",
                                 gender : VOIDG,
+                                class  : VOIDC,
                                 race   : VOIDR
                                 )
             while getPlayerName(g) == "": # character wasn't created nor loaded
@@ -67,8 +68,8 @@ while isRunning(g):
                 while player_tuple.race == VOIDR:
                     echo getKey(g, "game__crq_3")
                     echo DIVIDER
-                    for race_key in ["race__human", "race_ett", "race__vindean", "race__saphtri", "race__voitri", "race__ormath"]:
-                        echo getKey(g, race_key)
+                    for race_key in ["race__human", "race__ett", "race__vindean", "race__saphtri", "race__voitri", "race__ormath"]:
+                        echo "[" & getKey(g, race_key) & "]"
                         echo getKey(g, race_key & "_descr")
                         echo DIVIDER
                     let prompt = readLine(stdin)
@@ -83,8 +84,34 @@ while isRunning(g):
                     if prompt.toLowerAscii in conv:
                         player_tuple.race = conv[prompt.toLowerAscii]
                     clearScreen()
+                # class pick
+                while player_tuple.class == VOIDC:
+                    echo getKey(g, "game__crq_4")
+                    echo DIVIDER
+                    for class_key in ["class__undefined", "class__warrior", "class__gunslinger", "class__mage",
+                                      "class__merchant", "class__assassin", "class__engineer", "class__outlander",
+                                      "class__necromant", "class__healer"]:#, "class__shaman"]:
+                        echo "- " & getKey(g, class_key)
+                    let prompt = readLine(stdin)
+                    let conv   = {
+                                  getKey(g, "class__undefined").toLowerAscii:  getClass["undefined"],
+                                  getKey(g, "class__warrior").toLowerAscii:    getClass["warrior"],
+                                  getKey(g, "class__gunslinger").toLowerAscii: getClass["gunslinger"],
+                                  getKey(g, "class__mage").toLowerAscii:       getClass["mage"],
+                                  getKey(g, "class__merchant").toLowerAscii:   getClass["merchant"],
+                                  getKey(g, "class__assassin").toLowerAscii:   getClass["assassin"],
+                                  getKey(g, "class__engineer").toLowerAscii:   getClass["engineer"],
+                                  getKey(g, "class__outlander").toLowerAscii:  getClass["outlander"],
+                                  getKey(g, "class__necromant").toLowerAscii:  getClass["necromant"],
+                                  getKey(g, "class__healer").toLowerAscii:     getClass["healer"],
+                                  # getKey(g, "class__shaman").toLowerAscii:     getClass["undefined"],
+                                 }.toTable
+                    if prompt.toLowerAscii in conv:
+                        player_tuple.class = conv[prompt.toLowerAscii]
+                    clearScreen()
+
                 # after all picks are done
-                createCharacter(g, player_tuple.name, player_tuple.gender, player_tuple.race)
+                createCharacter(g, player_tuple.name, player_tuple.gender, player_tuple.race, player_tuple.class)
                 break
             # todo v
             # else:
