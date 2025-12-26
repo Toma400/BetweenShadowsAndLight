@@ -1,4 +1,6 @@
 import std/strutils
+import std/tables
+import player
 import lang
 import game
 import os
@@ -29,27 +31,66 @@ while isRunning(g):
         of PLAY:
             # tuple used for creating character, in case one isn't made yet
             var player_tuple = (
-                                name : ""
+                                name   : "",
+                                gender : VOIDG,
+                                race   : VOIDR
                                 )
             while getPlayerName(g) == "": # character wasn't created nor loaded
-                clearScreen() # clears each draw
-
                 echo DIVIDER
                 echo ">> " & getKey(g, "game__tut_1") & " <<"
                 echo ">> " & getKey(g, "game__tut_2") & " <<"
                 echo ">> " & getKey(g, "game__tut_3") & " <<"
                 echo DIVIDER
+                # name pick
                 while player_tuple.name == "":
                     echo getKey(g, "game__crq_1")
                     let prompt = readLine(stdin)
                     if prompt != "":
                         player_tuple.name = prompt
-                createCharacter(g, player_tuple.name)
+                    clearScreen()
+                # gender pick
+                while player_tuple.gender == VOIDG:
+                    echo getKey(g, "game__crq_2")
+                    echo getKey(g, "gender__1")
+                    echo getKey(g, "gender__2")
+                    echo getKey(g, "gender__3")
+                    let prompt = readLine(stdin)
+                    let conv   = {
+                                  getKey(g, "gender__1").toLowerAscii: getGender["male"],
+                                  getKey(g, "gender__2").toLowerAscii: getGender["female"],
+                                  getKey(g, "gender__3").toLowerAscii: getGender["nonbinary"]
+                                  }.toTable
+                    if prompt.toLowerAscii in conv:
+                        player_tuple.gender = conv[prompt.toLowerAscii]
+                    clearScreen()
+                # race pick
+                while player_tuple.race == VOIDR:
+                    echo getKey(g, "game__crq_3")
+                    echo DIVIDER
+                    for race_key in ["race__human", "race_ett", "race__vindean", "race__saphtri", "race__voitri", "race__ormath"]:
+                        echo getKey(g, race_key)
+                        echo getKey(g, race_key & "_descr")
+                        echo DIVIDER
+                    let prompt = readLine(stdin)
+                    let conv   = {
+                                  getKey(g, "race__human").toLowerAscii:   getRace["human"],
+                                  getKey(g, "race__ett").toLowerAscii:     getRace["ett"],
+                                  getKey(g, "race__vindean").toLowerAscii: getRace["vindean"],
+                                  getKey(g, "race__saphtri").toLowerAscii: getRace["saphtri"],
+                                  getKey(g, "race__voitri").toLowerAscii:  getRace["voitri"],
+                                  getKey(g, "race__ormath").toLowerAscii:  getRace["ormath"],
+                                  }.toTable
+                    if prompt.toLowerAscii in conv:
+                        player_tuple.race = conv[prompt.toLowerAscii]
+                    clearScreen()
+                # after all picks are done
+                createCharacter(g, player_tuple.name, player_tuple.gender, player_tuple.race)
+                break
             # todo v
             # else:
             #     discard
             if getPlayerName(g) != "": # character is created/loaded
-                echo getPlayerName(g) & "!:)"
+                echo $g
                 switchMenu(g, START)
 
         of SETTINGS:

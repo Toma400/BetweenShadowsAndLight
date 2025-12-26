@@ -14,9 +14,29 @@ game__tut_3 = "Istotne wspomnieć jest, że każda statystyka, umiejętność, c
 
 # creation of character
 game__crq_1 = "How should your hero be named?"
-game__crq_2 = "Jakiej ma być płci?"
-game__crq_3 = "Jaką rasę reprezentujesz?"
-game__crq_4 = "Jaką klasę wybierasz?"
+game__crq_2 = "What sex should it be?"
+game__crq_3 = "What race do you represent?"
+game__crq_4 = "What class do you choose?"
+
 # level up
-game__up_atr = "Wybierz, którą cechę chcesz wzmocnić"
-game__up_skl = "Wybierz, którą umiejętność chcesz wzmocnić"
+game__up_atr = "Pick ability you want to improve"
+game__up_skl = "Pick skill you want to improve"
+
+# gender
+gender__1 = "Male"
+gender__2 = "Female"
+gender__3 = "Nonbinary"
+
+# races
+race__human         = "Human"
+race__human_descr   = "..."
+race__vindean       = "Vindean"
+race__vindean_descr = "..."
+race__ett           = "Ett"
+race__ett_descr     = "..."
+race__saphtri       = "Saphtri"
+race__saphtri_descr = "..."
+race__voitri        = "Voitri"
+race__voitri_descr  = "..."
+race__ormath        = "Ormath"
+race__ormath_descr  = "..."

@@ -17,6 +17,26 @@ game__crq_1 = "Jak ma się nazywać Twój bohater?"
 game__crq_2 = "Jakiej ma być płci?"
 game__crq_3 = "Jaką rasę reprezentujesz?"
 game__crq_4 = "Jaką klasę wybierasz?"
+
 # level up
 game__up_atr = "Wybierz, którą cechę chcesz wzmocnić"
 game__up_skl = "Wybierz, którą umiejętność chcesz wzmocnić"
+
+# gender
+gender__1 = "Mężczyzna"
+gender__2 = "Kobieta"
+gender__3 = "Osoba niebinarna"
+
+# races
+race__human         = "Człowiek"
+race__human_descr   = "Najbardziej rozpowszechniona rasa w świecie Baedoor"
+race__vindean       = "Vińdczyk"
+race__vindean_descr = "Vińdczycy są ludźmi, jednak zahartowanymi życiem w mroźnych północnych krainach"
+race__ett           = "Ett"
+race__ett_descr     = "Ci mieszkańcy gór są świetnymi mechanikami i są obyci w technologii"
+race__saphtri       = "Saphtri"
+race__saphtri_descr = "Ci elfowie są wyjątkowo zwinni, dzięki swojemu życiu na drzewach, jednak nie wyrobili sobie oni naturalnej odporności"
+race__voitri        = "Voitri"
+race__voitri_descr  = "W odróżnieniu od saphtri, ci elfowie bardziej cenią sobie dostojne życie, a ich oczytanie rozwinęło znacznie ich intelekt"
+race__ormath        = "Ormath"
+race__ormath_descr  = "Tajemnicza rasa szaroskórych niziołków, którzy opanowali moce natury, dające im przewagę mimo dość lichego ciała"

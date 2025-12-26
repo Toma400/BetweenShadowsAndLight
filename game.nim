@@ -30,8 +30,11 @@ proc newGame* (): Game =
     result.run      = true # starts the game
     result.lang_ref = currentLangFile()
     result.menu     = START
-    result.player   = newPlayer("") # placeholder
+    result.player   = newPlayer("", VOIDG, VOIDR) # placeholder
     result.tutorial = true
+
+proc `$`* (g: Game): string =
+    return $g.player
 
 proc isRunning* (g: Game): bool =
     return g.run
@@ -53,8 +56,8 @@ proc switchLanguage* (g: Game, lang: string) =
     settings = parseFile("settings.toml") # reloads file
     g.lang_ref = currentLangFile()        # updates game instance
 
-proc createCharacter* (g: Game, name: string) =
-    g.player = newPlayer(name)
+proc createCharacter* (g: Game, name: string, gender: Gender, race: Race) =
+    g.player = newPlayer(name, gender, race)
 
 proc getPlayerName* (g: Game): string =
     return getPlayerName(g.player)
