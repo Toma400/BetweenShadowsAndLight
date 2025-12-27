@@ -68,19 +68,13 @@ while isRunning(g):
                 while player_tuple.race == VOIDR:
                     echo getKey(g, "game__crq_3")
                     echo DIVIDER
-                    for race_key in ["race__human", "race__ett", "race__vindean", "race__saphtri", "race__voitri", "race__ormath"]:
-                        echo "[" & getKey(g, race_key) & "]"
-                        echo getKey(g, race_key & "_descr")
+                    var conv = newTable[string, Race]() # prompt comparison, Race
+                    for race_name in getRace:           # print race, then add to comparison table
+                        echo "[" & getKey(g, "race__" & race_name) & "]"
+                        echo getKey(g, "race__" & race_name & "_descr")
                         echo DIVIDER
+                        conv[getKey(g, ("race__" & race_name).toLowerAscii)] = getRace[race_name]
                     let prompt = readLine(stdin)
-                    let conv   = {
-                                  getKey(g, "race__human").toLowerAscii:   getRace["human"],
-                                  getKey(g, "race__ett").toLowerAscii:     getRace["ett"],
-                                  getKey(g, "race__vindean").toLowerAscii: getRace["vindean"],
-                                  getKey(g, "race__saphtri").toLowerAscii: getRace["saphtri"],
-                                  getKey(g, "race__voitri").toLowerAscii:  getRace["voitri"],
-                                  getKey(g, "race__ormath").toLowerAscii:  getRace["ormath"],
-                                  }.toTable
                     if prompt.toLowerAscii in conv:
                         player_tuple.race = conv[prompt.toLowerAscii]
                     clearScreen()
@@ -88,24 +82,11 @@ while isRunning(g):
                 while player_tuple.class == VOIDC:
                     echo getKey(g, "game__crq_4")
                     echo DIVIDER
-                    for class_key in ["class__undefined", "class__warrior", "class__gunslinger", "class__mage",
-                                      "class__merchant", "class__assassin", "class__engineer", "class__outlander",
-                                      "class__necromant", "class__healer"]:#, "class__shaman"]:
-                        echo "- " & getKey(g, class_key)
+                    var conv = newTable[string, Class]() # prompt comparison, Class
+                    for class_name in getClass:          # print class, then add to comparison table
+                        echo "- " & getKey(g, "class__" & class_name)
+                        conv[getKey(g, ("class__" & class_name).toLowerAscii)] = getClass[class_name]
                     let prompt = readLine(stdin)
-                    let conv   = {
-                                  getKey(g, "class__undefined").toLowerAscii:  getClass["undefined"],
-                                  getKey(g, "class__warrior").toLowerAscii:    getClass["warrior"],
-                                  getKey(g, "class__gunslinger").toLowerAscii: getClass["gunslinger"],
-                                  getKey(g, "class__mage").toLowerAscii:       getClass["mage"],
-                                  getKey(g, "class__merchant").toLowerAscii:   getClass["merchant"],
-                                  getKey(g, "class__assassin").toLowerAscii:   getClass["assassin"],
-                                  getKey(g, "class__engineer").toLowerAscii:   getClass["engineer"],
-                                  getKey(g, "class__outlander").toLowerAscii:  getClass["outlander"],
-                                  getKey(g, "class__necromant").toLowerAscii:  getClass["necromant"],
-                                  getKey(g, "class__healer").toLowerAscii:     getClass["healer"],
-                                  # getKey(g, "class__shaman").toLowerAscii:     getClass["undefined"],
-                                 }.toTable
                     if prompt.toLowerAscii in conv:
                         player_tuple.class = conv[prompt.toLowerAscii]
                     clearScreen()
@@ -113,9 +94,7 @@ while isRunning(g):
                 # after all picks are done
                 createCharacter(g, player_tuple.name, player_tuple.gender, player_tuple.race, player_tuple.class)
                 break
-            # todo v
-            # else:
-            #     discard
+
             if getPlayerName(g) != "": # character is created/loaded
                 echo $g
                 switchMenu(g, START)
@@ -128,5 +107,6 @@ while isRunning(g):
             let prompt = readLine(stdin)
             if prompt in getAvailableLangs():
                 switchLanguage(g, prompt)
-            elif prompt.toLowerAscii in ["q"]:
+                switchMenu(g, START)
+            else:
                 switchMenu(g, START)

@@ -83,7 +83,7 @@ let getClass* = {
     "outlander":  OUTLANDER,
     "necromant":  NECROMANT,
     "healer":     HEALER,
-    "shaman":     SHAMAN
+    #"shaman":     SHAMAN
 }.toTable
 
 proc `$`* (p: Player): string =
