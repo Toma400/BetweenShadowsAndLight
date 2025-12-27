@@ -2,9 +2,12 @@ import std/strformat
 import std/strutils
 import std/tables
 import parsetoml
+import location
 import player
 import lang
 import os
+
+export player
 
 type
   MenuType* = enum
@@ -13,11 +16,12 @@ type
     LOAD
     SETTINGS
   Game* = ref object # singular instance of object
-    run      : bool
-    menu     : MenuType
-    player   : Player       # checking against `player.name == ""` means not started game (nil equivalent)
-    tutorial : bool         # whether tips are on/off
-    lang_ref : TomlValueRef
+    run       : bool
+    menu      : MenuType
+    player*   : Player       # checking against `player.name == ""` means not started game (nil equivalent)
+    location* : Location
+    tutorial  : bool         # whether tips are on/off
+    lang_ref  : TomlValueRef
 
 const LOGO* = """|__) __|_    _ _ _   (_ |_  _  _| _     _   _  _  _|  |  . _ |_ |_
                  |__)(- |_\)/(-(-| )  __)| )(_|(_|(_)\)/_)  (_|| )(_|  |__|(_)| )|_""".unindent &
@@ -32,6 +36,7 @@ proc newGame* (): Game =
     result.menu     = START
     result.player   = newPlayer("", VOIDG, VOIDR, VOIDC) # placeholder
     result.tutorial = true
+    result.location = SHIP                               # starting location (overwritten during load)
 
 proc `$`* (g: Game): string =
     return $g.player

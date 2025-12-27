@@ -71,7 +71,7 @@ let getRace* = {
     "saphtri": SAPHTRI,
     "voitri":  VOITRI,
     "ormath":  ORMATH
-}.toTable
+}.toOrderedTable
 let getClass* = {
     "undefined":  UNDEFINED,
     "warrior":    WARRIOR,
@@ -84,7 +84,7 @@ let getClass* = {
     "necromant":  NECROMANT,
     "healer":     HEALER,
     #"shaman":     SHAMAN
-}.toTable
+}.toOrderedTable
 
 proc `$`* (p: Player): string =
     result = fmt"""[{p.name}]
@@ -209,6 +209,26 @@ proc setClassModifiers (p: var Player) =
           p.skills.guns       -= 1
           # pwr_conn +5, pwr_chaos -10
       else: discard
+
+# proc modifyAttributes* (p: var Player, attr: string, val: int): bool =
+#     # returns 'false' in case of failing (error)
+#     case attr:
+#       of "strength":     p.attrs.strength     += val
+#       of "charisma":     p.attrs.charisma     += val
+#       of "dexterity":    p.attrs.dexterity    += val
+#       of "intelligence": p.attrs.intelligence += val
+#       of "endurance":    p.attrs.endurance    += val
+#       else: return false
+#     return true
+#
+# proc modifySkills* (p: var Player, skill: string, val: int): bool =
+#     # returns 'false' in case of failing (error)
+#     case skill:
+#       of "swords": p.skills.swords += val
+#       of "bows":   p.skills.bows   += val
+#       of "guns":   p.skills.guns   += val
+#       else: return false
+#     return true
 
 proc newPlayer* (name: string, gender: Gender, race: Race, class: Class): Player =
     new(result)

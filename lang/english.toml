@@ -53,3 +53,17 @@ class__outlander  = "Outlander"
 class__necromant  = "Necromant"
 class__healer     = "Healer"
 class__shaman     = "Ormath Shaman"
+
+# locations
+location__ship        = "'Arennan' Ship"
+location__ship_docked = "'Arennan' Ship"
+location__docks       = "Evros Docks"
+location__evros       = "Evros City"
+location__fields      = "Evros Fields"
+
+# game
+button__character = "Character"
+button__inventory = "Inventory"
+button__location  = "Location"
+button__map       = "Map"
+button__diary     = "Diary"

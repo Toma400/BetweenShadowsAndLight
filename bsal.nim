@@ -1,5 +1,6 @@
 import std/strutils
 import std/tables
+import location
 import player
 import lang
 import game
@@ -34,7 +35,9 @@ while isRunning(g):
                                 name   : "",
                                 gender : VOIDG,
                                 class  : VOIDC,
-                                race   : VOIDR
+                                race   : VOIDR,
+                                attr   : "",
+                                skill  : ""
                                 )
             while getPlayerName(g) == "": # character wasn't created nor loaded
                 echo DIVIDER
@@ -69,11 +72,11 @@ while isRunning(g):
                     echo getKey(g, "game__crq_3")
                     echo DIVIDER
                     var conv = newTable[string, Race]() # prompt comparison, Race
-                    for race_name in getRace:           # print race, then add to comparison table
+                    for race_name in getRace.keys:      # print race, then add to comparison table
                         echo "[" & getKey(g, "race__" & race_name) & "]"
                         echo getKey(g, "race__" & race_name & "_descr")
                         echo DIVIDER
-                        conv[getKey(g, ("race__" & race_name).toLowerAscii)] = getRace[race_name]
+                        conv[getKey(g, ("race__" & race_name)).toLowerAscii] = getRace[race_name]
                     let prompt = readLine(stdin)
                     if prompt.toLowerAscii in conv:
                         player_tuple.race = conv[prompt.toLowerAscii]
@@ -83,21 +86,40 @@ while isRunning(g):
                     echo getKey(g, "game__crq_4")
                     echo DIVIDER
                     var conv = newTable[string, Class]() # prompt comparison, Class
-                    for class_name in getClass:          # print class, then add to comparison table
+                    for class_name in getClass.keys:     # print class, then add to comparison table
                         echo "- " & getKey(g, "class__" & class_name)
-                        conv[getKey(g, ("class__" & class_name).toLowerAscii)] = getClass[class_name]
+                        conv[getKey(g, ("class__" & class_name)).toLowerAscii] = getClass[class_name]
                     let prompt = readLine(stdin)
                     if prompt.toLowerAscii in conv:
                         player_tuple.class = conv[prompt.toLowerAscii]
                     clearScreen()
+                # # attribute pick
+                # while player_tuple.attr == "":
+                #     break
+                # # skill pick
+                # while player_tuple.skill == "":
+                #     break
 
                 # after all picks are done
                 createCharacter(g, player_tuple.name, player_tuple.gender, player_tuple.race, player_tuple.class)
-                break
+                # modifyAttributes(g.player, player_tuple.attr, 1)
+                # modifySkills(g.player, player_tuple.skill, 1)
 
             if getPlayerName(g) != "": # character is created/loaded
-                echo $g
-                switchMenu(g, START)
+                echo LocationMap
+                echo "[" & getKey(g, "location__" & ($g.location).toLowerAscii) & "]"
+                # HP
+                # level
+                # weight / max_weight
+                echo "[" & getKey(g, "button__character") & "]" & " " &
+                     "[" & getKey(g, "button__inventory") & "]" & " " &
+                     "[" & getKey(g, "button__location")  & "]" & " " &
+                     "[" & getKey(g, "button__map")       & "]" & " " &
+                     "[" & getKey(g, "button__diary")     & "]" & " "
+                let prompt = readLine(stdin)
+                if prompt == "player":
+                    echo $g
+                discard readLine(stdin) # used so that you don't get result cleared
 
         of SETTINGS:
             echo getKey(g, "menu__langcur") & " " & getKey(g, "menu__lang")
