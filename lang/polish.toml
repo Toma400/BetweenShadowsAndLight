@@ -23,9 +23,9 @@ game__up_atr = "Wybierz, którą cechę chcesz wzmocnić"
 game__up_skl = "Wybierz, którą umiejętność chcesz wzmocnić"
 
 # gender
-gender__1 = "Mężczyzna"
-gender__2 = "Kobieta"
-gender__3 = "Osoba niebinarna"
+gender__male      = "Mężczyzna"
+gender__female    = "Kobieta"
+gender__nonbinary = "Osoba niebinarna"
 
 # races
 race__human         = "Człowiek"
@@ -68,9 +68,13 @@ game__gui_location  = "Lokacja"
 game__gui_map       = "Mapa"
 game__gui_diary     = "Dziennik"
 # GUI - character
+game__gui_chinit    = "Twoja postać"
 game__gui_health    = "Zdrowie"
+game__gui_mana      = "Mana"
 game__gui_level     = "Poziom"
 game__gui_weight    = "Ciężar"
+game__gui_xp        = "Doświadczenie"
+game__gui_sp        = "Wypoczynek"
 # GUI - messages
 game__warn_weight = "Jesteś przeciążony!"
 game__warn_tired  = "Jesteś zmęczony!"

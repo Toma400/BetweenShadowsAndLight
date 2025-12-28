@@ -55,14 +55,14 @@ while isRunning(g):
                 # gender pick
                 while player_tuple.gender == VOIDG:
                     echo getKey(g, "game__crq_2")
-                    echo getKey(g, "gender__1")
-                    echo getKey(g, "gender__2")
-                    echo getKey(g, "gender__3")
+                    echo getKey(g, "gender__male")
+                    echo getKey(g, "gender__female")
+                    echo getKey(g, "gender__nonbinary")
                     let prompt = readLine(stdin)
                     let conv   = {
-                                  getKey(g, "gender__1").toLowerAscii: getGender["male"],
-                                  getKey(g, "gender__2").toLowerAscii: getGender["female"],
-                                  getKey(g, "gender__3").toLowerAscii: getGender["nonbinary"]
+                                  getKey(g, "gender__male").toLowerAscii:      getdGender["male"],
+                                  getKey(g, "gender__female").toLowerAscii:    getdGender["female"],
+                                  getKey(g, "gender__nonbinary").toLowerAscii: getdGender["nonbinary"]
                                   }.toTable
                     if prompt.toLowerAscii in conv:
                         player_tuple.gender = conv[prompt.toLowerAscii]
@@ -72,11 +72,11 @@ while isRunning(g):
                     echo getKey(g, "game__crq_3")
                     echo DIVIDER
                     var conv = newTable[string, Race]() # prompt comparison, Race
-                    for race_name in getRace.keys:      # print race, then add to comparison table
+                    for race_name in getdRace.keys:      # print race, then add to comparison table
                         echo "[" & getKey(g, "race__" & race_name) & "]"
                         echo getKey(g, "race__" & race_name & "_descr")
                         echo DIVIDER
-                        conv[getKey(g, ("race__" & race_name)).toLowerAscii] = getRace[race_name]
+                        conv[getKey(g, ("race__" & race_name)).toLowerAscii] = getdRace[race_name]
                     let prompt = readLine(stdin)
                     if prompt.toLowerAscii in conv:
                         player_tuple.race = conv[prompt.toLowerAscii]
@@ -86,9 +86,9 @@ while isRunning(g):
                     echo getKey(g, "game__crq_4")
                     echo DIVIDER
                     var conv = newTable[string, Class]() # prompt comparison, Class
-                    for class_name in getClass.keys:     # print class, then add to comparison table
+                    for class_name in getdClass.keys:     # print class, then add to comparison table
                         echo "- " & getKey(g, "class__" & class_name)
-                        conv[getKey(g, ("class__" & class_name)).toLowerAscii] = getClass[class_name]
+                        conv[getKey(g, ("class__" & class_name)).toLowerAscii] = getdClass[class_name]
                     let prompt = readLine(stdin)
                     if prompt.toLowerAscii in conv:
                         player_tuple.class = conv[prompt.toLowerAscii]
@@ -107,7 +107,7 @@ while isRunning(g):
 
             if getPlayerName(g) != "": # character is created/loaded
                 # general processes
-                processTiredness(g.player)
+                processStatistics(g.player)
                 # echos
                 echo LocationMap
                 echo "[" & getKey(g, "location__" & ($g.location).toLowerAscii) & "]"
@@ -122,10 +122,17 @@ while isRunning(g):
                 echo DIVSHORT
                 for msg in getMessages(g):
                     echo msg
+                let conv = {
+                    getKey(g, "game__gui_character").toLowerAscii : mCHARACTER,
+                    # getKey(g, "game__gui_inventory").toLowerAscii : mINVENTORY,
+                    # getKey(g, "game__gui_location").toLowerAscii  : mLOCATION,
+                    # getKey(g, "game__gui_map").toLowerAscii       : mMAP,
+                    # getKey(g, "game__gui_diary").toLowerAscii     : mDIARY
+                }.toTable
                 let prompt = readLine(stdin)
-                if prompt == "player":
-                    echo $g
-                discard readLine(stdin) # used so that you don't get result cleared
+                if prompt.toLowerAscii in conv:
+                    switchMenu(g, conv[prompt.toLowerAscii])
+                # todo: discard readLine(stdin) # used so that you don't get result cleared
 
         of SETTINGS:
             echo getKey(g, "menu__langcur") & " " & getKey(g, "menu__lang")
@@ -138,3 +145,42 @@ while isRunning(g):
                 switchMenu(g, START)
             else:
                 switchMenu(g, START)
+
+        of mCHARACTER:
+            echo getKey(g, "game__gui_chinit")
+            echo "[" & getPlayerName(g.player) & "]"
+            echo getKey(g, "gender__" & ($getGender(g.player)).toLowerAscii)
+            echo getKey(g, "race__"   & ($getRace(g.player)).toLowerAscii)
+            echo getKey(g, "class__"  & ($getClass(g.player)).toLowerAscii)
+            echo getKey(g, "game__gui_level")  & ": " & $getLevel(g.player)
+            echo getKey(g, "game__gui_xp")     & ": " & $g.player.xp & " / " & $getMaxWeight(g.player)
+            echo getKey(g, "game__gui_sp")     & ": " & $g.player.sp
+            echo "[" & getKey(g, "game__gui_health") & ": " & $g.player.hp & " / " & $getMaxHealth(g.player) & "]" &
+                 "[" & getKey(g, "game__gui_mana")   & ": " & $g.player.mp & " / " & $getMaxMana(g.player)   & "]" &
+                 # attack
+                 # defence
+                 # armor
+                 "" # for now, so that the above not being filled don't break the string
+                 # magic defence (if it exists), from what I see as new line
+            echo DIVSHORT
+            # attrs
+            # skills
+            discard readLine(stdin) # let player see statistics before they are moved to old menu
+  # basic_armor()
+  # print ("Twoja postać:","\n\n[",name,"]\n",gender,"\n",race,"\n",craft,"\n")
+  # print ("Poziom", level, "\n")
+  # print ("-Punkty doświadczenia:",xp,"/",xp_level,"-")
+  # print ("-Wypoczęcie:",sp,"-")
+  # print ("[HP",hp,"/",hp_level,"][Mana",mp,"/",mp_level,"][Atak",eq_attack,"][Obrona",eq_defence,"(",armor_hp,"%)]")
+  # if eq_mdefence > 0:
+  #   print ("[Obrona magiczna",eq_mdefence,"]")
+  # print ("---------------------")
+  # print ("[SIŁA",strength,"]\n[ZWINNOŚĆ",dexterity,"]\n[INTELIGENCJA",intelligence,"]\n[WYTRZYMAŁOŚĆ",endurance,"]""\n[CHARYZMA",charisma,"]")
+  # print ("\n[BROŃ BIAŁA",swords,"]\n[STRZELECTWO",bows,"]\n[BROŃ PALNA",guns,"]\n[RZUCANIE ZAKLĘĆ",castspelling,"]\n[SIŁA ZJEDNOCZENIA",connection,"]\n[HANDEL",trade,"]\n[NAPRAWA",repair,"]\n[LECZENIE",healing,"]\n[OTWIERANIE ZAMKÓW",lockpicking,"]\n[SKRADANIE",sneaking,"]\n[KOWALSTWO",smithing,"]\n[ZIELARSTWO",herbalism,"]\n[KIEROWANIE POJAZDAMI",vehicle_drive,"]\n[PUŁAPKI",trapspotting,"]\n[PRZETRWANIE",survival,"]")
+
+            switchMenu(g, PLAY)
+
+        of mINVENTORY: break
+        of mLOCATION:  break
+        of mMAP:       break
+        of mDIARY:     break

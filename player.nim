@@ -67,7 +67,7 @@ type
     mp_max : int
     sp*    : int # tiredness
     sp_max : int
-    xp     : int # experience
+    xp*    : int # experience
     weight*    : int
     weight_max : int
     # powers
@@ -75,13 +75,16 @@ type
     pwr_tech  : int
     pwr_conn  : int
     pwr_chaos : int
+const
+  SP_MAX = 1000 # not fixed value (worth changing for BRPGS 3.x)
 
-let getGender* = {
+# dictionaries
+let getdGender* = {
     "male":      MALE,
     "female":    FEMALE,
     "nonbinary": NONBINARY
 }.toTable
-let getRace* = {
+let getdRace* = {
     "human":   HUMAN,
     "ett":     ETT,
     "vindean": VINDEAN,
@@ -89,7 +92,7 @@ let getRace* = {
     "voitri":  VOITRI,
     "ormath":  ORMATH
 }.toOrderedTable
-let getClass* = {
+let getdClass* = {
     "undefined":  UNDEFINED,
     "warrior":    WARRIOR,
     "gunslinger": GUNSLINGER,
@@ -284,7 +287,8 @@ proc calculateExperienceCap* (p: Player): int =
     if result < 100:
       result = 100
 
-proc processTiredness* (p: Player) =
+proc processStatistics* (p: Player) =
+    # TIREDNESS
     p.sp -= 1 # crazy how little this is
     if p.weight > p.weight_max:
         p.sp -= 50
@@ -296,6 +300,11 @@ proc processTiredness* (p: Player) =
             p.hp -= 10 # 2 + 8 in original (hard to tell if intentional or if it meant to be 8)
         elif p.sp < 10:
             p.hp -= 2
+
+    p.hp_max     = calculateMaxHealth(p)
+    p.mp_max     = calculateMaxMana(p)
+    p.sp_max     = SP_MAX
+    p.weight_max = calculateMaxWeight(p)
 
 proc newPlayer* (name: string, gender: Gender, race: Race, class: Class): Player =
     new(result)
@@ -333,7 +342,7 @@ proc newPlayer* (name: string, gender: Gender, race: Race, class: Class): Player
     # defaults
     result.hp_max     = calculateMaxHealth(result)
     result.mp_max     = calculateMaxMana(result)
-    result.sp_max     = 1000
+    result.sp_max     = SP_MAX
     result.weight_max = calculateMaxWeight(result)
     # settings values to their respective maxes/mins
     result.level  = 1
@@ -347,8 +356,24 @@ proc newPlayer* (name: string, gender: Gender, race: Race, class: Class): Player
 proc getPlayerName* (p: Player): string = return p.name
 proc getLevel*      (p: Player): int    = return p.level
 proc getMaxWeight*  (p: Player): int    = return p.weight_max
+proc getMaxHealth*  (p: Player): int    = return p.hp_max
+proc getMaxMana*    (p: Player): int    = return p.mp_max
+proc getGender*     (p: Player): Gender = return p.gender
+proc getRace*       (p: Player): Race   = return p.race
+proc getClass*      (p: Player): Class  = return p.class
 
 proc getAndClearMessages* (p: Player): seq[string] =
     # SHOULD ONLY BE USED BY -GAME- OBJECT, it's collection of keys, not echoable strings
     result = p.msg
     p.msg = @[] # clears the old one
+
+proc sleep* (p: Player) =
+    p.hp = p.hp_max
+    p.sp = p.sp_max
+    p.mp = p.mp_max
+
+    # todo:
+    # if timer == 1 or timer2 == 1 or timer3 == 1:
+    #     timer = 0
+    #     timer2 = 0
+    #     timer3 = 0

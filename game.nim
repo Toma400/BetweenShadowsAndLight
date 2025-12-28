@@ -11,10 +11,17 @@ export player
 
 type
   MenuType* = enum
+    # main menu
     START
     PLAY
     LOAD
     SETTINGS
+    # gameplay menus
+    mCHARACTER
+    mINVENTORY
+    mLOCATION
+    mMAP
+    mDIARY
   Game* = ref object # singular instance of object
     run       : bool
     menu      : MenuType

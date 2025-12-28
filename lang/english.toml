@@ -23,9 +23,9 @@ game__up_atr = "Pick ability you want to improve"
 game__up_skl = "Pick skill you want to improve"
 
 # gender
-gender__1 = "Male"
-gender__2 = "Female"
-gender__3 = "Nonbinary"
+gender__male      = "Male"
+gender__female    = "Female"
+gender__nonbinary = "Nonbinary"
 
 # races
 race__human         = "Human"
@@ -68,9 +68,13 @@ game__gui_location  = "Location"
 game__gui_map       = "Map"
 game__gui_diary     = "Diary"
 # GUI - character
+game__gui_chinit    = "Your character"
 game__gui_health    = "Health"
+game__gui_mana      = "Mana"
 game__gui_level     = "Level"
 game__gui_weight    = "Weight"
+game__gui_xp        = "Experience"
+game__gui_sp        = "Rest"
 # GUI - messages
 game__warn_weight = "You are overburdened!"
 game__warn_tired  = "You are tired!"
