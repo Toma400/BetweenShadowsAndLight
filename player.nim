@@ -58,6 +58,23 @@ type
     class  : Class
     attrs  : Attributes
     skills : Skills
+    msg    : seq[string] # seq of keys, printed by Game object
+    # other values | max values are editable by procs for explicitness
+    level  : int
+    hp*    : int # health
+    hp_max : int
+    mp*    : int # mana
+    mp_max : int
+    sp*    : int # tiredness
+    sp_max : int
+    xp     : int # experience
+    weight*    : int
+    weight_max : int
+    # powers
+    pwr_magic : int
+    pwr_tech  : int
+    pwr_conn  : int
+    pwr_chaos : int
 
 let getGender* = {
     "male":      MALE,
@@ -92,27 +109,32 @@ proc `$`* (p: Player): string =
     Race:   {$p.race}
     Class:  {$p.class}
     Attributes:
-      Strength     | {p.attrs.strength}
-      Dexterity    | {p.attrs.dexterity}
-      Intelligence | {p.attrs.intelligence}
-      Endurance    | {p.attrs.endurance}
-      Charisma     | {p.attrs.charisma}
+        Strength     | {p.attrs.strength}
+        Dexterity    | {p.attrs.dexterity}
+        Intelligence | {p.attrs.intelligence}
+        Endurance    | {p.attrs.endurance}
+        Charisma     | {p.attrs.charisma}
     Skills:
-      Bows          | {p.skills.bows}
-      Swords        | {p.skills.swords}
-      Guns          | {p.skills.guns}
-      Spellcasting  | {p.skills.spellcasting}
-      Trade         | {p.skills.trade}
-      Repair        | {p.skills.repair}
-      Healing       | {p.skills.healing}
-      Sneaking      | {p.skills.sneaking}
-      Lockpicking   | {p.skills.lockpicking}
-      Smithing      | {p.skills.smithing}
-      Herbalism     | {p.skills.herbalism}
-      Vehicle Drive | {p.skills.vehicle_drive}
-      Trapspotting  | {p.skills.trapspotting}
-      Survival      | {p.skills.survival}
-      Connection    | {p.skills.connection}
+        Bows          | {p.skills.bows}
+        Swords        | {p.skills.swords}
+        Guns          | {p.skills.guns}
+        Spellcasting  | {p.skills.spellcasting}
+        Trade         | {p.skills.trade}
+        Repair        | {p.skills.repair}
+        Healing       | {p.skills.healing}
+        Sneaking      | {p.skills.sneaking}
+        Lockpicking   | {p.skills.lockpicking}
+        Smithing      | {p.skills.smithing}
+        Herbalism     | {p.skills.herbalism}
+        Vehicle Drive | {p.skills.vehicle_drive}
+        Trapspotting  | {p.skills.trapspotting}
+        Survival      | {p.skills.survival}
+        Connection    | {p.skills.connection}
+    Powers:
+        Magic      | {p.pwr_magic}
+        Technology | {p.pwr_tech}
+        Chaos      | {p.pwr_chaos}
+        Connection | {p.pwr_conn}
     """.unindent
 
 proc setGenderModifiers (p: var Player) =
@@ -134,7 +156,8 @@ proc setRaceModifiers (p: var Player) =
           p.attrs.intelligence += 1
           p.attrs.endurance    += 1
           p.attrs.dexterity    -= 2
-          # pwr_tech +5, pwr_magic -5
+          p.pwr_tech  += 5
+          p.pwr_magic -= 5
       of SAPHTRI:
           p.attrs.dexterity    += 2
           p.attrs.intelligence += 1
@@ -145,13 +168,14 @@ proc setRaceModifiers (p: var Player) =
           p.attrs.dexterity    += 1
           p.attrs.strength     -= 1
           p.attrs.endurance    -= 1
-          # pwr_magic +5, pwr_tech -5
+          p.pwr_magic += 5
+          p.pwr_tech  -= 5
       of ORMATH:
           p.attrs.endurance   += 1
           p.attrs.dexterity   += 1
           p.attrs.strength    -= 2
           p.skills.connection += 1
-          # pwr_conn +10
+          p.pwr_conn += 10
       else: discard
 
 proc setClassModifiers (p: var Player) =
@@ -167,12 +191,14 @@ proc setClassModifiers (p: var Player) =
           p.skills.guns         += 2
           p.skills.spellcasting  = 0
           p.skills.repair       += 1
-          # pwr_tech +5, pwr_magic -5
+          p.pwr_tech  += 5
+          p.pwr_magic -= 5
       of MAGE:
           p.skills.spellcasting += 2
           p.skills.healing      += 1
           p.skills.guns          = 0
-          # pwr_magic +5, pwr_tech -5
+          p.pwr_magic += 5
+          p.pwr_tech  -= 5
       of MERCHANT:
           p.attrs.charisma += 1
           p.attrs.strength -= 1
@@ -186,7 +212,8 @@ proc setClassModifiers (p: var Player) =
           p.skills.repair        += 2
           p.skills.smithing      += 1
           p.skills.vehicle_drive += 1
-          # pwr_tech +15, pwr_magic -15
+          p.pwr_tech  += 15
+          p.pwr_magic -= 15
       of OUTLANDER:
           p.attrs.charisma      -= 2
           p.skills.repair       += 1
@@ -196,18 +223,23 @@ proc setClassModifiers (p: var Player) =
       of NECROMANT:
           p.skills.spellcasting = 2
           p.skills.guns         = 0
-          # pwr_chaos +8, pwr_conn -20, pwr_tech -5, pwr_magic +5
+          p.pwr_chaos += 8
+          p.pwr_conn  -= 20
+          p.pwr_tech  -= 5
+          p.pwr_magic += 5
       of HEALER:
           p.attrs.strength   -= 1
           p.skills.healing   += 2
           p.skills.herbalism += 2
           p.skills.guns      -= 1
-          # pwr_magic +5, pwr_tech -5
+          p.pwr_magic += 5
+          p.pwr_tech  -= 5
       of SHAMAN:
           p.skills.connection += 2
           p.skills.herbalism  += 1
           p.skills.guns       -= 1
-          # pwr_conn +5, pwr_chaos -10
+          p.pwr_conn  += 5
+          p.pwr_chaos -= 10
       else: discard
 
 # proc modifyAttributes* (p: var Player, attr: string, val: int): bool =
@@ -229,6 +261,41 @@ proc setClassModifiers (p: var Player) =
 #       of "guns":   p.skills.guns   += val
 #       else: return false
 #     return true
+
+proc calculateMaxMana* (p: Player): int =
+    # NOT A SETTER
+    result = 20 + p.attrs.intelligence * 10 + p.pwr_magic * 10
+    if result < 100:
+      result = 100
+
+proc calculateMaxHealth* (p: Player): int =
+    # NOT A SETTER
+    result = 20 + p.attrs.endurance * 10
+    if result < 100:
+      result = 100
+
+proc calculateMaxWeight* (p: Player): int =
+    # NOT A SETTER
+    return p.attrs.strength * 3
+
+proc calculateExperienceCap* (p: Player): int =
+    # NOT A SETTER | equivalent of `xp_level` variable in OG
+    result = p.level * 12
+    if result < 100:
+      result = 100
+
+proc processTiredness* (p: Player) =
+    p.sp -= 1 # crazy how little this is
+    if p.weight > p.weight_max:
+        p.sp -= 50
+        p.msg.add("game__warn_weight")
+    if p.sp < 100:
+        p.msg.add("game__warn_tired")
+        # kept the original logic below, but used short circuiting way
+        if p.sp   <= 0:
+            p.hp -= 10 # 2 + 8 in original (hard to tell if intentional or if it meant to be 8)
+        elif p.sp < 10:
+            p.hp -= 2
 
 proc newPlayer* (name: string, gender: Gender, race: Race, class: Class): Player =
     new(result)
@@ -263,6 +330,25 @@ proc newPlayer* (name: string, gender: Gender, race: Race, class: Class): Player
     setGenderModifiers(result)
     setRaceModifiers(result)
     setClassModifiers(result)
+    # defaults
+    result.hp_max     = calculateMaxHealth(result)
+    result.mp_max     = calculateMaxMana(result)
+    result.sp_max     = 1000
+    result.weight_max = calculateMaxWeight(result)
+    # settings values to their respective maxes/mins
+    result.level  = 1
+    result.weight = 0
+    result.xp     = 0
+    result.hp     = result.hp_max
+    result.mp     = result.mp_max
+    result.sp     = result.sp_max
 
-proc getPlayerName* (p: Player): string =
-    return p.name
+# various getters
+proc getPlayerName* (p: Player): string = return p.name
+proc getLevel*      (p: Player): int    = return p.level
+proc getMaxWeight*  (p: Player): int    = return p.weight_max
+
+proc getAndClearMessages* (p: Player): seq[string] =
+    # SHOULD ONLY BE USED BY -GAME- OBJECT, it's collection of keys, not echoable strings
+    result = p.msg
+    p.msg = @[] # clears the old one

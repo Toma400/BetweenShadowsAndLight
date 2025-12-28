@@ -27,7 +27,8 @@ const LOGO* = """|__) __|_    _ _ _   (_ |_  _  _| _     _   _  _  _|  |  . _ |_
                  |__)(- |_\)/(-(-| )  __)| )(_|(_|(_)\)/_)  (_|| )(_|  |__|(_)| )|_""".unindent &
               "\n - Remastered -                                            _)\n" &
                 "                                                       version 1.0\n"
-const DIVIDER* = "---------------------------------------------------------------"
+const DIVIDER*  = "---------------------------------------------------------------"
+const DIVSHORT* = "------------------------------------------------"
 
 proc newGame* (): Game =
     new(result)
@@ -66,6 +67,10 @@ proc createCharacter* (g: Game, name: string, gender: Gender, race: Race, class:
 
 proc getPlayerName* (g: Game): string =
     return getPlayerName(g.player)
+
+proc getMessages* (g: Game): seq[string] =
+    for msg_key in getAndClearMessages(g.player):
+        result.add(getKey(g, msg_key))
 
 proc clearScreen* () =
     discard execShellCmd("cls")

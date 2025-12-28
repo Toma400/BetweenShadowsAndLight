@@ -106,16 +106,22 @@ while isRunning(g):
                 # modifySkills(g.player, player_tuple.skill, 1)
 
             if getPlayerName(g) != "": # character is created/loaded
+                # general processes
+                processTiredness(g.player)
+                # echos
                 echo LocationMap
                 echo "[" & getKey(g, "location__" & ($g.location).toLowerAscii) & "]"
-                # HP
-                # level
-                # weight / max_weight
-                echo "[" & getKey(g, "button__character") & "]" & " " &
-                     "[" & getKey(g, "button__inventory") & "]" & " " &
-                     "[" & getKey(g, "button__location")  & "]" & " " &
-                     "[" & getKey(g, "button__map")       & "]" & " " &
-                     "[" & getKey(g, "button__diary")     & "]" & " "
+                echo getKey(g, "game__gui_health") & ": " & $g.player.hp
+                echo getKey(g, "game__gui_level")  & ": " & $getLevel(g.player)
+                echo getKey(g, "game__gui_weight") & ": " & $g.player.weight & " / " & $getMaxWeight(g.player)
+                echo "[" & getKey(g, "game__gui_character") & "]" & " " &
+                     "[" & getKey(g, "game__gui_inventory") & "]" & " " &
+                     "[" & getKey(g, "game__gui_location")  & "]" & " " &
+                     "[" & getKey(g, "game__gui_map")       & "]" & " " &
+                     "[" & getKey(g, "game__gui_diary")     & "]" & " "
+                echo DIVSHORT
+                for msg in getMessages(g):
+                    echo msg
                 let prompt = readLine(stdin)
                 if prompt == "player":
                     echo $g

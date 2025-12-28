@@ -61,9 +61,16 @@ location__docks       = "Evros Docks"
 location__evros       = "Evros City"
 location__fields      = "Evros Fields"
 
-# game
-button__character = "Character"
-button__inventory = "Inventory"
-button__location  = "Location"
-button__map       = "Map"
-button__diary     = "Diary"
+# GUI - buttons
+game__gui_character = "Character"
+game__gui_inventory = "Inventory"
+game__gui_location  = "Location"
+game__gui_map       = "Map"
+game__gui_diary     = "Diary"
+# GUI - character
+game__gui_health    = "Health"
+game__gui_level     = "Level"
+game__gui_weight    = "Weight"
+# GUI - messages
+game__warn_weight = "You are overburdened!"
+game__warn_tired  = "You are tired!"
