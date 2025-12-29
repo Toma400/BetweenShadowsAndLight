@@ -94,7 +94,7 @@ const
 let getdGender* = {
     "male":      MALE,
     "female":    FEMALE,
-    "nonbinary": NONBINARY
+    #TODO: v1.2: "nonbinary": NONBINARY
 }.toTable
 let getdRace* = {
     "human":   HUMAN,

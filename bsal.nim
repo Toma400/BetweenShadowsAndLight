@@ -57,12 +57,12 @@ while isRunning(g):
                     echo getKey(g, "game__crq_2")
                     echo getKey(g, "gender__male")
                     echo getKey(g, "gender__female")
-                    echo getKey(g, "gender__nonbinary")
+                    #TODO: v1.2: echo getKey(g, "gender__nonbinary")
                     let prompt = readLine(stdin)
                     let conv   = {
                                   getKey(g, "gender__male").toLowerAscii:      getdGender["male"],
                                   getKey(g, "gender__female").toLowerAscii:    getdGender["female"],
-                                  getKey(g, "gender__nonbinary").toLowerAscii: getdGender["nonbinary"]
+                                  #TODO: v1.2: getKey(g, "gender__nonbinary").toLowerAscii: getdGender["nonbinary"]
                                   }.toTable
                     if prompt.toLowerAscii in conv:
                         player_tuple.gender = conv[prompt.toLowerAscii]
