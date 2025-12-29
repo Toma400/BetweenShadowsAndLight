@@ -132,6 +132,8 @@ while isRunning(g):
                 let prompt = readLine(stdin)
                 if prompt.toLowerAscii in conv:
                     switchMenu(g, conv[prompt.toLowerAscii])
+                elif prompt == "cheat":
+                    discard # todo: make it cheat screen, like in OG
                 # todo: discard readLine(stdin) # used so that you don't get result cleared
 
         of SETTINGS:
@@ -160,6 +162,7 @@ while isRunning(g):
                  "[" & getKey(g, "game__gui_attack")  & ": " & $getAttack(g.player)  & "]" &
                  "[" & getKey(g, "game__gui_defence") & ": " & $getDefence(g.player) & "]" &
                  # armor | todo: apparently there's [armor / maxarmor]?? is it like item resistance/durability?
+                 #         ...but then there's also `armor_hp` wtf
                  "" # for now, so that the above not being filled don't break the string
                  # magic defence (if it exists), from what I see as new line
             echo DIVSHORT

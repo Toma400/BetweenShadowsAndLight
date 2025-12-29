@@ -73,7 +73,9 @@ type
     # values used by various actions
     attack  : int
     defence : int
+    poison  : int
     # inventory-related
+    bank      : int # bank account balance
     money     : int
     ammo      : int
     arrows    : int
@@ -297,6 +299,11 @@ proc calculateExperienceCap* (p: Player): int =
     if result < 100:
       result = 100
 
+proc calculateBankValue* (base: int): int =
+    # NOT A SETTER | takes p.bank value
+    # no condition like in OG because base=0 will return 0 anyway
+    return (int(base/100))*3 + base
+
 proc processStatistics* (p: Player) =
     # TIREDNESS
     p.sp -= 1 # crazy how little this is
@@ -310,11 +317,20 @@ proc processStatistics* (p: Player) =
             p.hp -= 10 # 2 + 8 in original (hard to tell if intentional or if it meant to be 8)
         elif p.sp < 10:
             p.hp -= 2
+    # POISONING
+    if p.poison > 0:
+        p.msg.add("game__warn_poison")
+        p.hp -= 3
+    # GLOBAL
+    p.bank = calculateBankValue(p.bank)
 
     p.hp_max     = calculateMaxHealth(p)
     p.mp_max     = calculateMaxMana(p)
     p.sp_max     = SP_MAX
     p.weight_max = calculateMaxWeight(p)
+
+    if p.xp > calculateExperienceCap(p):
+        discard # todo: level up!
 
 proc newPlayer* (name: string, gender: Gender, race: Race, class: Class): Player =
     new(result)
@@ -380,6 +396,7 @@ proc getRace*       (p: Player): Race   = return p.race
 proc getClass*      (p: Player): Class  = return p.class
 proc getAttack*     (p: Player): int    = return p.attack
 proc getDefence*    (p: Player): int    = return p.defence
+proc getPoison*     (p: Player): int    = return p.poison
 
 proc getAndClearMessages* (p: Player): seq[string] =
     # SHOULD ONLY BE USED BY -GAME- OBJECT, it's collection of keys, not echoable strings

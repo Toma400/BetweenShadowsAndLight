@@ -108,3 +108,4 @@ game__gui_drquit     = "Wróć do menu głównego"
 # GUI - messages
 game__warn_weight = "Jesteś przeciążony!"
 game__warn_tired  = "Jesteś zmęczony!"
+game__warn_poison = "Jesteś zatruty!"
