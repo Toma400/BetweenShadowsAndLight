@@ -127,7 +127,7 @@ while isRunning(g):
                     # getKey(g, "game__gui_inventory").toLowerAscii : mINVENTORY,
                     # getKey(g, "game__gui_location").toLowerAscii  : mLOCATION,
                     # getKey(g, "game__gui_map").toLowerAscii       : mMAP,
-                    # getKey(g, "game__gui_diary").toLowerAscii     : mDIARY
+                    getKey(g, "game__gui_diary").toLowerAscii     : mDIARY
                 }.toTable
                 let prompt = readLine(stdin)
                 if prompt.toLowerAscii in conv:
@@ -157,9 +157,9 @@ while isRunning(g):
             echo getKey(g, "game__gui_sp")     & ": " & $g.player.sp
             echo "[" & getKey(g, "game__gui_health") & ": " & $g.player.hp & " / " & $getMaxHealth(g.player) & "]" &
                  "[" & getKey(g, "game__gui_mana")   & ": " & $g.player.mp & " / " & $getMaxMana(g.player)   & "]" &
-                 # attack
-                 # defence
-                 # armor
+                 "[" & getKey(g, "game__gui_attack")  & ": " & $getAttack(g.player)  & "]" &
+                 "[" & getKey(g, "game__gui_defence") & ": " & $getDefence(g.player) & "]" &
+                 # armor | todo: apparently there's [armor / maxarmor]?? is it like item resistance/durability?
                  "" # for now, so that the above not being filled don't break the string
                  # magic defence (if it exists), from what I see as new line
             echo DIVSHORT
@@ -183,4 +183,20 @@ while isRunning(g):
         of mINVENTORY: break
         of mLOCATION:  break
         of mMAP:       break
-        of mDIARY:     break
+        of mDIARY:
+            echo getKey(g, "game__gui_drinit")
+            echo "[" & getKey(g, "game__gui_drdiary")    & "]" & " " &
+                 "[" & getKey(g, "game__gui_drsave")     & "]" & " " &
+                 "[" & getKey(g, "game__gui_drsavequit") & "]" & " " &
+                 "[" & getKey(g, "game__gui_drquit")     & "]"
+            let prompt = readLine(stdin).toLowerAscii
+            if prompt == getKey(g, "game__gui_drdiary").toLowerAscii:
+                continue
+            elif prompt == getKey(g, "game__gui_drsave").toLowerAscii:
+                continue
+            elif prompt == getKey(g, "game__gui_drsavequit").toLowerAscii:
+                continue
+            elif prompt == getKey(g, "game__gui_drquit").toLowerAscii:
+                switchMenu(g, START)
+            else:
+                switchMenu(g, PLAY)

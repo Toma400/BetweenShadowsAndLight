@@ -36,10 +36,11 @@ type
     endurance    : int
     charisma     : int
   Skills* = object
-    bows          : int
     swords        : int
+    bows          : int
     guns          : int
     spellcasting  : int
+    connection    : int
     trade         : int
     repair        : int
     healing       : int
@@ -50,7 +51,6 @@ type
     trapspotting  : int
     survival      : int
     sneaking      : int
-    connection    : int
   Player* = ref object
     name   : string
     gender : Gender
@@ -70,13 +70,23 @@ type
     xp*    : int # experience
     weight*    : int
     weight_max : int
+    # values used by various actions
+    attack  : int
+    defence : int
+    # inventory-related
+    money     : int
+    ammo      : int
+    arrows    : int
+    lockpicks : int
     # powers
     pwr_magic : int
     pwr_tech  : int
     pwr_conn  : int
     pwr_chaos : int
 const
-  SP_MAX = 1000 # not fixed value (worth changing for BRPGS 3.x)
+  SP_MAX  = 1000 # not fixed value (worth changing for BRPGS 3.x)
+  DEF_ATT = 2    # default attack  | I can imagine fists?
+  DEF_DEF = 0    # default defence
 
 # dictionaries
 let getdGender* = {
@@ -339,11 +349,18 @@ proc newPlayer* (name: string, gender: Gender, race: Race, class: Class): Player
     setGenderModifiers(result)
     setRaceModifiers(result)
     setClassModifiers(result)
-    # defaults
+    # defaults (base stats)
     result.hp_max     = calculateMaxHealth(result)
     result.mp_max     = calculateMaxMana(result)
     result.sp_max     = SP_MAX
     result.weight_max = calculateMaxWeight(result)
+    result.defence    = DEF_DEF
+    result.attack     = DEF_ATT
+    # defaults (inventory stats)
+    result.money      = 0
+    result.ammo       = 0
+    result.arrows     = 0
+    result.lockpicks  = 0
     # settings values to their respective maxes/mins
     result.level  = 1
     result.weight = 0
@@ -361,6 +378,8 @@ proc getMaxMana*    (p: Player): int    = return p.mp_max
 proc getGender*     (p: Player): Gender = return p.gender
 proc getRace*       (p: Player): Race   = return p.race
 proc getClass*      (p: Player): Class  = return p.class
+proc getAttack*     (p: Player): int    = return p.attack
+proc getDefence*    (p: Player): int    = return p.defence
 
 proc getAndClearMessages* (p: Player): seq[string] =
     # SHOULD ONLY BE USED BY -GAME- OBJECT, it's collection of keys, not echoable strings
