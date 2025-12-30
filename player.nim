@@ -12,7 +12,7 @@ type
     HUMAN
     VINDEAN
     ETT #???
-    SAPHTRI
+    PAHTRI
     VOITRI
     ORMATH
     VOIDR    # used for initial
@@ -85,6 +85,10 @@ type
     pwr_tech  : int
     pwr_conn  : int
     pwr_chaos : int
+    # quest values
+    main_quest  : int         # main quest progress
+    quests      : seq[string] # active quests
+    quests_done : seq[string] # finished/failed quests
 const
   SP_MAX  = 1000 # not fixed value (worth changing for BRPGS 3.x)
   DEF_ATT = 2    # default attack  | I can imagine fists?
@@ -100,7 +104,7 @@ let getdRace* = {
     "human":   HUMAN,
     "ett":     ETT,
     "vindean": VINDEAN,
-    "saphtri": SAPHTRI,
+    "pahtri":  PAHTRI,
     "voitri":  VOITRI,
     "ormath":  ORMATH
 }.toOrderedTable
@@ -173,7 +177,7 @@ proc setRaceModifiers (p: var Player) =
           p.attrs.dexterity    -= 2
           p.pwr_tech  += 5
           p.pwr_magic -= 5
-      of SAPHTRI:
+      of PAHTRI:
           p.attrs.dexterity    += 2
           p.attrs.intelligence += 1
           p.attrs.strength     -= 1
@@ -304,14 +308,17 @@ proc calculateBankValue* (base: int): int =
     # no condition like in OG because base=0 will return 0 anyway
     return (int(base/100))*3 + base
 
+proc addMessage* (p: Player, msg_key: string) =
+    p.msg.add(msg_key)
+
 proc processStatistics* (p: Player) =
     # TIREDNESS
     p.sp -= 1 # crazy how little this is
     if p.weight > p.weight_max:
         p.sp -= 50
-        p.msg.add("game__warn_weight")
+        addMessage(p, "game__warn_weight")
     if p.sp < 100:
-        p.msg.add("game__warn_tired")
+        addMessage(p, "game__warn_tired")
         # kept the original logic below, but used short circuiting way
         if p.sp   <= 0:
             p.hp -= 10 # 2 + 8 in original (hard to tell if intentional or if it meant to be 8)
@@ -319,18 +326,28 @@ proc processStatistics* (p: Player) =
             p.hp -= 2
     # POISONING
     if p.poison > 0:
-        p.msg.add("game__warn_poison")
+        addMessage(p, "game__warn_poison")
         p.hp -= 3
     # GLOBAL
     p.bank = calculateBankValue(p.bank)
 
+    # UPDATES
+    # max value updates
     p.hp_max     = calculateMaxHealth(p)
     p.mp_max     = calculateMaxMana(p)
     p.sp_max     = SP_MAX
     p.weight_max = calculateMaxWeight(p)
-
+    # limiters
+    if p.pwr_magic > 20: p.pwr_magic = 20
+    if p.pwr_tech  > 20: p.pwr_tech  = 20
+    if p.pwr_conn  > 20: p.pwr_conn  = 20
+    if p.pwr_chaos > 20: p.pwr_chaos = 20
+    # level checker
     if p.xp > calculateExperienceCap(p):
         discard # todo: level up!
+
+    if len(p.msg) > 0:
+        addMessage(p, "game__warn_div")
 
 proc newPlayer* (name: string, gender: Gender, race: Race, class: Class): Player =
     new(result)
@@ -384,6 +401,10 @@ proc newPlayer* (name: string, gender: Gender, race: Race, class: Class): Player
     result.hp     = result.hp_max
     result.mp     = result.mp_max
     result.sp     = result.sp_max
+    # quests
+    result.main_quest  = 1   # fist stage started
+    result.quests      = @[]
+    result.quests_done = @[]
 
 # various getters
 proc getPlayerName* (p: Player): string = return p.name
@@ -397,6 +418,9 @@ proc getClass*      (p: Player): Class  = return p.class
 proc getAttack*     (p: Player): int    = return p.attack
 proc getDefence*    (p: Player): int    = return p.defence
 proc getPoison*     (p: Player): int    = return p.poison
+
+proc getMainQuestProgress* (p: Player):     int  = return p.main_quest
+proc setMainQuestProgress* (p: Player, val: int) = p.main_quest = val
 
 proc getAndClearMessages* (p: Player): seq[string] =
     # SHOULD ONLY BE USED BY -GAME- OBJECT, it's collection of keys, not echoable strings
@@ -413,3 +437,14 @@ proc sleep* (p: Player) =
     #     timer = 0
     #     timer2 = 0
     #     timer3 = 0
+
+proc startQuest* (p: Player, quest_str: string, repeatable: bool = false): bool =
+    # returns whether quest can be done
+    if quest_str in p.quests_done and repeatable == false: return false
+    else:
+        p.quests.add(quest_str)
+
+proc finishQuest* (p: Player, quest_str: string, xp_gained: int) =
+    p.quests.delete(p.quests.find(quest_str))
+    p.quests_done.add(quest_str)
+    p.xp += xp_gained

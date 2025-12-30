@@ -6,42 +6,55 @@ menu__quit     = "Quit game"
 menu__lang     = "English" # write your language's name in your lang
 menu__langcur  = "Currently used language:"
 menu__langav   = "Available languages:"
+menu__tutorial = "Tutorial"
+menu__enabled  = "Enabled"
+menu__disabled = "Disabled"
+menu__set_note = "Write language name or [%TUT] to switch. Press Enter to come back to menu."
 
-# tutorial tips
+# Tutorials - general
 game__tut_1 = "Welcome in Between Shadows and Light! This tutorial will guide you through game's interface."
-game__tut_2 = "Pierwszym elementem gry jest stworzenie postaci, stąd za chwilę do tego przejdziemy - jest to dość istotna kwestia, jednak nie musisz się stresować, gdy nie wiesz, co dokładnie zrobić: gra stara się być tak dostosowana, by gracz z dowolnymi statystykami mógł ją względnie miło ukończyć"
-game__tut_3 = "Istotne wspomnieć jest, że każda statystyka, umiejętność, cecha czy klasa, którą wybierzesz, będzie miała niemały wpływ na dalszy przebieg rozgrywki - wiele tych różnic jednak będziesz mógł zatrzeć w miarę gry, gdyż pierwsze wybory są na równi znaczące, jak i dalej: styl gry i wybory w niej dokonywane"
+game__tut_2 = "First step in the game is creating a character - it is quite important aspect, but you don't need to stress if you don't know what focus to take. The game was made in a way that should let you end it smoothly no matter what choices you take."
+game__tut_3 = "Every statistics, skill, attribute or class you pick will have influence on your gameplay - a lot of these differences you will be able to minimise during game, as the choices done on the beginning are as important as the following gameplay style and decisions"
 
-# creation of character
+# Tutorials - quests |
+quest__mq_tut1 = "So, your adventure begins! In a second you will get to the first place of events, and so you will see first game menu - which you will use to the very end."
+quest__mq_tut2 = "First part of menu is a short summary of most important information: where you are, how much health points you have, and the weight of your inventory. It's nothing you can interact with, but it provides some useful context."
+quest__mq_tut3 = "What matters more however is next part - the one that has options in square brackets. It looks like this:"
+quest__mq_tut4 = "...it is that part that will let you navigate through game for most of the time - all the events appear as a result of your decisions done in this menu, typing respective command and confirming by pressing Enter."
+quest__mq_tut5 = "The most important from those two are: inventory and location. It is through the former that you can manage your items (use them, checking their state), and through the latter you can check what the location you are in has to offer."
+quest__mq_tut6 = "'Character' shows us detailed information about our character - but as you can't change anything through it, it only provides the context. "
+quest__mq_tut7 = "We will bring map a bit later; diary, on the other hand, let you check quests that you accepted. It is also through diary that you can save or quit the game."
+
+# Creation of character
 game__crq_1 = "How should your hero be named?"
 game__crq_2 = "What sex should it be?"
 game__crq_3 = "What race do you represent?"
 game__crq_4 = "What class do you choose?"
 
-# level up
+# Level up
 game__up_atr = "Pick ability you want to improve"
 game__up_skl = "Pick skill you want to improve"
 
-# gender
+# Gender
 gender__male      = "Male"
 gender__female    = "Female"
 gender__nonbinary = "Nonbinary"
 
-# races
-race__human         = "Human"
-race__human_descr   = "..."
+# Races
+race__human         = "Baedoorian"
+race__human_descr   = "The most widespread and versatile human culture of Baedoor universe."
 race__vindean       = "Vindean"
-race__vindean_descr = "..."
-race__ett           = "Ett"
-race__ett_descr     = "..."
-race__saphtri       = "Saphtri"
-race__saphtri_descr = "..."
+race__vindean_descr = "Vindeans are humans hardened by the life in frosty northern lands."
+race__ett           = "Etts"
+race__ett_descr     = "These mountain dwellers are great mechanics and skilled in technology."
+race__pahtri        = "Pahtri"
+race__pahtri_descr  = "Those elves are particularly agile due to their life on trees, but they haven't forged natural resilience like their offshoot that migrated south."
 race__voitri        = "Voitri"
-race__voitri_descr  = "..."
+race__voitri_descr  = "Voitris are elves that value their aristocratic ways of life, and their dedication to reading developed their intellect."
 race__ormath        = "Ormath"
-race__ormath_descr  = "..."
+race__ormath_descr  = "Mysterious race of grey-skinned halflings that mastered their connection to powers of nature, letting them survive despite wretched bodies."
 
-# classes
+# Classes
 class__undefined  = "Undefined"
 class__warrior    = "Warrior"
 class__gunslinger = "Gunslinger"
@@ -54,7 +67,7 @@ class__necromant  = "Necromant"
 class__healer     = "Healer"
 class__shaman     = "Ormath Shaman"
 
-# locations
+# Locations
 location__ship        = "'Arennan' Ship"
 location__ship_docked = "'Arennan' Ship"
 location__docks       = "Evros Docks"
@@ -109,3 +122,8 @@ game__gui_drquit     = "Back to menu"
 game__warn_weight = "You are overburdened!"
 game__warn_tired  = "You are tired!"
 game__warn_poison = "You are poisoned!"
+game__warn_div    = "-------------------" # should be as long as the longest `game__warn`
+
+# Quests - MQ
+quest__mq_intro1 = "I travel long time, sailing on 'Arennan' to the Baedoor's port... who knows, how many days I insufferably await that sight of the land. I only know that, once I get there, everything will change. Everything will be possible, unlike that shithole I am from. It was so miserable to rot in that small village, dreaming of the big, modern world. But now I am on the ship.. thank god the captain was so kind to take me for free."
+quest__mq_intro2 = "Either way, I should take a look around that ship. Maybe someone will have something interesting to say."

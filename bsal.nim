@@ -2,6 +2,7 @@ import std/strutils
 import std/tables
 import location
 import player
+import quest
 import lang
 import game
 import os
@@ -41,9 +42,9 @@ while isRunning(g):
                                 )
             while getPlayerName(g) == "": # character wasn't created nor loaded
                 echo DIVIDER
-                echo ">> " & getKey(g, "game__tut_1") & " <<"
-                echo ">> " & getKey(g, "game__tut_2") & " <<"
-                echo ">> " & getKey(g, "game__tut_3") & " <<"
+                echo getTutorialKey(g, "game__tut_1")
+                echo getTutorialKey(g, "game__tut_2")
+                echo getTutorialKey(g, "game__tut_3")
                 echo DIVIDER
                 # name pick
                 while player_tuple.name == "":
@@ -55,9 +56,8 @@ while isRunning(g):
                 # gender pick
                 while player_tuple.gender == VOIDG:
                     echo getKey(g, "game__crq_2")
-                    echo getKey(g, "gender__male")
-                    echo getKey(g, "gender__female")
-                    #TODO: v1.2: echo getKey(g, "gender__nonbinary")
+                    echo getButtonKey(g, "gender__male") & " " & getButtonKey(g, "gender__female") & " "
+                    #TODO: v1.2: & echo getButtonKey(g, "gender__nonbinary")
                     let prompt = readLine(stdin)
                     let conv   = {
                                   getKey(g, "gender__male").toLowerAscii:      getdGender["male"],
@@ -73,7 +73,7 @@ while isRunning(g):
                     echo DIVIDER
                     var conv = newTable[string, Race]() # prompt comparison, Race
                     for race_name in getdRace.keys:      # print race, then add to comparison table
-                        echo "[" & getKey(g, "race__" & race_name) & "]"
+                        echo getButtonKey(g, "race__" & race_name)
                         echo getKey(g, "race__" & race_name & "_descr")
                         echo DIVIDER
                         conv[getKey(g, ("race__" & race_name)).toLowerAscii] = getdRace[race_name]
@@ -87,7 +87,7 @@ while isRunning(g):
                     echo DIVIDER
                     var conv = newTable[string, Class]() # prompt comparison, Class
                     for class_name in getdClass.keys:     # print class, then add to comparison table
-                        echo "- " & getKey(g, "class__" & class_name)
+                        echo getButtonKey(g, "class__" & class_name)
                         conv[getKey(g, ("class__" & class_name)).toLowerAscii] = getdClass[class_name]
                     let prompt = readLine(stdin)
                     if prompt.toLowerAscii in conv:
@@ -107,6 +107,7 @@ while isRunning(g):
 
             if getPlayerName(g) != "": # character is created/loaded
                 # general processes
+                processMainQuest(g)
                 processStatistics(g.player)
                 # echos
                 echo LocationMap
@@ -141,12 +142,16 @@ while isRunning(g):
             echo getKey(g, "menu__langav")
             for lang in getAvailableLangs():
                 echo "- " & lang
+            let tut_state = if g.tutorial: getKey(g, "menu__enabled") else: getKey(g, "menu__disabled")
+            echo getKey(g, "menu__tutorial") & ": " & tut_state
+            echo getKey(g, "menu__set_note").replace("%TUT", getKey(g, "menu__tutorial"))
             let prompt = readLine(stdin)
-            if prompt in getAvailableLangs():
+            if prompt == "":
+                switchMenu(g, START)
+            elif prompt in getAvailableLangs():
                 switchLanguage(g, prompt)
-                switchMenu(g, START)
-            else:
-                switchMenu(g, START)
+            elif prompt.toLowerAscii == getKey(g, "menu__tutorial").toLowerAscii:
+                switchTutorial(g)
 
         of mCHARACTER:
             echo getKey(g, "game__gui_chinit")
@@ -157,10 +162,10 @@ while isRunning(g):
             echo getKey(g, "game__gui_level")  & ": " & $getLevel(g.player)
             echo getKey(g, "game__gui_xp")     & ": " & $g.player.xp & " / " & $getMaxWeight(g.player)
             echo getKey(g, "game__gui_sp")     & ": " & $g.player.sp
-            echo "[" & getKey(g, "game__gui_health") & ": " & $g.player.hp & " / " & $getMaxHealth(g.player) & "]" &
-                 "[" & getKey(g, "game__gui_mana")   & ": " & $g.player.mp & " / " & $getMaxMana(g.player)   & "]" &
-                 "[" & getKey(g, "game__gui_attack")  & ": " & $getAttack(g.player)  & "]" &
-                 "[" & getKey(g, "game__gui_defence") & ": " & $getDefence(g.player) & "]" &
+            echo "{" & getKey(g, "game__gui_health") & ": " & $g.player.hp & " / " & $getMaxHealth(g.player) & "}" &
+                 "{" & getKey(g, "game__gui_mana")   & ": " & $g.player.mp & " / " & $getMaxMana(g.player)   & "}" &
+                 "{" & getKey(g, "game__gui_attack")  & ": " & $getAttack(g.player)  & "}" &
+                 "{" & getKey(g, "game__gui_defence") & ": " & $getDefence(g.player) & "}" &
                  # armor | todo: apparently there's [armor / maxarmor]?? is it like item resistance/durability?
                  #         ...but then there's also `armor_hp` wtf
                  "" # for now, so that the above not being filled don't break the string
@@ -184,8 +189,14 @@ while isRunning(g):
             switchMenu(g, PLAY)
 
         of mINVENTORY: break
-        of mLOCATION:  break
-        of mMAP:       break
+        of mLOCATION:
+            break
+            # case g.location:
+            #     of SHIP: locationShip(g) # OKAY, I understood it griefly wrong - this should be in `mLOCATION` menu
+            #     # todo: cover other cases | # and the mquest should be here (or before processStatistics) but hold the whole process
+            #     # I think it should come before it and have guardrails which would launch it early
+        of mMAP:
+            break
         of mDIARY:
             echo getKey(g, "game__gui_drinit")
             echo "[" & getKey(g, "game__gui_drdiary")    & "]" & " " &

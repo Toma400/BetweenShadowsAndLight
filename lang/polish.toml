@@ -6,42 +6,55 @@ menu__quit     = "Zakończ grę"
 menu__lang     = "Polski" # write your language's name in your lang
 menu__langcur  = "Obecnie używany język:"
 menu__langav   = "Dostępne języki:"
+menu__tutorial = "Poradnik"
+menu__enabled  = "Włączony"
+menu__disabled = "Wyłączony"
+menu__set_note = "Wpisz nazwę języka lub [%TUT] by przełączyć. Kliknij Enter by wrócić do menu."
 
-# tutorial tips
-game__tut_1 = "Witaj w grze Between Shadows and Light! Tutorial ten będzie Cię prowadził po meandrach interfejsu - jest on pisany dość bogato w zawartość, jednak mam nadzieję, że nie spowoduje to chaosu"
-game__tut_2 = "Pierwszym elementem gry jest stworzenie postaci, stąd za chwilę do tego przejdziemy - jest to dość istotna kwestia, jednak nie musisz się stresować, gdy nie wiesz, co dokładnie zrobić: gra stara się być tak dostosowana, by gracz z dowolnymi statystykami mógł ją względnie miło ukończyć"
-game__tut_3 = "Istotne wspomnieć jest, że każda statystyka, umiejętność, cecha czy klasa, którą wybierzesz, będzie miała niemały wpływ na dalszy przebieg rozgrywki - wiele tych różnic jednak będziesz mógł zatrzeć w miarę gry, gdyż pierwsze wybory są na równi znaczące, jak i dalej: styl gry i wybory w niej dokonywane"
+# Tutorials - general
+game__tut_1 = "Witaj w grze Between Shadows and Light! Tutorial ten będzie Cię prowadził po meandrach interfejsu - jest on pisany dość bogato w zawartość, jednak mam nadzieję, że nie spowoduje to chaosu."
+game__tut_2 = "Pierwszym elementem gry jest stworzenie postaci, stąd za chwilę do tego przejdziemy - jest to dość istotna kwestia, jednak nie musisz się stresować, gdy nie wiesz, co dokładnie zrobić: gra stara się być tak dostosowana, by gracz z dowolnymi statystykami mógł ją względnie miło ukończyć."
+game__tut_3 = "Istotne wspomnieć jest, że każda statystyka, umiejętność, cecha czy klasa, którą wybierzesz, będzie miała niemały wpływ na dalszy przebieg rozgrywki - wiele tych różnic jednak będziesz mógł zatrzeć w miarę gry, gdyż pierwsze wybory są na równi znaczące, jak i dalej: styl gry i wybory w niej dokonywane."
 
-# creation of character
+# Tutorials - quests
+quest__mq_tut1 = "Tak więc Twoja przygoda się rozpoczęła! Za chwilę trafisz w pierwsze miejsce wydarzeń, jak i również wyświetli Ci się główne menu gry - z którego to będziesz korzystać później do samego końca."
+quest__mq_tut2 = "Pierwszy fragment menu to krótkie podsumowanie najważniejszych informacji: gdzie się znajdujesz, ile punktów zdrowia posiadasz, jak bardzo obciąża Cię ekwipunek. Ta część menu nie służy więc niczemu ponadto, ale bywa użyteczna w sprawdzaniu najistotniejszych rzeczy."
+quest__mq_tut3 = "Bardziej interesuje nas jednak kolejna część menu - ta, w której wypisane są poszczególne opcje w kwadratowych nawiasach. Wygląda ona tak:"
+quest__mq_tut4 = "...i ta część służy Ci do nawigacji w grze przez większość czasu - wszelkie inne zdarzenia wywoływane są w zależności od tego, co dokonasz za pomocą tego menu, wpisując odpowiednią komendę i potwierdzając Enterem."
+quest__mq_tut5 = "Najważniejsze wśród tych opcji są: ekwipunek i lokacja. Dzięki temu pierwszemu możesz zarządzać swoimi rzeczami (używać przedmiotów, sprawdzać ich stan), a za pomocą drugiego - sprawdzać, co lokacja, w której jesteś, ma do zaoferowania."
+quest__mq_tut6 = "'Postać' pokazuje nam szczegółowe informacje dotyczące naszej postaci - nie daje nam ona jednak żadnej możliwości zmiany czegokolwiek, będąc jedynie częścią informacyjną."
+quest__mq_tut7 = "Mapą zajmiemy się później; z kolei dziennik pozwala Ci na sprawdzenie zadań, których zobowiązałeś/aś się podjąć; a ponadto możesz za jego pomocą zapisać lub wyłączyć grę."
+
+# Creation of character
 game__crq_1 = "Jak ma się nazywać Twój bohater?"
 game__crq_2 = "Jakiej ma być płci?"
 game__crq_3 = "Jaką rasę reprezentujesz?"
 game__crq_4 = "Jaką klasę wybierasz?"
 
-# level up
+# Level up
 game__up_atr = "Wybierz, którą cechę chcesz wzmocnić"
 game__up_skl = "Wybierz, którą umiejętność chcesz wzmocnić"
 
-# gender
+# Gender
 gender__male      = "Mężczyzna"
 gender__female    = "Kobieta"
 gender__nonbinary = "Osoba niebinarna"
 
-# races
-race__human         = "Człowiek"
-race__human_descr   = "Najbardziej rozpowszechniona rasa w świecie Baedoor"
+# Races
+race__human         = "Baedoorczyk"
+race__human_descr   = "Najbardziej rozpowszechniona i wszechstronna ludzka kultura w świecie Baedoor."
 race__vindean       = "Vińdczyk"
-race__vindean_descr = "Vińdczycy są ludźmi, jednak zahartowanymi życiem w mroźnych północnych krainach"
-race__ett           = "Ett"
-race__ett_descr     = "Ci mieszkańcy gór są świetnymi mechanikami i są obyci w technologii"
-race__saphtri       = "Saphtri"
-race__saphtri_descr = "Ci elfowie są wyjątkowo zwinni, dzięki swojemu życiu na drzewach, jednak nie wyrobili sobie oni naturalnej odporności"
+race__vindean_descr = "Vińdczycy są ludźmi zahartowanymi życiem w mroźnych północnych krainach."
+race__ett           = "Etts"
+race__ett_descr     = "Ci mieszkańcy gór są świetnymi mechanikami i są obyci w technologii."
+race__pahtri        = "Pahtri"
+race__pahtri_descr  = "Ci elfowie są wyjątkowo zwinni dzięki swojemu życiu na drzewach, jednak nie wyrobili sobie oni naturalnej odporności jak ich ziomkowie, którzy wyemigrowali na południe."
 race__voitri        = "Voitri"
-race__voitri_descr  = "W odróżnieniu od saphtri, ci elfowie bardziej cenią sobie dostojne życie, a ich oczytanie rozwinęło znacznie ich intelekt"
+race__voitri_descr  = "W odróżnieniu od pahtri, ci elfowie bardziej cenią sobie dostojne życie, a ich oczytanie rozwinęło znacznie ich intelekt."
 race__ormath        = "Ormath"
-race__ormath_descr  = "Tajemnicza rasa szaroskórych niziołków, którzy opanowali moce natury, dające im przewagę mimo dość lichego ciała"
+race__ormath_descr  = "Tajemnicza rasa szaroskórych niziołków, którzy opanowali moce natury, dające im przewagę mimo dość lichego ciała."
 
-# classes
+# Classes
 class__undefined  = "Bezklasowiec"
 class__warrior    = "Wojownik"
 class__gunslinger = "Strzelec"
@@ -54,7 +67,7 @@ class__necromant  = "Nekromanta"
 class__healer     = "Uzdrowiciel"
 class__shaman     = "Ormacki szaman"
 
-# locations
+# Locations
 location__ship        = "Statek 'Arennan'"
 location__ship_docked = "Statek 'Arennan'"
 location__docks       = "Wybrzeże Evros"
@@ -109,3 +122,8 @@ game__gui_drquit     = "Wróć do menu głównego"
 game__warn_weight = "Jesteś przeciążony!"
 game__warn_tired  = "Jesteś zmęczony!"
 game__warn_poison = "Jesteś zatruty!"
+game__warn_div    = "-------------------" # should be as long as the longest `game__warn`
+
+# Quests - MQ
+quest__mq_intro1 = "Podróżuję już długo, płynąc na okręcie 'Arennan' do portu Baedoor... kto wie, ile dni już minęło na nieznośnym oczekiwaniu lądu. Wiem tylko, że gdy do niego dotrę, zmieni się wszystko. Czekają na mnie możliwości, nie to co w tym zadupiu, w którym się urodziłem. Eh, to było okropne, gnić na tej małej wsi, marząc o wielkim świecie. Ale teraz już jestem na statku.. dzięki bogom, że kapitan był tak miły, by mnie przyjąć za darmo."
+quest__mq_intro2 = "Tak czy inaczej, powinienem się rozejrzeć po tym statku. Może ktoś mi powie coś więcej ciekawego."

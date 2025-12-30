@@ -27,7 +27,7 @@ type
     menu      : MenuType
     player*   : Player       # checking against `player.name == ""` means not started game (nil equivalent)
     location* : Location
-    tutorial  : bool         # whether tips are on/off
+    tutorial* : bool         # whether tips are on/off
     lang_ref  : TomlValueRef
 
 const LOGO* = """|__) __|_    _ _ _   (_ |_  _  _| _     _   _  _  _|  |  . _ |_ |_
@@ -43,7 +43,7 @@ proc newGame* (): Game =
     result.lang_ref = currentLangFile()
     result.menu     = START
     result.player   = newPlayer("", VOIDG, VOIDR, VOIDC) # placeholder
-    result.tutorial = true
+    result.tutorial = settings["tutorial"].getBool()
     result.location = SHIP                               # starting location (overwritten during load)
 
 proc `$`* (g: Game): string =
@@ -57,6 +57,12 @@ proc getKey* (g: Game, k: string): string =
         return g.lang_ref[k].getStr()
     else: return fmt"Error. No key {k} in language file."
 
+proc getTutorialKey* (g: Game, k: string): string = # UI showcasing that >> << brackets tell you tips
+    return fmt">> {getKey(g, k)} <<"
+
+proc getButtonKey* (g: Game, k: string): string = # UI showcasing you that brackets allow you to write exact words to "press" option
+    return fmt"[{getKey(g, k)}]"
+
 proc getMenu* (g: Game): MenuType =
     return g.menu
 
@@ -69,6 +75,12 @@ proc switchLanguage* (g: Game, lang: string) =
     settings = parseFile("settings.toml") # reloads file
     g.lang_ref = currentLangFile()        # updates game instance
 
+proc switchTutorial* (g: Game) =
+    settings["tutorial"] = ?(not settings["tutorial"].getBool)
+    writeFile("settings.toml", $settings)       # saves updated settings
+    settings = parseFile("settings.toml")       # reloads file
+    g.tutorial = settings["tutorial"].getBool() # updates game instance
+
 proc createCharacter* (g: Game, name: string, gender: Gender, race: Race, class: Class) =
     g.player = newPlayer(name, gender, race, class)
 
@@ -76,6 +88,7 @@ proc getPlayerName* (g: Game): string =
     return getPlayerName(g.player)
 
 proc getMessages* (g: Game): seq[string] =
+    # should not be used anywhere but on `PLAY` menu print since it clears messages alongside
     for msg_key in getAndClearMessages(g.player):
         result.add(getKey(g, msg_key))
 
