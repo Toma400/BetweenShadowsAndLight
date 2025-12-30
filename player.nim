@@ -1,6 +1,10 @@
 import std/strformat
 import std/strutils
 import std/tables
+import std/random
+import item
+
+randomize()
 
 type
   Gender* = enum
@@ -54,12 +58,15 @@ type
   Variable* = enum # variables used for checks
     ISLAND_SEEN      # | allows for bringing island topic when talking to sailor
     SAM_KNOWS_YOU    # | used for just silly acknowledging you are known to Sam
+    KNIFE_BOUGHT     # | used to disable "Talk To Cook" quest if we purchase knife
   NPC* = enum # npcs you can dialogue with
     CAPTAIN
     SAILOR
+    COOK
     DUMMY   # used to indicate default state (no dialogue)
   Quest* = enum # strings are language keys
-    TALK_TO_COOK = "quest__cook"
+    TALK_TO_COOK     = "quest__cook"
+    BRING_SWEET_ROLL = "quest__sweet_roll"
   Player* = ref object
     name   : string
     gender : Gender
@@ -77,7 +84,7 @@ type
     mp_max : int
     sp*    : int # tiredness
     sp_max : int
-    xp*    : int # experience
+    xp     : int # experience
     weight*    : int
     weight_max : int
     # values used by various actions
@@ -85,9 +92,9 @@ type
     defence : int
     poison  : int
     # inventory
-    inv*      : seq[string]
-    inv_used* : seq[string]
-    inv_bank* : seq[string]
+    inv      : seq[string]
+    inv_used : seq[string]
+    inv_bank : seq[string]
     # inventory-related
     bank*      : int # bank account balance
     money*     : int
@@ -329,6 +336,9 @@ proc addMessage* (p: Player, msg_key: string) =
 proc addVariable* (p: Player, variable: Variable) =
     if variable notin p.vars:
         p.vars.add(variable)
+proc addExperience* (p: Player, xp: int) =
+    let int_mod = p.attrs.intelligence/50 + 1
+    p.xp += int(float(xp)*int_mod)
 
 # dialogue variables
 proc addDialogueVariable* (p: Player, variable: string) =
@@ -449,6 +459,7 @@ proc getClass*      (p: Player): Class  = return p.class
 proc getAttack*     (p: Player): int    = return p.attack
 proc getDefence*    (p: Player): int    = return p.defence
 proc getPoison*     (p: Player): int    = return p.poison
+proc getExperience* (p: Player): int    = return p.xp
 
 proc getMainQuestProgress* (p: Player):     int  = return p.main_quest
 proc setMainQuestProgress* (p: Player, val: int) = p.main_quest = val
@@ -490,4 +501,39 @@ proc startQuest* (p: Player, quest: Quest, repeatable: bool = false): bool =
 proc finishQuest* (p: Player, quest: Quest, xp_gained: int) =
     p.quests.delete(p.quests.find(quest))
     p.quests_done.add(quest)
-    p.xp += xp_gained
+    addExperience(p, xp_gained)
+
+proc addItemToInventory* (p: Player, item_str: string) =
+    p.inv.add(item_str)
+    p.weight += ITEMS[item_str].weight
+
+proc removeItemFromInventory* (p: Player, item_str: string): bool =
+    if item_str in p.inv: # checks normal inventory
+        p.inv.delete(find(p.inv, item_str))
+        return true
+    elif item_str in p.inv_used: # checks weared stuff
+        p.inv_used.delete(find(p.inv_used, item_str))
+        return true
+    return false
+
+proc hasItem* (p: Player, item_str: string): bool =
+    return item_str in p.inv
+
+proc buy* (p: Player, item_str: string, value: int): bool =
+    if value > p.money:
+        addMessage(p, "game__warn_money")
+        return false
+    else:
+        p.money -= value
+        addItemToInventory(p, item_str)
+        return true
+
+proc crouch* (p: Player, detect_value: int): bool =
+    # 'true' indicates successful crouching
+    p.sp -= 5
+    let chance = p.skills.sneaking * int(p.attrs.dexterity/2) + rand(1..4)
+    if chance > detect_value:
+        addExperience(p, 10)
+        return true
+    p.sp -= 20 # additional tiredness inflicted
+    return false

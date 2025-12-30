@@ -1,5 +1,6 @@
 import std/strutils
 import std/tables
+import dialogues
 import location
 import player
 import quest
@@ -160,7 +161,7 @@ while isRunning(g):
             echo getKey(g, "race__"   & ($getRace(g.player)).toLowerAscii)
             echo getKey(g, "class__"  & ($getClass(g.player)).toLowerAscii)
             echo getKey(g, "game__gui_level")  & ": " & $getLevel(g.player)
-            echo getKey(g, "game__gui_xp")     & ": " & $g.player.xp & " / " & $getMaxWeight(g.player)
+            echo getKey(g, "game__gui_xp")     & ": " & $getExperience(g.player) & " / " & $getMaxWeight(g.player)
             echo getKey(g, "game__gui_sp")     & ": " & $g.player.sp
             echo "{" & getKey(g, "game__gui_health") & ": " & $g.player.hp & " / " & $getMaxHealth(g.player) & "}" &
                  "{" & getKey(g, "game__gui_mana")   & ": " & $g.player.mp & " / " & $getMaxMana(g.player)   & "}" &
@@ -198,13 +199,19 @@ while isRunning(g):
                     echo getOptionKey(g, "loc__ship_look_around",  3)
                     echo getOptionKey(g, "loc__ship_talk_captain", 4)
                     echo getOptionKey(g, "loc__ship_do_nothing",   5)
+                    if isQuestActive(g.player, TALK_TO_COOK):
+                        echo getOptionKey(g, "loc__ship_go_to_kitchen", 6)
                     let prompt = readLine(stdin)
                     case prompt:
-                        of "1": ship_askSailor(g)
+                        of "1": startDialogue(g, SAILOR)
                         of "2": ship_SearchDeck(g.player)
                         of "3": ship_lookAround(g.player)
-                        of "4": ship_askCaptain(g)
-                        of "5": switchMenu(g, mDEFAULT)
+                        of "4": startDialogue(g, CAPTAIN)
+                        of "5": switchMenu(g, mDEFAULT); continue
+                        of "6":
+                            if isQuestActive(g.player, TALK_TO_COOK):
+                                startDialogue(g, COOK)
+                            else: continue
                         else:   continue
                     if isDialogueStarted(g): continue # lets `mDIALOGUE` handle everything
                     for msg in getMessages(g):
@@ -237,81 +244,4 @@ while isRunning(g):
             else:
                 switchMenu(g, mDEFAULT)
         of mDIALOGUE:
-            # use `vars` and `dial_vars` for dialogue checks against events!
-            # - `vars` are constant once added, and global (e.g. for quest decisions)
-            # - `dial_vars` are purely for branching choices and are resetted each dialogue
-            #               they can be used as `case` and be conditions of top level, so
-            #               that nesting is not needed in their case
-            # !! always make option that runs `endDialogue` so that the dialogue ends !!
-            case getDialogueName(g.player):
-              of DUMMY: endDialogue(g, mDEFAULT)
-              of CAPTAIN:
-                  echo getKey(g, "loc__ship_captain")
-                  echo getOptionKey(g, "loc__ship_captain_answer", 1)
-                  let prompt = readLine(stdin)
-                  case prompt:
-                      of "1":     endDialogue(g, mLOCATION)
-                      of "cheat": discard
-                      else:       continue
-                      #todo:  ---cheat option
-              of SAILOR:
-                  let dvars = getDialogueVariables(g.player)
-
-                  if checkVariable(g.player, SAM_KNOWS_YOU):
-                      if "que2" notin dvars:
-                          echo getKey(g, "loc__ship_sailor_que1")
-                          echo getOptionKey(g, "loc__ship_sailor_que1a1", 1)
-                          echo getOptionKey(g, "loc__ship_sailor_que1a2", 2)
-                          if checkVariable(g.player, ISLAND_SEEN):
-                              echo getOptionKey(g, "loc__ship_sailor_que1a3", 3)
-                          # if quest is done, [4] Mam dla Ciebie bułkę! is also printed as option
-                          let prompt = readLine(stdin)
-                          case prompt:
-                              of "1":
-                                  addDialogueVariable(g.player, "que2") # branches flow
-                              of "2":
-                                  echo getKey(g, "loc__ship_sailor_dunno")
-                                  discard readLine(stdin)
-                                  endDialogue(g, mLOCATION)
-                              of "3":
-                                  if checkVariable(g.player, ISLAND_SEEN):
-                                      echo getKey(g, "loc__ship_sailor_island")
-                                      discard readLine(stdin)
-                                      endDialogue(g, mLOCATION)
-                                  else: continue
-                              else: continue
-
-                      else: # if you picked option "1"
-                          echo getKey(g, "loc__ship_sailor_life")
-                          if isQuestFinished(g.player, TALK_TO_COOK):
-                              discard readLine(stdin)
-                              removeDialogueVariable(g.player, "que2") # goes back to normal flow
-                          else:
-                              echo getKey(g, "loc__ship_sailor_que2")
-                              echo getOptionKey(g, "loc__ship_sailor_que2a1", 1)
-                              echo getOptionKey(g, "loc__ship_sailor_que2a2", 2)
-                              echo getOptionKey(g, "loc__ship_sailor_que2a3", 3)
-                              let prompt = readLine(stdin)
-                              case prompt:
-                                  of "1": discard
-                                  of "2": discard
-                                  of "3":
-                                      echo getKey(g, "loc__ship_sailor_be_back")
-                                      discard readLine(stdin)
-                                      endDialogue(g, mLOCATION)
-                                  else: continue
-
-                  else: # default option at the start
-                      echo getKey(g, "loc__ship_sailor_greet")
-                      echo getOptionKey(g, "loc__ship_sailor_greeta1", 1)
-                      echo getOptionKey(g, "loc__ship_sailor_greeta2", 2)
-                      let prompt = readLine(stdin)
-                      case prompt:
-                          of "1": discard # nothing because it just adds SAM_KNOWS_YOU and changes flow for next loop
-                          of "2":
-                              echo getKey(g, "loc__ship_sailor_kidding")
-                              discard readLine(stdin)
-                          else: continue
-                      addVariable(g.player, SAM_KNOWS_YOU)
-                  # discard
-                  # endDialogue(g, mLOCATION)
+            processDialogue(g)

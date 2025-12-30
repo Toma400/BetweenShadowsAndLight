@@ -16,15 +16,15 @@ import game
 
 # apparently used for all locations? and OG had maps for Baedoor City and unknown abandoned island
 const LocationMap* = """
-    ✺---------------------------------------------✺
+    ✺----------------------------------------------✺
     | Λ Λ Λ Λ Λ Λ                      )           |
     | Λ           ░░░░░░░░░░░░░░░░    (      ~~    |
-    |Λ  ░░░░░░░░░░░░░░░░░░░  ♖-------♖)           |
+    |Λ  ░░░░░░░░░░░░░░░░░░░  ♖-------♖)            |
     | Λ ░░░░░░░░░░░░░░░░░░░  |  Baedoor ♖)      ~~ |
-    |Λ  ░░░░░░░░░░░░░░░░░░░  ♖-------♖⚓)         |
-    |Λ  ۩  ░░░░░░░░░░░░░░░░           (      ~~ ✖  |
+    |Λ  ░░░░░░░░░░░░░░░░░░░  ♖-------♖⚓)           |
+    |Λ  ۩  ░░░░░░░░░░░░░░░░           (      ~~ X  |
     | Λ Λ Λ Λ Λ Λ Λ   Λ ░░░░░░░░░░░░░  )           |
-    ✺---------------------------------------------✺
+    ✺----------------------------------------------✺
     """.unindent
 
 # TODO: before `processStatistics` is done, run `location` procs or whatever that allows us to prevent normal menu to happen
@@ -44,9 +44,3 @@ proc ship_SearchDeck* (p: var Player) =
 proc ship_lookAround* (p: var Player) =
     addMessage(p, "loc__ship_looked_around")
     addVariable(p, ISLAND_SEEN)
-
-proc ship_askSailor* (g: var Game) =
-    startDialogue(g, SAILOR)
-
-proc ship_askCaptain* (g: var Game) =
-    startDialogue(g, CAPTAIN)

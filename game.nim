@@ -117,6 +117,11 @@ proc getMessages* (g: Game): seq[string] =
     for msg_key in getAndClearMessages(g.player):
         result.add(getKey(g, msg_key))
 
+proc printMessages* (g: Game) =
+    # shortcut for the above
+    for msg in getMessages(g):
+        echo msg
+
 proc clearScreen* () =
     discard execShellCmd("cls")
 
