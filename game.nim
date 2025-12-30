@@ -2,7 +2,7 @@ import std/strformat
 import std/strutils
 import std/tables
 import parsetoml
-import location
+#import location
 import player
 import lang
 import os
@@ -13,15 +13,16 @@ type
   MenuType* = enum
     # main menu
     START
-    PLAY
     LOAD
     SETTINGS
     # gameplay menus
+    mDEFAULT
     mCHARACTER
     mINVENTORY
     mLOCATION
     mMAP
     mDIARY
+    mDIALOGUE
   Game* = ref object # singular instance of object
     run       : bool
     menu      : MenuType
@@ -29,6 +30,15 @@ type
     location* : Location
     tutorial* : bool         # whether tips are on/off
     lang_ref  : TomlValueRef
+  Location* = enum
+    SHIP
+    SHIP_DOCKED # remove if not needed
+    DOCKS
+    EVROS
+    FIELDS
+    # "cheat" locations used in OG:
+    # DESERT_ISLAND
+    # DESERT_ISLAND_HOME
 
 const LOGO* = """|__) __|_    _ _ _   (_ |_  _  _| _     _   _  _  _|  |  . _ |_ |_
                  |__)(- |_\)/(-(-| )  __)| )(_|(_|(_)\)/_)  (_|| )(_|  |__|(_)| )|_""".unindent &
@@ -63,11 +73,26 @@ proc getTutorialKey* (g: Game, k: string): string = # UI showcasing that >> << b
 proc getButtonKey* (g: Game, k: string): string = # UI showcasing you that brackets allow you to write exact words to "press" option
     return fmt"[{getKey(g, k)}]"
 
+proc getOptionKey* (g: Game, k: string, num: int): string = # UI showcasing numerical options
+    return fmt"[{num}] {getKey(g, k)}"
+
 proc getMenu* (g: Game): MenuType =
     return g.menu
 
 proc switchMenu* (g: Game, m: MenuType) =
     g.menu = m
+
+proc startDialogue* (g: Game, npc: NPC) =
+    setDialogueName(g.player, npc)
+    switchMenu(g, mDIALOGUE)
+
+proc isDialogueStarted* (g: Game): bool =
+    return getDialogueName(g.player) != DUMMY and g.menu == mDIALOGUE
+
+proc endDialogue* (g: Game, menu_to_be_switched_to: MenuType) =
+    clearDialogueVariables(g.player)
+    setDialogueName(g.player, DUMMY)
+    switchMenu(g, menu_to_be_switched_to)
 
 proc switchLanguage* (g: Game, lang: string) =
     settings["language"] = ?lang

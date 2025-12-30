@@ -51,6 +51,15 @@ type
     trapspotting  : int
     survival      : int
     sneaking      : int
+  Variable* = enum # variables used for checks
+    ISLAND_SEEN      # | allows for bringing island topic when talking to sailor
+    SAM_KNOWS_YOU    # | used for just silly acknowledging you are known to Sam
+  NPC* = enum # npcs you can dialogue with
+    CAPTAIN
+    SAILOR
+    DUMMY   # used to indicate default state (no dialogue)
+  Quest* = enum # strings are language keys
+    TALK_TO_COOK = "quest__cook"
   Player* = ref object
     name   : string
     gender : Gender
@@ -58,7 +67,8 @@ type
     class  : Class
     attrs  : Attributes
     skills : Skills
-    msg    : seq[string] # seq of keys, printed by Game object
+    msg    : seq[string]   # seq of keys, printed by Game object
+    vars   : seq[Variable]
     # other values | max values are editable by procs for explicitness
     level  : int
     hp*    : int # health
@@ -74,21 +84,27 @@ type
     attack  : int
     defence : int
     poison  : int
+    # inventory
+    inv*      : seq[string]
+    inv_used* : seq[string]
+    inv_bank* : seq[string]
     # inventory-related
-    bank      : int # bank account balance
-    money     : int
-    ammo      : int
-    arrows    : int
-    lockpicks : int
+    bank*      : int # bank account balance
+    money*     : int
+    ammo*      : int
+    arrows*    : int
+    lockpicks* : int
     # powers
     pwr_magic : int
     pwr_tech  : int
     pwr_conn  : int
     pwr_chaos : int
     # quest values
+    dialogue    : NPC         # the person player talks with
+    dial_vars   : seq[string] # variables used during dialogue (for branching) | removed everytime dialogue ends
     main_quest  : int         # main quest progress
-    quests      : seq[string] # active quests
-    quests_done : seq[string] # finished/failed quests
+    quests      : seq[Quest]  # active quests
+    quests_done : seq[Quest]  # finished/failed quests
 const
   SP_MAX  = 1000 # not fixed value (worth changing for BRPGS 3.x)
   DEF_ATT = 2    # default attack  | I can imagine fists?
@@ -310,6 +326,21 @@ proc calculateBankValue* (base: int): int =
 
 proc addMessage* (p: Player, msg_key: string) =
     p.msg.add(msg_key)
+proc addVariable* (p: Player, variable: Variable) =
+    if variable notin p.vars:
+        p.vars.add(variable)
+
+# dialogue variables
+proc addDialogueVariable* (p: Player, variable: string) =
+    if variable notin p.dial_vars:
+        p.dial_vars.add(variable)
+proc removeDialogueVariable* (p: Player, variable: string) =
+    if variable in p.dial_vars:
+        p.dial_vars.delete(find(p.dial_vars, variable))
+proc getDialogueVariables* (p: Player): seq[string] =
+    return p.dial_vars
+proc clearDialogueVariables* (p: Player) =
+    p.dial_vars = @[]
 
 proc processStatistics* (p: Player) =
     # TIREDNESS
@@ -422,10 +453,19 @@ proc getPoison*     (p: Player): int    = return p.poison
 proc getMainQuestProgress* (p: Player):     int  = return p.main_quest
 proc setMainQuestProgress* (p: Player, val: int) = p.main_quest = val
 
+proc getDialogueName* (p: Player):      NPC  = return p.dialogue
+proc setDialogueName* (p: Player, name: NPC) = p.dialogue = name
+
 proc getAndClearMessages* (p: Player): seq[string] =
     # SHOULD ONLY BE USED BY -GAME- OBJECT, it's collection of keys, not echoable strings
     result = p.msg
     p.msg = @[] # clears the old one
+
+proc checkVariable* (p: Player, variable: Variable): bool =
+    # checks existence of particular variable
+    if variable in p.vars:
+        return true
+    return false
 
 proc sleep* (p: Player) =
     p.hp = p.hp_max
@@ -438,13 +478,16 @@ proc sleep* (p: Player) =
     #     timer2 = 0
     #     timer3 = 0
 
-proc startQuest* (p: Player, quest_str: string, repeatable: bool = false): bool =
-    # returns whether quest can be done
-    if quest_str in p.quests_done and repeatable == false: return false
-    else:
-        p.quests.add(quest_str)
+proc isQuestActive*   (p: Player, quest: Quest): bool = return quest in p.quests
+proc isQuestFinished* (p: Player, quest: Quest): bool = return quest in p.quests_done
 
-proc finishQuest* (p: Player, quest_str: string, xp_gained: int) =
-    p.quests.delete(p.quests.find(quest_str))
-    p.quests_done.add(quest_str)
+proc startQuest* (p: Player, quest: Quest, repeatable: bool = false): bool =
+    # returns whether quest can be done
+    if quest in p.quests_done and repeatable == false: return false
+    else:
+        p.quests.add(quest)
+
+proc finishQuest* (p: Player, quest: Quest, xp_gained: int) =
+    p.quests.delete(p.quests.find(quest))
+    p.quests_done.add(quest)
     p.xp += xp_gained

@@ -20,3 +20,27 @@ It is meant to preserve almost every of original's quirks, but
 improve its code quality, make it crash-free and fix the more
 important bugs. And, most importantly, provide English version, so
 that more people can see how BSaL looked and felt.
+
+### Roadmap
+| Version | Features planned                                                                                                           |
+|:-------:|:---------------------------------------------------------------------------------------------------------------------------|
+|   1.0   | Exact features from original BSaL, fixing CTD issues and broken quests that didn't "be buggy as a feature"                 |
+|   1.1   | Fixing any bugs found in 1.0                                                                                               |
+|   1.2   | Expanding BSaL in a way that let you utilise all unused items                                                              |
+|   1.3   | Expanding BSaL with more locations/NPCs so that all unused mechanics are used (ideally also making use of more statistics) |
+|   1.4   | Adding more translations provided by community                                                                             |
+Any updates past 1.4 are unlikely, but if new translation is added, it may be a reason
+for me to make new version just to add it.
+
+### Features
+- A hand-crafted steampunk/fantasy world, Baedoor
+
+### Differences
+- Added language support, allowing English version to exist
+- Disabled ormath shaman as somewhat difficult to implement class bringing no real value
+- Adjusted race names to revised lore (human -> baedoorian, nord -> vindean, saphtri -> pahtri (due to description))
+
+### New features (1.2+ version)
+
+### Lore notes (to be transferred to BE and removed from here)
+- "Pod Złotym Szczurem" (Under Golden Rat) tavern in Evros
