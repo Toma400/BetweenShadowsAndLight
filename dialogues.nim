@@ -13,20 +13,27 @@ proc processDialogue* (g: Game) =
     case getDialogueName(g.player):
         of DUMMY: endDialogue(g, mDEFAULT)
         of CAPTAIN:
-            echo getKey(g, "loc__ship_captain")
-            echo getOptionKey(g, "loc__ship_captain_answer", 1)
-            let prompt = readLine(stdin)
-            case prompt:
-                of "1":     endDialogue(g, mLOCATION)
-                of "cheat": discard
-                else:       return
-                #todo:  ---cheat option
+            if "cheat" notin getDialogueVariables(g.player):
+                echo getKey(g, "loc__ship_captain")
+                echo getOptionKey(g, "loc__ship_captain_answer", 1)
+                let prompt = readLine(stdin)
+                case prompt:
+                    of "1":     endDialogue(g, mLOCATION)
+                    of "cheat": addDialogueVariable(g.player, "cheat") # branches flow
+                    else:       return
+            else:
+                echo getKey(g, "loc__ship_captain_cheat1")
+                changeLocation(g, DESERTED_ISLAND)
+                waitForPlayer()
+                echo getKey(g, "loc__ship_captain_cheat2")
+                waitForPlayer()
+                endDialogue(g, mLOCATION)
 
         of SAILOR:
             let dvars = getDialogueVariables(g.player)
 
             if checkVariable(g.player, SAM_KNOWS_YOU):
-                if "que2" notin dvars:
+                if "que2" notin dvars and "sweet_roll" notin dvars: # most default interaction
                     echo getKey(g, "loc__ship_sailor_que1")
                     if not isQuestFinished(g.player, TALK_TO_COOK) and not checkVariable(g.player, KNIFE_BOUGHT):
                         echo getOptionKey(g, "loc__ship_sailor_que1a1", 1)
@@ -43,12 +50,12 @@ proc processDialogue* (g: Game) =
                                 addDialogueVariable(g.player, "que2") # branches flow
                         of "2":
                             echo getKey(g, "loc__ship_sailor_dunno")
-                            discard readLine(stdin)
+                            waitForPlayer()
                             endDialogue(g, mLOCATION)
                         of "3":
                             if checkVariable(g.player, ISLAND_SEEN):
                                 echo getKey(g, "loc__ship_sailor_island")
-                                discard readLine(stdin)
+                                waitForPlayer()
                                 endDialogue(g, mLOCATION)
                             else: return
                         of "4":
@@ -62,7 +69,7 @@ proc processDialogue* (g: Game) =
                     finishQuest(g.player, BRING_SWEET_ROLL, 8)
                     discard removeItemFromInventory(g.player, "sweet_roll")
                     addItemToInventory(g.player, "rusty_knife")
-                    discard readLine(stdin)
+                    waitForPlayer()
                     endDialogue(g, mLOCATION)
 
                 elif "quest_ask" notin dvars: # picked option "1", and progressed to quest question so it's catched earlier
@@ -74,18 +81,18 @@ proc processDialogue* (g: Game) =
                         of "1":
                             echo getKey(g, "loc__ship_sailor_waiting")
                             discard startQuest(g.player, TALK_TO_COOK)
-                            discard readLine(stdin)
+                            waitForPlayer()
                             endDialogue(g, mLOCATION)
                         of "2":
                             echo getKey(g, "loc__ship_sailor_be_back")
-                            discard readLine(stdin)
+                            waitForPlayer()
                             endDialogue(g, mLOCATION)
                         else: return
 
                 else: # if you picked option "1"
                     if isQuestActive(g.player, TALK_TO_COOK):
                         echo getKey(g, "loc__ship_sailor_howlong")
-                        discard readLine(stdin)
+                        waitForPlayer()
                         removeDialogueVariable(g.player, "que2") # goes back to normal flow
                     else:
                         echo getKey(g, "loc__ship_sailor_life")
@@ -98,18 +105,18 @@ proc processDialogue* (g: Game) =
                         case prompt:
                             of "1":
                                 echo getKey(g, "loc__ship_sailor_offer")
-                                discard readLine(stdin)
+                                waitForPlayer()
                                 let purchase = buy(g.player, "rusty_knife", 7)
                                 if purchase:
                                     addVariable(g.player, KNIFE_BOUGHT)
                                     echo getKey(g, "loc__ship_sailor_bought")
                                 printMessages(g) # prints in case purchase is failed
-                                discard readLine(stdin)
+                                waitForPlayer()
                                 endDialogue(g, mLOCATION)
                             of "2": addDialogueVariable(g.player, "quest_ask") # branches flow
                             of "3":
                                 echo getKey(g, "loc__ship_sailor_be_back")
-                                discard readLine(stdin)
+                                waitForPlayer()
                                 endDialogue(g, mLOCATION)
                             else: return
 
@@ -122,7 +129,7 @@ proc processDialogue* (g: Game) =
                     of "1": discard # nothing because it just adds SAM_KNOWS_YOU and changes flow for next loop
                     of "2":
                         echo getKey(g, "loc__ship_sailor_kidding")
-                        discard readLine(stdin)
+                        waitForPlayer()
                     else: return
                 addVariable(g.player, SAM_KNOWS_YOU)
             # discard
@@ -142,19 +149,20 @@ proc processDialogue* (g: Game) =
                         addItemToInventory(g.player, "sweet_roll")
                         finishQuest(g.player, TALK_TO_COOK, 0)
                         discard startQuest(g.player, BRING_SWEET_ROLL) # next chapter
-                        discard readLine(stdin)
+                        waitForPlayer()
                         endDialogue(g, mLOCATION)
                     else: # failed attempt
                         echo getKey(g, "loc__ship_cook_angry")
                         finishQuest(g.player, TALK_TO_COOK, 0)
-                        discard readLine(stdin)
+                        waitForPlayer()
                         endDialogue(g, mLOCATION)
                 of "2":
                     echo getKey(g, "loc__ship_cook_kind")
                     addItemToInventory(g.player, "sweet_roll")
                     finishQuest(g.player, TALK_TO_COOK, 0)
                     discard startQuest(g.player, BRING_SWEET_ROLL) # next chapter
-                    discard readLine(stdin)
+                    waitForPlayer()
+                    endDialogue(g, mLOCATION)
                 of "3":
                     endDialogue(g, mLOCATION)
                 else: return

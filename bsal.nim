@@ -214,8 +214,20 @@ while isRunning(g):
                             else: continue
                         else:   continue
                     if isDialogueStarted(g): continue # lets `mDIALOGUE` handle everything
-                    for msg in getMessages(g):
-                        echo msg
+                    printMessages(g)
+                    discard readLine(stdin)
+                of DESERTED_ISLAND:
+                    echo getKey(g, "loc__island")
+                    echo getOptionKey(g, "loc__island_look_around", 1)
+                    echo getOptionKey(g, "loc__island_barrels", 2)
+                    echo getOptionKey(g, "loc__ship_do_nothing", 3)
+                    let prompt = readLine(stdin)
+                    case prompt:
+                        of "1": island_SearchArea(g.player)
+                        of "2": island_OpenBarrel(g)
+                        of "3": switchMenu(g, mDEFAULT); continue
+                        else: continue
+                    printMessages(g)
                     discard readLine(stdin)
                 # other locations, not important for now
                 else:

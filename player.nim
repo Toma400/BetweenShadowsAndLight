@@ -516,8 +516,14 @@ proc removeItemFromInventory* (p: Player, item_str: string): bool =
         return true
     return false
 
+proc removeItemFromInventory* (p: Player, item_index: int) =
+    p.inv.delete(item_index)
+
 proc hasItem* (p: Player, item_str: string): bool =
     return item_str in p.inv
+
+proc getInventory* (p: Player): seq[string] =
+    return p.inv
 
 proc buy* (p: Player, item_str: string, value: int): bool =
     if value > p.money:
@@ -537,3 +543,26 @@ proc crouch* (p: Player, detect_value: int): bool =
         return true
     p.sp -= 20 # additional tiredness inflicted
     return false
+
+proc lock* (p: Player, lockpower: int): bool =
+    # 'true' indicate successful lockpicking
+    # ---
+    # unlike OG, remaster will not loop, so that
+    # loop needs to be controlled by caller
+    # (similarly with whole feedback on lockpick
+    #  amount and decisions)
+    while true:
+        if p.lockpicks == 0:
+            addMessage(p, "game__warn_lockpicks")
+            return false # breaks out of loop
+        # 'else'
+        p.sp -= 5
+        let chance = p.skills.lockpicking * 5 + rand(1..5)
+        if chance >= lockpower:
+            addExperience(p, 10)
+            addMessage(p, "game__lock_open")
+            return true
+        else:
+            p.lockpicks -= 1
+            addMessage(p, "game__lock_fail")
+            return false

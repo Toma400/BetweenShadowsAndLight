@@ -29,6 +29,7 @@ that more people can see how BSaL looked and felt.
 |   1.2   | Expanding BSaL in a way that let you utilise all unused items                                                              |
 |   1.3   | Expanding BSaL with more locations/NPCs so that all unused mechanics are used (ideally also making use of more statistics) |
 |   1.4   | Adding more translations provided by community                                                                             |
+
 Any updates past 1.4 are unlikely, but if new translation is added, it may be a reason
 for me to make new version just to add it.
 
@@ -36,7 +37,7 @@ for me to make new version just to add it.
 - A hand-crafted steampunk/fantasy world, Baedoor
 
 ### Differences
-- Added language support, allowing English version to exist
+- Added language support
 - Disabled ormath shaman as somewhat difficult to implement class bringing no real value
 - Adjusted race names to revised lore (human -> baedoorian, nord -> vindean, saphtri -> pahtri (due to description))
 

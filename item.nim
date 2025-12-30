@@ -1,8 +1,16 @@
+import std/strutils
 import tables
 
 type
+  Chest* = enum
+    DESERTED_BARREL
+    SHELTER_CHEST
+    WAREHOUSE_CHEST
   Item = object
     weight*: int
+  SpecialItem* = enum
+    COIN = "coin"
+    LOCK = "lock"
 
 const ITEMS* = { # ID : object
     # food
@@ -45,10 +53,25 @@ const ITEMS* = { # ID : object
     "potion_health_small" : Item(weight: 0), # mała mikstura zdrowia
     "potion_mana_small"   : Item(weight: 0), # mała mikstura many
     # other
-    "book"     : Item(weight: 0), # gazety, księgi, przepisy
+    "book"     : Item(weight: 0), # gazety, księgi, przepisy | TODO: imo we need to split this into each category, see language files recognising each entry separately
     # specials
     # - money
     # - ammo
     # - arrows
     # - lockpicks
 }.toTable
+
+var CHESTS* : Table[Chest, (int, seq[string])] = {
+    DESERTED_BARREL: (0, @["4 coins", "15 locks", "sweet_roll", "herring", "herring", "herring"]),
+    SHELTER_CHEST:   (0, @["500 coins", "decor_shotgun", "chainmail"]),
+    WAREHOUSE_CHEST: (0, @["300 coins", "silk"]),
+}.toTable
+
+proc isSpecialItem* (item_str: string): bool =
+    return " " in item_str
+
+proc debundleSpecialItem* (item_str: string): tuple[amount: int, kind: SpecialItem] =
+    let spl = item_str.split(" ")
+    let itm = if endsWith(spl[1], "s"): spl[1][0..len(spl[1])-2] else: spl[1] # cut 's' if exists
+    result.amount = parseInt(spl[0])
+    result.kind   = parseEnum[SpecialItem](itm)
