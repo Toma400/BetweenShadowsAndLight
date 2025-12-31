@@ -12,10 +12,22 @@ const LocationMap* = """
     |Λ  ░░░░░░░░░░░░░░░░░░░  ♖-------♖)            |
     | Λ ░░░░░░░░░░░░░░░░░░░  |  Baedoor ♖)      ~~ |
     |Λ  ░░░░░░░░░░░░░░░░░░░  ♖-------♖⚓)           |
-    |Λ  ۩  ░░░░░░░░░░░░░░░░           (      ~~ X  |
+    |Λ  &  ░░░░░░░░░░░░░░░░           (      ~~ X  |
     | Λ Λ Λ Λ Λ Λ Λ   Λ ░░░░░░░░░░░░░  )           |
     ✺----------------------------------------------✺
     """.unindent
+# & = ۩
+
+const LocationDestinations* : Table[Location, seq[tuple[loc: Location, key: string]]] = {
+    # travel destinations - if there's predicates needed for travel (or tiredness counts) make value a seq[tuple<Loc, val1, val2>]
+    SHIP            : @[],
+    SHIP_DOCKED     : @[],
+    DESERTED_ISLAND : @[(loc: DESERTED_HOME, key: "travel__desi_to_desh")],
+    DESERTED_HOME   : @[(loc: DESERTED_ISLAND, key: "travel__desh_to_desi")],
+    DOCKS           : @[],
+    EVROS           : @[],
+    FIELDS          : @[],
+}.toTable
 
 # TODO: before `processStatistics` is done, run `location` procs or whatever that allows us to prevent normal menu to happen
 # or, we make separate proc that is just `processQuestTexts` or something

@@ -39,7 +39,7 @@ type
     FIELDS
     # "cheat" locations used in OG:
     DESERTED_ISLAND
-    # DESERT_ISLAND_HOME
+    DESERTED_HOME
 
 const VERSION = 1.0
 const AUTHOR  = "Toma400"

@@ -190,6 +190,11 @@ quest__mq_intro2 = "Either way, I should take a look around that ship. Maybe som
 quest__cook       = "Talk to the cook"
 quest__sweet_roll = "Bring sweet roll to the sailor"
 
+# Travel
+travel__ask          = "Where do you want to go? Pick a number or press Enter to go back."
+travel__desi_to_desh = "Enter the house"
+travel__desh_to_desi = "Go outside"
+
 # Locations
 loc__ship_talk_sailor    = "Talk with the greybearded man"
 loc__ship_search_deck    = "Look around the deck"

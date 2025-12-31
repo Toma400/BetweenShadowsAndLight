@@ -190,6 +190,11 @@ quest__mq_intro2 = "Tak czy inaczej, powinienem się rozejrzeć po tym statku. M
 quest__cook       = "Porozmawiaj z kucharzem"
 quest__sweet_roll = "Przynieś słodką bułkę marynarzowi"
 
+# Travel
+travel__ask          = "Gdzie chcesz się udać? Wybierz numer lub naciśnij Enter by wrócić."
+travel__desi_to_desh = "Wejdź do domu"
+travel__desh_to_desi = "Wyjdź z domu"
+
 # Locations
 loc__ship_talk_sailor    = "Porozmawiaj z szarobrodym mężczyzną"
 loc__ship_search_deck    = "Porozglądaj się po pokładzie"

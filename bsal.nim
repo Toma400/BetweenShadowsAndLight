@@ -6,6 +6,7 @@ import player
 import quest
 import lang
 import item
+import init
 import game
 import os
 
@@ -43,69 +44,7 @@ while isRunning(g):
                                 skill  : ""
                                 )
             while getPlayerName(g) == "": # character wasn't created nor loaded
-                echo DIVIDER
-                echo getTutorialKey(g, "game__tut_1")
-                echo getTutorialKey(g, "game__tut_2")
-                echo getTutorialKey(g, "game__tut_3")
-                echo DIVIDER
-                # name pick
-                while player_tuple.name == "":
-                    echo getKey(g, "game__crq_1")
-                    let prompt = readLine(stdin)
-                    if prompt != "":
-                        player_tuple.name = prompt
-                    clearScreen()
-                # gender pick
-                while player_tuple.gender == VOIDG:
-                    echo getKey(g, "game__crq_2")
-                    echo getButtonKey(g, "gender__male") & " " & getButtonKey(g, "gender__female") & " "
-                    #TODO: v1.2: & echo getButtonKey(g, "gender__nonbinary")
-                    let prompt = readLine(stdin)
-                    let conv   = {
-                                  getKey(g, "gender__male").toLowerAscii:      getdGender["male"],
-                                  getKey(g, "gender__female").toLowerAscii:    getdGender["female"],
-                                  #TODO: v1.2: getKey(g, "gender__nonbinary").toLowerAscii: getdGender["nonbinary"]
-                                  }.toTable
-                    if prompt.toLowerAscii in conv:
-                        player_tuple.gender = conv[prompt.toLowerAscii]
-                    clearScreen()
-                # race pick
-                while player_tuple.race == VOIDR:
-                    echo getKey(g, "game__crq_3")
-                    echo DIVIDER
-                    var conv = newTable[string, Race]() # prompt comparison, Race
-                    for race_name in getdRace.keys:      # print race, then add to comparison table
-                        echo getButtonKey(g, "race__" & race_name)
-                        echo getKey(g, "race__" & race_name & "_descr")
-                        echo DIVIDER
-                        conv[getKey(g, ("race__" & race_name)).toLowerAscii] = getdRace[race_name]
-                    let prompt = readLine(stdin)
-                    if prompt.toLowerAscii in conv:
-                        player_tuple.race = conv[prompt.toLowerAscii]
-                    clearScreen()
-                # class pick
-                while player_tuple.class == VOIDC:
-                    echo getKey(g, "game__crq_4")
-                    echo DIVIDER
-                    var conv = newTable[string, Class]() # prompt comparison, Class
-                    for class_name in getdClass.keys:     # print class, then add to comparison table
-                        echo getButtonKey(g, "class__" & class_name)
-                        conv[getKey(g, ("class__" & class_name)).toLowerAscii] = getdClass[class_name]
-                    let prompt = readLine(stdin)
-                    if prompt.toLowerAscii in conv:
-                        player_tuple.class = conv[prompt.toLowerAscii]
-                    clearScreen()
-                # # attribute pick
-                # while player_tuple.attr == "":
-                #     break
-                # # skill pick
-                # while player_tuple.skill == "":
-                #     break
-
-                # after all picks are done
-                createCharacter(g, player_tuple.name, player_tuple.gender, player_tuple.race, player_tuple.class)
-                # modifyAttributes(g.player, player_tuple.attr, 1)
-                # modifySkills(g.player, player_tuple.skill, 1)
+                initCharacter(g, player_tuple)
 
             if getPlayerName(g) != "": # character is created/loaded
                 # general processes
@@ -129,7 +68,7 @@ while isRunning(g):
                     getKey(g, "game__gui_character").toLowerAscii : mCHARACTER,
                     # getKey(g, "game__gui_inventory").toLowerAscii : mINVENTORY,
                     getKey(g, "game__gui_location").toLowerAscii  : mLOCATION,
-                    # getKey(g, "game__gui_map").toLowerAscii       : mMAP,
+                    getKey(g, "game__gui_map").toLowerAscii       : mMAP,
                     getKey(g, "game__gui_diary").toLowerAscii     : mDIARY
                 }.toTable
                 let prompt = readLine(stdin)
@@ -233,12 +172,29 @@ while isRunning(g):
                 # other locations, not important for now
                 else:
                     break
-            # case g.location:
-            #     of SHIP: locationShip(g) # OKAY, I understood it griefly wrong - this should be in `mLOCATION` menu
-            #     # todo: cover other cases | # and the mquest should be here (or before processStatistics) but hold the whole process
-            #     # I think it should come before it and have guardrails which would launch it early
+
         of mMAP:
-            break
+            echo LocationMap
+            echo getKey(g, "travel__ask")
+            for ix, dest in LocationDestinations[g.location].pairs():
+                # if showing conditional is needed, it will go here
+                echo getOptionKey(g, dest.key, ix + 1)
+            let prompt = readLine(stdin)
+            if prompt == "": # go back
+                switchMenu(g, mDEFAULT)
+                continue
+            try:
+                let p = parseInt(prompt)
+                # if location conditional is needed, have it here
+                if p <= 0 or p > len(LocationDestinations):
+                    continue
+                else:
+                    changeLocation(g, LocationDestinations[g.location][p-1].loc)
+                    # if tiredness change is needed, make it happen here
+                    switchMenu(g, mDEFAULT)
+            except ValueError:
+                continue
+
         of mDIARY:
             echo "{ " & getKey(g, "game__gui_drinit") & " }"
             echo getKey(g, "game__gui_drhelp")
