@@ -18,15 +18,23 @@ const LocationMap* = """
     """.unindent
 # & = ۩
 
-const LocationDestinations* : Table[Location, seq[tuple[loc: Location, key: string]]] = {
+const LocationDestinations* : Table[Location, seq[tuple[loc: Location, key: string, cost: int, cond: bool, failed: string]]] = {
     # travel destinations - if there's predicates needed for travel (or tiredness counts) make value a seq[tuple<Loc, val1, val2>]
-    SHIP            : @[],
+    # - loc    - Location to be travelled to
+    # - key    - translation key that will show for this option
+    # - cost   - sp cost
+    # - cond   - anonymous proc that is checked against, or `true` if location can be reached no matter what
+    # - failed - translation key for message if `cond` results with false (can be "" for `cond == true`)
+    SHIP            : @[(loc: EVROS,           key: "travel__sh_dummy",     cost:  0, cond: false, failed: "travel__sh_dummyfail")],
     SHIP_DOCKED     : @[],
-    DESERTED_ISLAND : @[(loc: DESERTED_HOME, key: "travel__desi_to_desh")],
-    DESERTED_HOME   : @[(loc: DESERTED_ISLAND, key: "travel__desh_to_desi")],
+    DESERTED_ISLAND : @[(loc: DESERTED_HOME,   key: "travel__desi_to_desh", cost:  0, cond: true,  failed: ""),
+                        (loc: BAEDOOR,         key: "travel__desi_to_bae",  cost:  0, cond: false, failed: "travel__desi_to_baef"),
+                        (loc: DOCKS,           key: "travel__desi_to_dock", cost: 10, cond: true,  failed: "")],
+    DESERTED_HOME   : @[(loc: DESERTED_ISLAND, key: "travel__desh_to_desi", cost:  0, cond: true,  failed: "")],
     DOCKS           : @[],
-    EVROS           : @[],
+    EVROS           : @[], # todo: IN OG IT ALLOWS TO COME BACK TO DESERTED ISLAND!
     FIELDS          : @[],
+    # BAEDOOR # not used here because it's a dummy location
 }.toTable
 
 # TODO: before `processStatistics` is done, run `location` procs or whatever that allows us to prevent normal menu to happen
@@ -54,5 +62,17 @@ proc island_SearchArea* (p: var Player) =
 proc island_OpenBarrel* (g: Game) =
     echo getKey(g, "loc__island_barrel_open")
     waitForPlayer()
-    # p.lockpicks += 1 #????????? was in OG
+    # p.lockpicks += 1 # todo: was in OG for some reason
     chest(g, CHESTS[DESERTED_BARREL])
+
+proc home_ReadBook* (p: Player) =
+    addMessage(p, "loc__abhouse_book")
+
+proc home_OpenChest* (g: Game) =
+    echo getKey(g, "loc__abhouse_chest")
+    waitForPlayer()
+    chest(g, CHESTS[SHELTER_CHEST])
+
+proc home_Sleep* (p: Player) =
+    addMessage(p, "loc__abhouse_sleep")
+    sleep(p)

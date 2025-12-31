@@ -37,6 +37,7 @@ for me to make new version just to add it.
 - A hand-crafted steampunk/fantasy world, Baedoor
 
 ### Differences
+- Minimal QoL additions (most notably in additional text guiding through GUI)
 - Added language support
 - Disabled ormath shaman as somewhat difficult to implement class bringing no real value
 - Adjusted race names to revised lore (human -> baedoorian, nord -> vindean, saphtri -> pahtri (due to description))
@@ -45,3 +46,4 @@ for me to make new version just to add it.
 
 ### Lore notes (to be transferred to BE and removed from here)
 - "Pod Złotym Szczurem" (Under Golden Rat) tavern in Evros
+- Sailor's name is Sam

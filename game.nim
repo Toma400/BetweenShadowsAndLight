@@ -40,6 +40,7 @@ type
     # "cheat" locations used in OG:
     DESERTED_ISLAND
     DESERTED_HOME
+    BAEDOOR # dummy location, also unused in OG
 
 const VERSION = 1.0
 const AUTHOR  = "Toma400"
@@ -142,6 +143,11 @@ proc waitForPlayer* () =
 proc changeLocation* (g: Game, loc: Location) =
     g.menu     = mDEFAULT
     g.location = loc
+
+proc journey* (g: Game, loc: Location, distance: int) =
+    # should be used whenever we want to substract `sp` points
+    g.player.sp -= int(distance*15/getEndurance(g.player)) # ENDURANCE IS NOT REACHABLE
+    changeLocation(g, loc)
 
 proc clearScreen* () =
     discard execShellCmd("cls")

@@ -284,6 +284,18 @@ proc setClassModifiers (p: var Player) =
           p.pwr_chaos -= 10
       else: discard
 
+# attribute getters/setters
+proc getStrength*     (p: Player): int    = return p.attrs.strength
+proc setStrength*     (p: Player, v: int) = p.attrs.strength = v
+proc getDexterity*    (p: Player): int    = return p.attrs.dexterity
+proc setDexterity*    (p: Player, v: int) = p.attrs.dexterity = v
+proc getIntelligence* (p: Player): int    = return p.attrs.intelligence
+proc setIntelligence* (p: Player, v: int) = p.attrs.intelligence = v
+proc getEndurance*    (p: Player): int    = return p.attrs.endurance
+proc setEndurance*    (p: Player, v: int) = p.attrs.endurance = v
+proc getCharisma*     (p: Player): int    = return p.attrs.charisma
+proc setCharisma*     (p: Player, v: int) = p.attrs.charisma = v
+
 # proc modifyAttributes* (p: var Player, attr: string, val: int): bool =
 #     # returns 'false' in case of failing (error)
 #     case attr:

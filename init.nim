@@ -41,9 +41,7 @@ proc initCharacter* (g: Game, player_tuple: var tuple[name: string,
         echo DIVIDER
         var conv = newTable[string, Race]() # prompt comparison, Race
         for race_name in getdRace.keys:      # print race, then add to comparison table
-            echo getButtonKey(g, "race__" & race_name)
-            echo getKey(g, "race__" & race_name & "_descr")
-            echo DIVIDER
+            echo getButtonKey(g, "race__" & race_name) & " " & getKey(g, "race__" & race_name & "_descr")
             conv[getKey(g, ("race__" & race_name)).toLowerAscii] = getdRace[race_name]
         let prompt = readLine(stdin)
         if prompt.toLowerAscii in conv:

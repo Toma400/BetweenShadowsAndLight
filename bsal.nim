@@ -112,9 +112,13 @@ while isRunning(g):
                  "" # for now, so that the above not being filled don't break the string
                  # magic defence (if it exists), from what I see as new line
             echo DIVSHORT
-            # attrs
+            echo getKey(g, "game__gui_strength")     & ": " & $getStrength(g.player)
+            echo getKey(g, "game__gui_dexterity")    & ": " & $getDexterity(g.player)
+            echo getKey(g, "game__gui_intelligence") & ": " & $getIntelligence(g.player)
+            echo getKey(g, "game__gui_endurance")    & ": " & $getEndurance(g.player)
+            echo getKey(g, "game__gui_charisma")     & ": " & $getCharisma(g.player)
             # skills
-            discard readLine(stdin) # let player see statistics before they are moved to old menu
+            waitForPlayer() # let player see statistics before they are moved to old menu
   # basic_armor()
   # print ("Twoja postać:","\n\n[",name,"]\n",gender,"\n",race,"\n",craft,"\n")
   # print ("Poziom", level, "\n")
@@ -155,7 +159,7 @@ while isRunning(g):
                         else:   continue
                     if isDialogueStarted(g): continue # lets `mDIALOGUE` handle everything
                     printMessages(g)
-                    discard readLine(stdin)
+                    waitForPlayer()
                 of DESERTED_ISLAND:
                     echo getKey(g, "loc__island")
                     echo getOptionKey(g, "loc__island_look_around", 1)
@@ -168,7 +172,23 @@ while isRunning(g):
                         of "3": switchMenu(g, mDEFAULT); continue
                         else: continue
                     printMessages(g)
-                    discard readLine(stdin)
+                    waitForPlayer()
+                of DESERTED_HOME:
+                    echo getKey(g, "loc__abhouse_enter")
+                    echo getKey(g, "loc__abhouse_enter2")
+                    echo getOptionKey(g, "loc__abhouse_que1", 1)
+                    echo getOptionKey(g, "loc__abhouse_que2", 2)
+                    echo getOptionKey(g, "loc__abhouse_que3", 3)
+                    echo getOptionKey(g, "loc__ship_do_nothing", 4)
+                    let prompt = readLine(stdin)
+                    case prompt:
+                        of "1": home_ReadBook(g.player)
+                        of "2": home_OpenChest(g)
+                        of "3": home_Sleep(g.player)
+                        of "4": switchMenu(g, mDEFAULT); continue
+                        else: continue
+                    printMessages(g)
+                    waitForPlayer()
                 # other locations, not important for now
                 else:
                     break
@@ -185,13 +205,15 @@ while isRunning(g):
                 continue
             try:
                 let p = parseInt(prompt)
-                # if location conditional is needed, have it here
                 if p <= 0 or p > len(LocationDestinations):
                     continue
                 else:
-                    changeLocation(g, LocationDestinations[g.location][p-1].loc)
-                    # if tiredness change is needed, make it happen here
-                    switchMenu(g, mDEFAULT)
+                    let dest = LocationDestinations[g.location][p-1]
+                    if dest.cond == true: # checks whether condition is met
+                        journey(g, dest.loc, dest.cost) # menu switch is done here too
+                    else:
+                        echo getKey(g, dest.failed)
+                        waitForPlayer()
             except ValueError:
                 continue
 
