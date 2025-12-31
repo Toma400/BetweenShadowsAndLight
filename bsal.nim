@@ -5,6 +5,7 @@ import location
 import player
 import quest
 import lang
+import item
 import game
 import os
 
@@ -239,19 +240,28 @@ while isRunning(g):
         of mMAP:
             break
         of mDIARY:
-            echo getKey(g, "game__gui_drinit")
+            echo "{ " & getKey(g, "game__gui_drinit") & " }"
+            echo getKey(g, "game__gui_drhelp")
             echo "[" & getKey(g, "game__gui_drdiary")    & "]" & " " &
                  "[" & getKey(g, "game__gui_drsave")     & "]" & " " &
                  "[" & getKey(g, "game__gui_drsavequit") & "]" & " " &
                  "[" & getKey(g, "game__gui_drquit")     & "]"
             let prompt = readLine(stdin).toLowerAscii
             if prompt == getKey(g, "game__gui_drdiary").toLowerAscii:
+                clearScreen()
+                echo DIVIDER
+                echo "{ " & getKey(g, "game__gui_drdiary2") & " }"
+                for q in getActiveQuests(g.player):
+                    echo "- " & getKey(g, $q)
+                echo DIVIDER
+                waitForPlayer()
                 continue
             elif prompt == getKey(g, "game__gui_drsave").toLowerAscii:
                 continue
             elif prompt == getKey(g, "game__gui_drsavequit").toLowerAscii:
                 continue
             elif prompt == getKey(g, "game__gui_drquit").toLowerAscii:
+                resetGameData(g)
                 switchMenu(g, START)
             else:
                 switchMenu(g, mDEFAULT)

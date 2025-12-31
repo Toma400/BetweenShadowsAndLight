@@ -491,6 +491,7 @@ proc sleep* (p: Player) =
 
 proc isQuestActive*   (p: Player, quest: Quest): bool = return quest in p.quests
 proc isQuestFinished* (p: Player, quest: Quest): bool = return quest in p.quests_done
+proc getActiveQuests* (p: Player): seq[Quest]         = return p.quests
 
 proc startQuest* (p: Player, quest: Quest, repeatable: bool = false): bool =
     # returns whether quest can be done

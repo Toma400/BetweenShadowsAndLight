@@ -41,21 +41,33 @@ type
     DESERTED_ISLAND
     # DESERT_ISLAND_HOME
 
+const VERSION = 1.0
+const AUTHOR  = "Toma400"
+const LICENCE = "All Rights Reserved"
 const LOGO* = """|__) __|_    _ _ _   (_ |_  _  _| _     _   _  _  _|  |  . _ |_ |_
                  |__)(- |_\)/(-(-| )  __)| )(_|(_|(_)\)/_)  (_|| )(_|  |__|(_)| )|_""".unindent &
               "\n - Remastered -                                            _)\n" &
-                "                                                       version 1.0\n"
+             fmt"                                                       version {VERSION}" & "\n"
 const DIVIDER*  = "---------------------------------------------------------------"
 const DIVSHORT* = "------------------------------------------------"
+
+let NO_PLAYER* = newPlayer("", VOIDG, VOIDR, VOIDC)
+let DEF_LOC*   = SHIP
 
 proc newGame* (): Game =
     new(result)
     result.run      = true # starts the game
     result.lang_ref = currentLangFile()
     result.menu     = START
-    result.player   = newPlayer("", VOIDG, VOIDR, VOIDC) # placeholder
+    result.player   = NO_PLAYER                      # placeholder
     result.tutorial = settings["tutorial"].getBool()
-    result.location = SHIP                               # starting location (overwritten during load)
+    result.location = DEF_LOC                        # starting location (overwritten during load)
+
+proc resetGameData* (g: Game) =
+    # used when exiting the game, so that all data is cleared
+    g.player   = NO_PLAYER     # resets to that 'new game' lets you create new char
+    g.location = DEF_LOC
+    CHESTS     = CHESTS_PREFAB # and that all chests have their contents resetted
 
 proc `$`* (g: Game): string =
     return $g.player
@@ -128,6 +140,7 @@ proc waitForPlayer* () =
     discard readLine(stdin)
 
 proc changeLocation* (g: Game, loc: Location) =
+    g.menu     = mDEFAULT
     g.location = loc
 
 proc clearScreen* () =
@@ -180,16 +193,16 @@ proc chest* (g: Game, lockpower: var int = 0, contents: var seq[string]) = # ope
             if len(contents) == 0:
                 echo getKey(g, "game__chest_empty")
                 waitForPlayer()
-                CHEST_MODE = 1 # goes back
+                CHEST_MODE = 0 # goes back
             else:
                 echo getKey(g, "game__chest_choose")
                 let prompt = readLine(stdin)
                 if prompt == "": # goes back to decision mode
-                    CHEST_MODE = 1
+                    CHEST_MODE = 0
                     continue
                 try:
                     let p = parseInt(prompt)
-                    if p >= len(contents):
+                    if p > len(contents) or p < 1:
                         echo getKey(g, "game__chest_big")
                         waitForPlayer()
                         continue
@@ -199,6 +212,7 @@ proc chest* (g: Game, lockpower: var int = 0, contents: var seq[string]) = # ope
                             case si[1]:
                                 of COIN: g.player.money     += si[0]
                                 of LOCK: g.player.lockpicks += si[0]
+                            contents.delete(p-1)
                         else: # normal items
                             addItemToInventory(g.player, contents[p-1])
                             contents.delete(p-1)
@@ -210,16 +224,16 @@ proc chest* (g: Game, lockpower: var int = 0, contents: var seq[string]) = # ope
             if len(getInventory(g.player)) == 0:
                 echo getKey(g, "game__chest_empty2")
                 waitForPlayer()
-                CHEST_MODE = 1 # goes back
+                CHEST_MODE = 0 # goes back
             else:
                 echo getKey(g, "game__chest_choose2")
                 let prompt = readLine(stdin)
                 if prompt == "": # goes back to decision mode
-                    CHEST_MODE = 1
+                    CHEST_MODE = 0
                     continue
                 try:
                     let p = parseInt(prompt)
-                    if p >= len(getInventory(g.player)):
+                    if p > len(getInventory(g.player)) or p < 1:
                         echo getKey(g, "game__chest_big")
                         waitForPlayer()
                         continue

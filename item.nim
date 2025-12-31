@@ -61,11 +61,13 @@ const ITEMS* = { # ID : object
     # - lockpicks
 }.toTable
 
-var CHESTS* : Table[Chest, (int, seq[string])] = {
+const CHESTS_PREFAB* : Table[Chest, (int, seq[string])] = {
     DESERTED_BARREL: (0, @["4 coins", "15 locks", "sweet_roll", "herring", "herring", "herring"]),
     SHELTER_CHEST:   (0, @["500 coins", "decor_shotgun", "chainmail"]),
     WAREHOUSE_CHEST: (0, @["300 coins", "silk"]),
 }.toTable
+
+var CHESTS* = CHESTS_PREFAB # variable version which is editable
 
 proc isSpecialItem* (item_str: string): bool =
     return " " in item_str

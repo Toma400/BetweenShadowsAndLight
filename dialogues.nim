@@ -27,7 +27,7 @@ proc processDialogue* (g: Game) =
                 waitForPlayer()
                 echo getKey(g, "loc__ship_captain_cheat2")
                 waitForPlayer()
-                endDialogue(g, mLOCATION)
+                endDialogue(g, mDEFAULT)
 
         of SAILOR:
             let dvars = getDialogueVariables(g.player)
