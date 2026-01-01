@@ -165,7 +165,7 @@ while isRunning(g):
                     echo getOptionKey(g, "loc__do_nothing", 6)
                     let prompt = readLine(stdin)
                     case prompt:
-                        of "1": discard # tawerna <<<<<
+                        of "1": startDialogue(g, TAVERN_BARMAN)
                         of "2": WAITING_FOR_IMPLEMENTATION() # sklep magiczny
                         of "3": startDialogue(g, SAILOR_DOCKS)
                         of "4": startDialogue(g, LE_VELGA)

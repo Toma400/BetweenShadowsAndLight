@@ -183,8 +183,8 @@ proc processDialogue* (g: Game) =
         of LE_VELGA:
             echo getKey(g, "loc__docks_le_velga")
             echo getOptionKey(g, "loc__docks_le_velga_que1", 1)
-            echo getOptionKey(g, "loc__docks_le_velga_que1", 2)
-            echo getOptionKey(g, "loc__docks_le_velga_que1", 3)
+            echo getOptionKey(g, "loc__docks_le_velga_que2", 2)
+            echo getOptionKey(g, "loc__docks_le_velga_que3", 3)
             let prompt = readLine(stdin)
             case prompt:
                 of "1":
@@ -198,3 +198,48 @@ proc processDialogue* (g: Game) =
                 of "3":
                     endDialogue(g, mLOCATION)
                 else: return
+
+        of TAVERN_BARMAN:
+            if "buy_sleep" notin getDialogueVariables(g.player):
+                echo getKey(g, "loc__docks_tavern")
+                echo getOptionKey(g, "loc__docks_tavern_que1", 1)
+                if not checkVariable(g.player, TAVERN_KEY):
+                    echo getOptionKey(g, "loc__docks_tavern_que2", 2)
+                echo getOptionKey(g, "loc__docks_tavern_que3", 3) # in OG this was guarded by reverse check to the above
+                echo getOptionKey(g, "loc__docks_tavern_que4", 4)
+                let prompt = readLine(stdin)
+                case prompt:
+                    of "1": shop(g, TAVERN_BARMAN, can_sell=false)
+                    of "2":
+                        if not checkVariable(g.player, TAVERN_KEY):
+                            addDialogueVariable(g.player, "buy_sleep")
+                    of "3":
+                        if checkVariable(g.player, TAVERN_KEY):
+                            sleep()
+                            echo getKey(g, "loc__docks_tavern_sleep")
+                            removeVariable(g.player, TAVERN_KEY)
+                            waitForPlayer()
+                        else: # ...but this option existed despite the OG check above not telling player to click on 3
+                            echo getKey(g, "loc__docks_tavern_noslep") # so I decided to keep nice deny answer more visible
+                            waitForPlayer()
+                    of "4": endDialogue(g, mLOCATION)
+                    else: return
+            else: # 'shop' section for renting the bed
+                echo getKey(g, "loc__docks_tavern_zzzzz")
+                echo getOptionKey(g, "loc__docks_tavern_sleep1", 1)
+                echo getOptionKey(g, "loc__docks_tavern_sleep2", 2)
+                let prompt = readLine(stdin)
+                case prompt:
+                    of "1":
+                        if g.player.money >= 8:
+                            g.player.money -= 8
+                            addVariable(g.player, TAVERN_KEY)
+                            echo getKey(g, "loc__docks_tavern_slepok")
+                            removeDialogueVariable(g.player, "buy_sleep")
+                            waitForPlayer()
+                        else:
+                            echo getKey(g, "game__warn_money")
+                            removeDialogueVariable(g.player, "buy_sleep")
+                            waitForPlayer()
+                    of "2": removeDialogueVariable(g.player, "buy_sleep")
+                    else: return

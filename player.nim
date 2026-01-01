@@ -59,12 +59,14 @@ type
     ISLAND_SEEN      # | allows for bringing island topic when talking to sailor
     SAM_KNOWS_YOU    # | used for just silly acknowledging you are known to Sam
     KNIFE_BOUGHT     # | used to disable "Talk To Cook" quest if we purchase knife
+    TAVERN_KEY       # | indicates whether you can sleep in tavern or not
   NPC* = enum # npcs you can dialogue with
     CAPTAIN
     SAILOR
     COOK
     SAILOR_DOCKS
     LE_VELGA
+    TAVERN_BARMAN
     DUMMY   # used to indicate default state (no dialogue)
   Quest* = enum # strings are language keys
     TALK_TO_COOK     = "quest__cook"
@@ -118,6 +120,10 @@ const
   SP_MAX  = 1000 # not fixed value (worth changing for BRPGS 3.x)
   DEF_ATT = 2    # default attack  | I can imagine fists?
   DEF_DEF = 0    # default defence
+
+const TRADING_OFFERS* : Table[NPC, seq[tuple[id: string, value: int]]] = {
+    TAVERN_BARMAN : @[("beer", 8)]
+}.toTable
 
 # dictionaries
 let getdGender* = {
@@ -502,6 +508,11 @@ proc checkVariable* (p: Player, variable: Variable): bool =
         return true
     return false
 
+proc removeVariable* (p: Player, variable: Variable) =
+    # remover with silent error (no info if we try to remove non-existing var)
+    if variable in p.vars:
+        p.vars.delete(find(p.vars, variable))
+
 proc sleep* (p: Player) =
     p.hp = p.hp_max
     p.sp = p.sp_max
@@ -558,6 +569,14 @@ proc buy* (p: Player, item_str: string, value: int): bool =
         p.money -= value
         addItemToInventory(p, item_str)
         return true
+
+proc sell* (p: Player, item_str: string, value: int): bool =
+    if hasItem(p, item_str):
+        discard removeItemFromInventory(p, item_str)
+        p.money += value
+        return true
+    addMessage(p, "game__trade_no_item")
+    return false
 
 proc crouch* (p: Player, detect_value: int): bool =
     # 'true' indicates successful crouching

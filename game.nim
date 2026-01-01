@@ -253,10 +253,74 @@ proc chest* (g: Game, lockpower: var int = 0, contents: var seq[string]) = # ope
 proc chest* (g: Game, raw_val: var (int, seq[string])) = # variant to get directly CHESTS values
     chest(g, raw_val[0], raw_val[1])
 
-proc shop* (g: Game) =
+proc shop* (g: Game, npc: NPC, can_buy, can_sell: bool = true) =
     # should be like `chest` (in case of being buy/sell) and utilise `buy` proc
     # but then it should also `printMessages` because `buy` uses that
-    discard
+    # - buy/sell - whether particular shop options are available
+    var MODE   = 0                   # mode for purchase (0 = none, 1 = buy, 2 = sell)
+    let offers = TRADING_OFFERS[npc] # .id / .value
+    while true:
+        clearScreen()
+        echo DIVIDER
+        if can_buy:
+            echo "{" & getKey(g, "game__trade_seller")  & "}"
+            for ix, it in offers.pairs():
+                echo getOptionKey(g, "item__" & it.id, ix + 1) & ": " & $it.value
+        if can_sell:
+            echo "{" & getKey(g, "game__gui_inventory") & "}"
+            for ix, it in getInventory(g.player).pairs():
+                echo getOptionKey(g, "item__" & it, ix + 1) & ": " & $ITEMS[it].value
+        echo DIVIDER
+        echo getKey(g, "game__trade_money") & ": " & $g.player.money
+        echo DIVIDER
+        if MODE == 0: # no mode
+            if can_buy:  echo getOptionKey(g, "game__trade_op1", 1)
+            if can_sell: echo getOptionKey(g, "game__trade_op2", 2)
+            echo getOptionKey(g, "game__trade_op3", 3)
+            let prompt = readLine(stdin)
+            case prompt:
+                of "1":
+                    if can_buy: MODE = 1 # else: loop back
+                of "2":
+                    if can_sell: MODE = 2 # else: loop back
+                of "3": break  # exit the proc
+                else: continue # loop back
+        elif MODE == 1:
+            echo getKey(g, "game__trade_buy")
+            let prompt = readLine(stdin)
+            if prompt == "": mode = 0
+            try:
+                let p = parseInt(prompt)
+                if p > len(offers) or p < 1:
+                    echo getKey(g, "game__chest_big")
+                    waitForPlayer()
+                    continue
+                else: # correct pick!
+                    let item = offers[p-1]
+                    if buy(g.player, item.id, item.value) == true:
+                        echo getKey(g, "game__trade_bought") & " " & getKey(g, "item__" & item.id)
+                    printMessages(g)
+                    waitForPlayer()
+                    continue
+            except ValueError: continue
+        elif MODE == 2:
+            echo getKey(g, "game__trade_sell")
+            let prompt = readLine(stdin)
+            if prompt == "": mode = 0
+            try:
+                let p = parseInt(prompt)
+                if p > len(getInventory(g.player)) or p < 1:
+                    echo getKey(g, "game__chest_big")
+                    waitForPlayer()
+                    continue
+                else: # correct pick!
+                    let item_str = getInventory(g.player)[p-1]
+                    if sell(g.player, item_str, ITEMS[item_str].value) == true:
+                        echo getKey(g, "game__trade_sold") & " " & getKey(g, "item__" & item_str)
+                    printMessages(g)
+                    waitForPlayer()
+                    continue
+            except ValueError: continue
 
 proc chooseAttributeUpgrade* (g: Game, cond: var bool) =
     while cond == false:
