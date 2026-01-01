@@ -139,7 +139,7 @@ proc processDialogue* (g: Game) =
             echo getKey(g, "loc__ship_kitchen")
             echo getOptionKey(g, "loc__ship_kitchen_steal", 1)
             echo getOptionKey(g, "loc__ship_kitchen_ask", 2)
-            echo getOptionKey(g, "loc__ship_do_nothing", 3)
+            echo getOptionKey(g, "loc__do_nothing", 3)
             let prompt = readLine(stdin)
             case prompt:
                 of "1":
@@ -163,6 +163,38 @@ proc processDialogue* (g: Game) =
                     discard startQuest(g.player, BRING_SWEET_ROLL) # next chapter
                     waitForPlayer()
                     endDialogue(g, mLOCATION)
+                of "3":
+                    endDialogue(g, mLOCATION)
+                else: return
+
+        of SAILOR_DOCKS:
+            echo getKey(g, "loc__docks_sailor_greet")
+            echo getOptionKey(g, "loc__docks_sailor_que1", 1)
+            echo getOptionKey(g, "loc__docks_sailor_que2", 2)
+            let prompt = readLine(stdin)
+            case prompt:
+                of "1":
+                    echo getKey(g, "loc__ship_sailor_answer")
+                    waitForPlayer()
+                of "2":
+                    endDialogue(g, mLOCATION)
+                else: return
+
+        of LE_VELGA:
+            echo getKey(g, "loc__docks_le_velga")
+            echo getOptionKey(g, "loc__docks_le_velga_que1", 1)
+            echo getOptionKey(g, "loc__docks_le_velga_que1", 2)
+            echo getOptionKey(g, "loc__docks_le_velga_que1", 3)
+            let prompt = readLine(stdin)
+            case prompt:
+                of "1":
+                    echo getKey(g, "loc__docks_le_velga_an1")
+                    waitForPlayer()
+                    echo getKey(g, "loc__docks_le_velga_an2")
+                    waitForPlayer()
+                of "2":
+                    echo getKey(g, "loc__docks_le_velga_no")
+                    waitForPlayer()
                 of "3":
                     endDialogue(g, mLOCATION)
                 else: return

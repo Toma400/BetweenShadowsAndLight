@@ -63,6 +63,8 @@ type
     CAPTAIN
     SAILOR
     COOK
+    SAILOR_DOCKS
+    LE_VELGA
     DUMMY   # used to indicate default state (no dialogue)
   Quest* = enum # strings are language keys
     TALK_TO_COOK     = "quest__cook"
@@ -296,25 +298,37 @@ proc setEndurance*    (p: Player, v: int) = p.attrs.endurance = v
 proc getCharisma*     (p: Player): int    = return p.attrs.charisma
 proc setCharisma*     (p: Player, v: int) = p.attrs.charisma = v
 
-# proc modifyAttributes* (p: var Player, attr: string, val: int): bool =
-#     # returns 'false' in case of failing (error)
-#     case attr:
-#       of "strength":     p.attrs.strength     += val
-#       of "charisma":     p.attrs.charisma     += val
-#       of "dexterity":    p.attrs.dexterity    += val
-#       of "intelligence": p.attrs.intelligence += val
-#       of "endurance":    p.attrs.endurance    += val
-#       else: return false
-#     return true
-#
-# proc modifySkills* (p: var Player, skill: string, val: int): bool =
-#     # returns 'false' in case of failing (error)
-#     case skill:
-#       of "swords": p.skills.swords += val
-#       of "bows":   p.skills.bows   += val
-#       of "guns":   p.skills.guns   += val
-#       else: return false
-#     return true
+# skill getters/setters
+proc getSwords* (p: Player): int       = return p.skills.swords
+proc getBows* (p: Player): int         = return p.skills.bows
+proc getGuns* (p: Player): int         = return p.skills.guns
+proc getSpellcasting* (p: Player): int = return p.skills.spellcasting
+proc getConnection* (p: Player): int   = return p.skills.connection
+proc getTrade* (p: Player): int        = return p.skills.trade
+proc getRepair* (p: Player): int       = return p.skills.repair
+proc getHealing* (p: Player): int      = return p.skills.healing
+proc getLockpicking* (p: Player): int  = return p.skills.lockpicking
+proc getSmithing* (p: Player): int     = return p.skills.smithing
+proc getHerbalism* (p: Player): int    = return p.skills.herbalism
+proc getVehicleDrive* (p: Player): int = return p.skills.vehicle_drive
+proc getTrapspotting* (p: Player): int = return p.skills.trapspotting
+proc getSurvival* (p: Player): int     = return p.skills.survival
+proc getSneaking* (p: Player): int     = return p.skills.sneaking
+proc setSwords* (p: Player, v: int)       = p.skills.swords        = v
+proc setBows* (p: Player, v: int)         = p.skills.bows          = v
+proc setGuns* (p: Player, v: int)         = p.skills.guns          = v
+proc setSpellcasting* (p: Player, v: int) = p.skills.spellcasting  = v
+proc setConnection* (p: Player, v: int)   = p.skills.connection    = v
+proc setTrade* (p: Player, v: int)        = p.skills.trade         = v
+proc setRepair* (p: Player, v: int)       = p.skills.repair        = v
+proc setHealing* (p: Player, v: int)      = p.skills.healing       = v
+proc setLockpicking* (p: Player, v: int)  = p.skills.lockpicking   = v
+proc setSmithing* (p: Player, v: int)     = p.skills.smithing      = v
+proc setHerbalism* (p: Player, v: int)    = p.skills.herbalism     = v
+proc setVehicleDrive* (p: Player, v: int) = p.skills.vehicle_drive = v
+proc setTrapspotting* (p: Player, v: int) = p.skills.trapspotting  = v
+proc setSurvival* (p: Player, v: int)     = p.skills.survival      = v
+proc setSneaking* (p: Player, v: int)     = p.skills.sneaking      = v
 
 proc calculateMaxMana* (p: Player): int =
     # NOT A SETTER
@@ -395,9 +409,7 @@ proc processStatistics* (p: Player) =
     if p.pwr_tech  > 20: p.pwr_tech  = 20
     if p.pwr_conn  > 20: p.pwr_conn  = 20
     if p.pwr_chaos > 20: p.pwr_chaos = 20
-    # level checker
-    if p.xp > calculateExperienceCap(p):
-        discard # todo: level up!
+    # level up removed from here because circular imports, moved to body
 
     if len(p.msg) > 0:
         addMessage(p, "game__warn_div")
@@ -550,7 +562,7 @@ proc buy* (p: Player, item_str: string, value: int): bool =
 proc crouch* (p: Player, detect_value: int): bool =
     # 'true' indicates successful crouching
     p.sp -= 5
-    let chance = p.skills.sneaking * int(p.attrs.dexterity/2) + rand(1..4)
+    let chance = getSneaking(p) * int(getDexterity(p)/2) + rand(1..4)
     if chance > detect_value:
         addExperience(p, 10)
         return true
@@ -570,7 +582,7 @@ proc lock* (p: Player, lockpower: int): bool =
             return false # breaks out of loop
         # 'else'
         p.sp -= 5
-        let chance = p.skills.lockpicking * 5 + rand(1..5)
+        let chance = getLockpicking(p) * 5 + rand(1..5)
         if chance >= lockpower:
             addExperience(p, 10)
             addMessage(p, "game__lock_open")

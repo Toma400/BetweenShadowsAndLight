@@ -188,7 +188,7 @@ proc chest* (g: Game, lockpower: var int = 0, contents: var seq[string]) = # ope
         if CHEST_MODE == 0:
             echo getOptionKey(g, "game__chest_take", 1)
             echo getOptionKey(g, "game__chest_put", 2)
-            echo getOptionKey(g, "loc__ship_do_nothing", 3)
+            echo getOptionKey(g, "loc__do_nothing", 3)
             let prompt = readLine(stdin)
             case prompt:
                 of "1": CHEST_MODE = 1
@@ -252,6 +252,61 @@ proc chest* (g: Game, lockpower: var int = 0, contents: var seq[string]) = # ope
 
 proc chest* (g: Game, raw_val: var (int, seq[string])) = # variant to get directly CHESTS values
     chest(g, raw_val[0], raw_val[1])
+
+proc shop* (g: Game) =
+    # should be like `chest` (in case of being buy/sell) and utilise `buy` proc
+    # but then it should also `printMessages` because `buy` uses that
+    discard
+
+proc chooseAttributeUpgrade* (g: Game, cond: var bool) =
+    while cond == false:
+        clearScreen()
+        echo getKey(g, "game__level_up_attr")
+        for i, a in ["strength", "dexterity", "intelligence", "endurance", "charisma"]:
+            echo getOptionKey(g, "game__gui_" & a, i + 1)
+        let prompt = readLine(stdin)
+        case prompt:
+            of "1": setStrength(g.player, getStrength(g.player) + 1);         cond = true
+            of "2": setDexterity(g.player, getDexterity(g.player) + 1);       cond = true
+            of "3": setIntelligence(g.player, getIntelligence(g.player) + 1); cond = true
+            of "4": setEndurance(g.player, getEndurance(g.player) + 1);       cond = true
+            of "5": setCharisma(g.player, getCharisma(g.player) + 1);         cond = true
+            else: discard # just loops again
+
+proc chooseSkillUpgrade* (g: Game, cond: var bool) =
+    while cond == false:
+        clearScreen()
+        echo getKey(g, "game__level_up_sk")
+        for i, s in ["swords", "bows", "guns", "spellcasting", "connection", "trade", "repair", "healing",
+                     "lockpicking", "smithing", "herbalism", "vehicle_drive", "trapspotting", "survival", "sneaking"]:
+            echo getOptionKey(g, "game__gui_" & s, i + 1)
+        let prompt = readLine(stdin)
+        case prompt:
+            of "1": setSwords(g.player, getSwords(g.player) + 1);              cond = true
+            of "2": setBows(g.player, getBows(g.player) + 1);                  cond = true
+            of "3": setGuns(g.player, getGuns(g.player) + 1);                  cond = true
+            of "4": setSpellcasting(g.player, getSpellcasting(g.player) + 1);  cond = true
+            of "5": setConnection(g.player, getConnection(g.player) + 1);      cond = true
+            of "6": setTrade(g.player, getTrade(g.player) + 1);                cond = true
+            of "7": setRepair(g.player, getRepair(g.player) + 1);              cond = true
+            of "8": setHealing(g.player, getHealing(g.player) + 1);            cond = true
+            of "9":  setLockpicking(g.player, getLockpicking(g.player) + 1);   cond = true
+            of "10": setSmithing(g.player, getSmithing(g.player) + 1);         cond = true
+            of "11": setHerbalism(g.player, getHerbalism(g.player) + 1);       cond = true
+            of "12": setVehicleDrive(g.player, getVehicleDrive(g.player) + 1); cond = true
+            of "13": setTrapspotting(g.player, getTrapspotting(g.player) + 1); cond = true
+            of "14": setSurvival(g.player, getSurvival(g.player) + 1);         cond = true
+            of "15": setSneaking(g.player, getSneaking(g.player) + 1);         cond = true
+            else: discard # just loops again
+
+proc levelUp* (g: Game) =
+    var # bool checkers
+      at = false
+      sk = false
+    chooseAttributeUpgrade(g, at)
+    chooseSkillUpgrade(g, sk)
+
+proc WAITING_FOR_IMPLEMENTATION* () = discard # used so that I know points of the game that needs to be made still
 
 proc exitGame* (g: Game) =
     g.run = false

@@ -1,4 +1,4 @@
-# Between Shadows and Light (Remake)
+![](banner.png)
 Between Shadows and Light was one of my first games
 ever, created in 2018. It was meant to be open world text
 RPG, letting you roam across places from my universe, Baedoor.
@@ -43,7 +43,10 @@ for me to make new version just to add it.
 - Adjusted race names to revised lore (human -> baedoorian, nord -> vindean, saphtri -> pahtri (due to description))
 
 ### New features (1.2+ version)
+- if not available already: trading would improve trade skill, and trade skill would
+  lower the prices?
 
 ### Lore notes (to be transferred to BE and removed from here)
 - "Pod Złotym Szczurem" (Under Golden Rat) tavern in Evros
 - Sailor's name is Sam
+- (website) 29.7.18 - new version

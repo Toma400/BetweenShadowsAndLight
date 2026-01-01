@@ -59,14 +59,7 @@ proc initCharacter* (g: Game, player_tuple: var tuple[name: string,
         if prompt.toLowerAscii in conv:
             player_tuple.class = conv[prompt.toLowerAscii]
         clearScreen()
-    # # attribute pick
-    # while player_tuple.attr == "":
-    #     break
-    # # skill pick
-    # while player_tuple.skill == "":
-    #     break
 
     # after all picks are done
     createCharacter(g, player_tuple.name, player_tuple.gender, player_tuple.race, player_tuple.class)
-    # modifyAttributes(g.player, player_tuple.attr, 1)
-    # modifySkills(g.player, player_tuple.skill, 1)
+    levelUp(g) # put here so it doesn't get overwritten, for player the order is invisible

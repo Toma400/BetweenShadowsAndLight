@@ -8,6 +8,7 @@ import lang
 import item
 import init
 import game
+import char
 import os
 
 var g = newGame()
@@ -50,6 +51,8 @@ while isRunning(g):
                 # general processes
                 processMainQuest(g)
                 processStatistics(g.player)
+                if getExperience(g.player) > calculateExperienceCap(g.player):
+                    levelUp(g)
                 # echos
                 echo LocationMap
                 echo "[" & getKey(g, "location__" & ($g.location).toLowerAscii) & "]"
@@ -76,7 +79,6 @@ while isRunning(g):
                     switchMenu(g, conv[prompt.toLowerAscii])
                 elif prompt == "cheat":
                     discard # todo: make it cheat screen, like in OG
-                # todo: discard readLine(stdin) # used so that you don't get result cleared
 
         of SETTINGS:
             echo getKey(g, "menu__langcur") & " " & getKey(g, "menu__lang")
@@ -95,43 +97,7 @@ while isRunning(g):
                 switchTutorial(g)
 
         of mCHARACTER:
-            echo getKey(g, "game__gui_chinit")
-            echo "[" & getPlayerName(g.player) & "]"
-            echo getKey(g, "gender__" & ($getGender(g.player)).toLowerAscii)
-            echo getKey(g, "race__"   & ($getRace(g.player)).toLowerAscii)
-            echo getKey(g, "class__"  & ($getClass(g.player)).toLowerAscii)
-            echo getKey(g, "game__gui_level")  & ": " & $getLevel(g.player)
-            echo getKey(g, "game__gui_xp")     & ": " & $getExperience(g.player) & " / " & $getMaxWeight(g.player)
-            echo getKey(g, "game__gui_sp")     & ": " & $g.player.sp
-            echo "{" & getKey(g, "game__gui_health") & ": " & $g.player.hp & " / " & $getMaxHealth(g.player) & "}" &
-                 "{" & getKey(g, "game__gui_mana")   & ": " & $g.player.mp & " / " & $getMaxMana(g.player)   & "}" &
-                 "{" & getKey(g, "game__gui_attack")  & ": " & $getAttack(g.player)  & "}" &
-                 "{" & getKey(g, "game__gui_defence") & ": " & $getDefence(g.player) & "}" &
-                 # armor | todo: apparently there's [armor / maxarmor]?? is it like item resistance/durability?
-                 #         ...but then there's also `armor_hp` wtf
-                 "" # for now, so that the above not being filled don't break the string
-                 # magic defence (if it exists), from what I see as new line
-            echo DIVSHORT
-            echo getKey(g, "game__gui_strength")     & ": " & $getStrength(g.player)
-            echo getKey(g, "game__gui_dexterity")    & ": " & $getDexterity(g.player)
-            echo getKey(g, "game__gui_intelligence") & ": " & $getIntelligence(g.player)
-            echo getKey(g, "game__gui_endurance")    & ": " & $getEndurance(g.player)
-            echo getKey(g, "game__gui_charisma")     & ": " & $getCharisma(g.player)
-            # skills
-            waitForPlayer() # let player see statistics before they are moved to old menu
-  # basic_armor()
-  # print ("Twoja postać:","\n\n[",name,"]\n",gender,"\n",race,"\n",craft,"\n")
-  # print ("Poziom", level, "\n")
-  # print ("-Punkty doświadczenia:",xp,"/",xp_level,"-")
-  # print ("-Wypoczęcie:",sp,"-")
-  # print ("[HP",hp,"/",hp_level,"][Mana",mp,"/",mp_level,"][Atak",eq_attack,"][Obrona",eq_defence,"(",armor_hp,"%)]")
-  # if eq_mdefence > 0:
-  #   print ("[Obrona magiczna",eq_mdefence,"]")
-  # print ("---------------------")
-  # print ("[SIŁA",strength,"]\n[ZWINNOŚĆ",dexterity,"]\n[INTELIGENCJA",intelligence,"]\n[WYTRZYMAŁOŚĆ",endurance,"]""\n[CHARYZMA",charisma,"]")
-  # print ("\n[BROŃ BIAŁA",swords,"]\n[STRZELECTWO",bows,"]\n[BROŃ PALNA",guns,"]\n[RZUCANIE ZAKLĘĆ",castspelling,"]\n[SIŁA ZJEDNOCZENIA",connection,"]\n[HANDEL",trade,"]\n[NAPRAWA",repair,"]\n[LECZENIE",healing,"]\n[OTWIERANIE ZAMKÓW",lockpicking,"]\n[SKRADANIE",sneaking,"]\n[KOWALSTWO",smithing,"]\n[ZIELARSTWO",herbalism,"]\n[KIEROWANIE POJAZDAMI",vehicle_drive,"]\n[PUŁAPKI",trapspotting,"]\n[PRZETRWANIE",survival,"]")
-
-            switchMenu(g, mDEFAULT)
+            characterStatistics(g)
 
         of mINVENTORY: break
         of mLOCATION:
@@ -142,7 +108,7 @@ while isRunning(g):
                     echo getOptionKey(g, "loc__ship_search_deck",  2)
                     echo getOptionKey(g, "loc__ship_look_around",  3)
                     echo getOptionKey(g, "loc__ship_talk_captain", 4)
-                    echo getOptionKey(g, "loc__ship_do_nothing",   5)
+                    echo getOptionKey(g, "loc__do_nothing",   5)
                     if isQuestActive(g.player, TALK_TO_COOK):
                         echo getOptionKey(g, "loc__ship_go_to_kitchen", 6)
                     let prompt = readLine(stdin)
@@ -164,7 +130,7 @@ while isRunning(g):
                     echo getKey(g, "loc__island")
                     echo getOptionKey(g, "loc__island_look_around", 1)
                     echo getOptionKey(g, "loc__island_barrels", 2)
-                    echo getOptionKey(g, "loc__ship_do_nothing", 3)
+                    echo getOptionKey(g, "loc__do_nothing", 3)
                     let prompt = readLine(stdin)
                     case prompt:
                         of "1": island_SearchArea(g.player)
@@ -179,13 +145,33 @@ while isRunning(g):
                     echo getOptionKey(g, "loc__abhouse_que1", 1)
                     echo getOptionKey(g, "loc__abhouse_que2", 2)
                     echo getOptionKey(g, "loc__abhouse_que3", 3)
-                    echo getOptionKey(g, "loc__ship_do_nothing", 4)
+                    echo getOptionKey(g, "loc__do_nothing", 4)
                     let prompt = readLine(stdin)
                     case prompt:
                         of "1": home_ReadBook(g.player)
                         of "2": home_OpenChest(g)
                         of "3": home_Sleep(g.player)
                         of "4": switchMenu(g, mDEFAULT); continue
+                        else: continue
+                    printMessages(g)
+                    waitForPlayer()
+                of DOCKS:
+                    echo getKey(g, "loc__docks")
+                    echo getOptionKey(g, "loc__docks_que1", 1)
+                    echo getOptionKey(g, "loc__docks_que2", 2)
+                    echo getOptionKey(g, "loc__docks_que3", 3)
+                    echo getOptionKey(g, "loc__docks_que4", 4)
+                    echo getOptionKey(g, "loc__docks_que5", 5)
+                    echo getOptionKey(g, "loc__do_nothing", 6)
+                    let prompt = readLine(stdin)
+                    case prompt:
+                        of "1": discard # tawerna <<<<<
+                        of "2": WAITING_FOR_IMPLEMENTATION() # sklep magiczny
+                        of "3": startDialogue(g, SAILOR_DOCKS)
+                        of "4": startDialogue(g, LE_VELGA)
+                        of "5": WAITING_FOR_IMPLEMENTATION() # magazyn
+                        of "6": switchMenu(g, mDEFAULT); continue
+                        of "cheat": addItemToInventory(g.player, "parchment") # TODO: temporary just to test the quest
                         else: continue
                     printMessages(g)
                     waitForPlayer()
@@ -243,5 +229,6 @@ while isRunning(g):
                 switchMenu(g, START)
             else:
                 switchMenu(g, mDEFAULT)
+
         of mDIALOGUE:
             processDialogue(g)
