@@ -1,4 +1,5 @@
-![](banner.png)
+<img src="banner.png" width="100%"></img>
+
 Between Shadows and Light was one of my first games
 ever, created in 2018. It was meant to be open world text
 RPG, letting you roam across places from my universe, Baedoor.
@@ -48,6 +49,9 @@ for me to make new version just to add it.
 - if not available already: trading would improve trade skill, and trade skill would
   lower the prices?
 - decrease level cap? (100 xp for second level is ridiculous)
+- smithing recipes for level 2/3? maybe actually make level 1 get less items
+- also make smith be able to train you in smithing (both for 0->1 and 1->2/3), maybe for
+  plenty of money
 
 ### Lore notes (to be transferred to BE and removed from here)
 - "Pod Złotym Szczurem" (Under Golden Rat) tavern in Evros

@@ -1,3 +1,4 @@
+import mechanics
 import player
 import game
 
@@ -209,7 +210,7 @@ proc processDialogue* (g: Game) =
                 echo getOptionKey(g, "loc__docks_tavern_que4", 4)
                 let prompt = readLine(stdin)
                 case prompt:
-                    of "1": shop(g, TAVERN_BARMAN, can_sell=false)
+                    of "1": shop(g, TAVERN_BARMAN)
                     of "2":
                         if not checkVariable(g.player, TAVERN_KEY):
                             addDialogueVariable(g.player, "buy_sleep")
@@ -256,7 +257,7 @@ proc processDialogue* (g: Game) =
                     echo getOptionKey(g, "loc__docks_mage_que5", 5)
                 let prompt = readLine(stdin)
                 case prompt:
-                    of "1": shop(g, MAGICIAN, can_sell=false)
+                    of "1": shop(g, MAGICIAN)
                     of "2": addDialogueVariable(g.player, "help")
                     of "3": addDialogueVariable(g.player, "aintrick")
                     of "4": endDialogue(g, mLOCATION)
@@ -286,10 +287,11 @@ proc processDialogue* (g: Game) =
                         of "1":
                             discard startQuest(g.player, GET_PARCHMENT)
                             echo getKey(g, "loc__docks_mage_aintask2")
-                            removeDialogueVariable(g.player, "help")
+                            removeDialogueVariable(g.player, "aintrick")
                             waitForPlayer()
-                        of "2": removeDialogueVariable(g.player, "help")
+                        of "2": removeDialogueVariable(g.player, "aintrick")
                         else: return # will rewrite the above
+                else: removeDialogueVariable(g.player, "aintrick")
             else: # 'help' variable section | after player asks if they can help
                 if isQuestFinished(g.player, GET_PARCHMENT):
                     echo getKey(g, "loc__docks_mage_taskdone")
@@ -312,3 +314,18 @@ proc processDialogue* (g: Game) =
                             waitForPlayer()
                         of "2": removeDialogueVariable(g.player, "help")
                         else: return # will rewrite the above
+
+        of SMITH:
+            echo getKey(g, "loc__evros_smith")
+            echo getOptionKey(g, "loc__evros_smith_que1", 1)
+            echo getOptionKey(g, "loc__evros_smith_que2", 2)
+            echo getOptionKey(g, "loc__docks_tavern_que4", 3)
+            let prompt = readLine(stdin)
+            case prompt:
+                of "1": shop(g, SMITH)
+                of "2":
+                    echo getKey(g, "loc__evros_smith_anvil")
+                    waitForPlayer()
+                    smithing(g)
+                of "3": endDialogue(g, mLOCATION)
+                else: return

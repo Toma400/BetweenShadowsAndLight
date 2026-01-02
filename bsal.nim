@@ -171,7 +171,29 @@ while isRunning(g):
                         of "4": startDialogue(g, LE_VELGA)
                         of "5": WAITING_FOR_IMPLEMENTATION() # magazyn
                         of "6": switchMenu(g, mDEFAULT); continue
-                        of "cheat": addItemToInventory(g.player, "parchment") # TODO: temporary just to test the quest
+                        of "cheat":
+                            addItemToInventory(g.player, "parchment") # TODO: temporary just to test the quest
+                            addItemToInventory(g.player, "wood")
+                            addItemToInventory(g.player, "iron")
+                        else: continue
+                    printMessages(g)
+                    waitForPlayer()
+                of EVROS:
+                    echo getKey(g, "loc__evros")
+                    echo getOptionKey(g, "loc__evros_que1", 1)
+                    echo getOptionKey(g, "loc__evros_que2", 2)
+                    echo getOptionKey(g, "loc__evros_que3", 3)
+                    echo getOptionKey(g, "loc__evros_que4", 4)
+                    echo getOptionKey(g, "loc__evros_que5", 5)
+                    echo getOptionKey(g, "loc__do_nothing", 6)
+                    let prompt = readLine(stdin)
+                    case prompt:
+                        of "1": WAITING_FOR_IMPLEMENTATION()
+                        of "2": WAITING_FOR_IMPLEMENTATION()
+                        of "3": startDialogue(g, SMITH)
+                        of "4": WAITING_FOR_IMPLEMENTATION()
+                        of "5": WAITING_FOR_IMPLEMENTATION()
+                        of "6": switchMenu(g, mDEFAULT); continue
                         else: continue
                     printMessages(g)
                     waitForPlayer()

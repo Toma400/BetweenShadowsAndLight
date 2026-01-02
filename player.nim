@@ -68,6 +68,7 @@ type
     LE_VELGA
     TAVERN_BARMAN
     MAGICIAN
+    SMITH
     DUMMY   # used to indicate default state (no dialogue)
   Quest* = enum # strings are language keys  | xp gain
     TALK_TO_COOK     = "quest__cook"       # | 0 xp (partial quest)
@@ -123,10 +124,26 @@ const
   DEF_ATT = 2    # default attack  | I can imagine fists?
   DEF_DEF = 0    # default defence
 
-const TRADING_OFFERS* : Table[NPC, seq[tuple[id: string, value: int]]] = {
+# TRADE TABLES
+# Entry means `shop` proc enables shopping in particular NPC
+# No entry or empty seq means shopping menu will be non-available
+const BUYING_OFFERS* : Table[NPC, seq[tuple[id: string, value: int]]] = {
     TAVERN_BARMAN : @[("beer", 8)],
-    MAGICIAN      : @[("scroll_heal", 18), ("scroll_fireball", 20), ("staff_fire", 45), ("staff_earth", 44), ("staff_conn", 35), ("antidote", 15), ("potion_mana_small", 12), ("potion_health_small", 14)]
+    MAGICIAN      : @[("scroll_heal", 18), ("scroll_fireball", 20), ("staff_fire", 45), ("staff_earth", 44), ("staff_conn", 35), ("antidote", 15), ("potion_mana_small", 12), ("potion_health_small", 14)],
+    SMITH         : @[("chainmail", 50), ("rapier", 30), ("dynamite", 27)],
 }.toTable
+const SELLING_OFFERS* : Table[NPC, seq[tuple[id: string, value: int]]] = {
+    SMITH : @[("iron", 10)],
+}.toTable
+# proc to check existence of particular product in tables above
+proc isInOfferTable* (oftable: seq[tuple[id: string, value: int]], item_id: string): bool =
+    for it in oftable:
+        if it.id == item_id: return true
+    return false
+# getter of value
+proc getValueFromOfferTable* (oftable: seq[tuple[id: string, value: int]], item_id: string): int =
+    for it in oftable:
+        if it.id == item_id: return it.value
 
 # dictionaries
 let getdGender* = {

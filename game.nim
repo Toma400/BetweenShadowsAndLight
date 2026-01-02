@@ -253,23 +253,25 @@ proc chest* (g: Game, lockpower: var int = 0, contents: var seq[string]) = # ope
 proc chest* (g: Game, raw_val: var (int, seq[string])) = # variant to get directly CHESTS values
     chest(g, raw_val[0], raw_val[1])
 
-proc shop* (g: Game, npc: NPC, can_buy, can_sell: bool = true) =
-    # should be like `chest` (in case of being buy/sell) and utilise `buy` proc
-    # but then it should also `printMessages` because `buy` uses that
-    # - buy/sell - whether particular shop options are available
-    var MODE   = 0                   # mode for purchase (0 = none, 1 = buy, 2 = sell)
-    let offers = TRADING_OFFERS[npc] # .id / .value
+proc shop* (g: Game, npc: NPC) =
+    # mode for purchase (0 = none, 1 = buy, 2 = sell)
+    var MODE   = 0
+    let buy_offers  = if npc in BUYING_OFFERS: BUYING_OFFERS[npc] else: @[] # .id / .value
+    let sell_offers = if npc in SELLING_OFFERS: SELLING_OFFERS[npc] else: @[] # .id / .value
+    let can_buy  = len(buy_offers)  > 0
+    let can_sell = len(sell_offers) > 0
     while true:
         clearScreen()
         echo DIVIDER
-        if can_buy:
+        if can_buy: # can_buy
             echo "{" & getKey(g, "game__trade_seller")  & "}"
-            for ix, it in offers.pairs():
-                echo getOptionKey(g, "item__" & it.id, ix + 1) & ": " & $it.value
-        if can_sell:
+            for ix, it in buy_offers.pairs():
+                echo getOptionKey(g, "item__" & it.id, ix + 1) & ": " & $it.value # no need for getter
+        if can_sell: # can_sell
             echo "{" & getKey(g, "game__gui_inventory") & "}"
             for ix, it in getInventory(g.player).pairs():
-                echo getOptionKey(g, "item__" & it, ix + 1) & ": " & $ITEMS[it].value
+                if isInOfferTable(sell_offers, it):
+                    echo getOptionKey(g, "item__" & it, ix + 1) & ": " & $getValueFromOfferTable(sell_offers, it)
         echo DIVIDER
         echo getKey(g, "game__trade_money") & ": " & $g.player.money
         echo DIVIDER
@@ -291,12 +293,12 @@ proc shop* (g: Game, npc: NPC, can_buy, can_sell: bool = true) =
             if prompt == "": MODE = 0
             try:
                 let p = parseInt(prompt)
-                if p > len(offers) or p < 1:
+                if p > len(buy_offers) or p < 1:
                     echo getKey(g, "game__chest_big")
                     waitForPlayer()
                     continue
                 else: # correct pick!
-                    let item = offers[p-1]
+                    let item = buy_offers[p-1]
                     if buy(g.player, item.id, item.value) == true:
                         echo getKey(g, "game__trade_bought") & " " & getKey(g, "item__" & item.id)
                     printMessages(g)
@@ -313,6 +315,8 @@ proc shop* (g: Game, npc: NPC, can_buy, can_sell: bool = true) =
                     echo getKey(g, "game__chest_big")
                     waitForPlayer()
                     continue
+                elif not isInOfferTable(sell_offers, getInventory(g.player)[p-1]):
+                    continue # if you try to cheese to sell something outside your item range
                 else: # correct pick!
                     let item_str = getInventory(g.player)[p-1]
                     if sell(g.player, item_str, ITEMS[item_str].value) == true:

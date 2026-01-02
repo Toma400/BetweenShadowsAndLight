@@ -1,0 +1,274 @@
+import std/strutils
+import std/tables
+import player
+import game
+
+const SMITHING_REPICES* = Table[int, Table[string, seq[tuple[id: string, amount: int]]]] { # first int is smithing level
+    # level 0 is ommited, as it doesn't allow you to smith in OG
+    1: {
+        "rapier": @[("wood", 1), ("iron", 1)],
+        #"bullet": @[("gunpowder", 1)], --> 15
+        #"arrow":  @[("wood", 1)], --> 15
+    }.toTable,
+}.toTable
+
+proc hasAllResources* (g: Game, reqseq: seq[tuple[id: string, amount: int]]): bool =
+    result = true # to be overwritten if fails to gather resources
+    var backup: seq[string]
+    for reqit in reqseq:
+        for i in 1..reqit.amount:
+            if hasItem(g.player, reqit.id):
+                discard removeItemFromInventory(g.player, reqit.id)
+                backup.add(reqit.id) # in case not all items are available
+            else:
+                result = false
+    if result == false:
+        for it in backup: # restores all not used items
+            addItemToInventory(g.player, it)
+
+proc smithing* (g: Game) =
+    var MODE     = 0 # 1 = creating, 2 = repairing
+    let sm_items = newTable[string, seq[tuple[id: string, amount: int]]]()
+    for lvl in 0..getSmithing(g.player): # gets all available smithing items player can create
+        if lvl in SMITHING_REPICES:
+            for it, val in SMITHING_REPICES[lvl]:
+                sm_items[it] = val
+
+    while true:
+        if MODE == 0: # no mode
+            echo "{ " & getKey(g, "game__smith_anvil") & " }"
+            echo getOptionKey(g, "game__smith_create", 1)
+            echo getOptionKey(g, "game__smith_repair", 2)
+            echo getOptionKey(g, "game__lock_give_up", 3)
+            let prompt = readLine(stdin)
+            case prompt:
+                of "1": MODE = 1
+                of "2": MODE = 2
+                of "3": break # ends smithing
+        elif MODE == 1: # creating
+            if getSmithing(g.player) == 0:
+                echo getKey(g, "game__smith_skilisue")
+                waitForPlayer()
+                MODE = 0
+            else: # skill > 0
+                echo DIVIDER
+                for it in getInventory(g.player):
+                    echo "- " & getKey(g, "item__" & it)
+                echo DIVIDER
+                var sm_ref : Table[int, string]      # referrer for later
+                var ix     = 1                       # index
+                for smid, smreq in sm_items.pairs(): # lists items available to smith
+                    var req = ""
+                    for riq in smreq:
+                        req = req & getKey(g, "item__" & riq.id & ": " & $riq.amount)
+                    echo getOptionKey(g, "item__" & smid, ix) & "| " & req
+                    sm_ref[ix] = smid; ix += 1 # saves to referrer, bumps index by one
+                let prompt = readLine(stdin)
+                try:
+                    let p = parseInt(prompt)
+                    if p < 1 or p > ix:
+                        continue
+                    else: # good pick!
+                        if hasAllResources(g, sm_items[sm_ref[p]]): # cost seq
+                            addItemToInventory(g.player, sm_ref[p]) # item id
+                            g.player.sp -= 15                       # tiredness gain
+                            echo getKey(g, "game__smith_crafted") & " " & getKey(g, "item__" & sm_ref[p])
+                            waitForPlayer()
+                        else:
+                            echo getKey(g, "game__smith_resissue")
+                            waitForPlayer()
+                except ValueError: continue # go back
+        elif MODE == 2: # repairing
+            MODE = 1 # temporary ... v
+            WAITING_FOR_IMPLEMENTATION()
+
+proc herbalism* () =
+    WAITING_FOR_IMPLEMENTATION()
+
+proc cooking* () =
+    WAITING_FOR_IMPLEMENTATION()
+
+# def smithing_use():
+#   global smithing
+#   global equip
+#   global eq_ammo
+#   global eq_arrows
+#   global sp
+#   global taken_item
+#   global throw_it
+#   print ("-------------------------------")
+#   local = input ("[1] Wykuj przedmiot \n[2] Napraw przedmiot \n[3] Odejdź")
+#   if local == "1":
+#     while True:
+#       print ("-------------------------------")
+#       print (equip)
+#       print ("-------------------------------")
+#       if smithing == 0:
+#         print ("Nie masz jeszcze odpowiednio dużych umiejętności!")
+#         break
+#       elif smithing > 1:
+#         print ("[1][RAPIER][Żelazo, Drewno]")
+#         print ("[2][POCISK -15-][Proch]")
+#         print ("[3][STRZAŁA -15-][Drewno]")
+#       i_will_smith = input ("\nWpisz numer broni, którą chcesz stworzyć")
+#       if i_will_smith == "1":
+#         if "Drewno" in equip and "Żelazo" in equip:
+#           throw_it = "Drewno"
+#           inventory(6)
+#           throw_it = "Żelazo"
+#           inventory(6)
+#           taken_item = "Rapier"
+#           inventory(5)
+#           sp -= 15
+#         else:
+#           print ("Brakuje Ci surowca!")
+#       elif i_will_smith == "2":
+#         if "Proch" in equip:
+#           throw_it = "Proch"
+#           inventory(6)
+#           eq_ammo += 15
+#           sp -= 15
+#         else:
+#           print ("Brakuje Ci surowca!")
+#       elif i_will_smith == "3":
+#         if "Drewno" in equip:
+#           throw_it = "Drewno"
+#           inventory(6)
+#           eq_arrows += 15
+#           sp -= 15
+#       else:
+#         "Podałeś zły numer"
+#
+#   elif local == "2":
+#     if tutorial_system == 1:
+#       print (">> System naprawy jest w Between Shadows and Light oparty na dwóch umiejętnościach: naprawy, ale i kucia. Kucie reprezentuje te wszystkie naprawy, które wciąż wymagają umiejętności kowalstwa - z kolei naprawa potrzebna jest głównie do technologicznej części broni i pancerzy (jak i również do maszyn) <<")
+#     while True:
+#       print ("-------------------------------")
+#       print (equip)
+#       question = input ("[1-...] Wpisz numer przedmiotu do naprawy \n[A] Anuluj")
+#       try:
+#         question = int (question)
+#         question -= 1
+#         repairing_item = equip[question]
+#       except IndexError or ValueError:
+#         print ("Błędnie podałeś numer!")
+#
+#       if repairing_item == "Uszkodzona Kolczuga":
+#         if "Żelazo" in equip and smithing > 0:
+#           sp -= 10
+#           throw_it = "Żelazo"
+#           inventory(6)
+#           throw_it = "Uszkodzona Kolczuga"
+#           inventory(6)
+#           taken_item = "Kolczuga"
+#           inventory(5)
+#         elif "Żelazo" in equip:
+#           print ("Za słabo obyłeś się z kowalstwem, by naprawić ten przedmiot")
+#         else:
+#           print ("Nie masz żelaza potrzebnego do naprawy!")
+#       else:
+#         print ("Nie możesz naprawić tego przedmiotu!")
+#
+#   else:
+#     pass
+#
+# def herbalism_use():
+#   global herbalism
+#   global temp_chest
+#   global equip
+#   global sp
+#   global taken_item
+#   global throw_it
+#   temp_chest = []
+#   if tutorial_system == 1:
+#     print (">> Pamiętaj, że możesz eksperymentować, nie znając przepisów - tak samo, jak znając przepis, może nie udać Ci się stworzyć mikstury, jeśli brak Ci umiejętności <<")
+#     print (">> Wkładając składniki do przetworzenia, pamiętaj, że po spróbowaniu zrobienia mikstury - jak i również przy wyjściu z laboratorium - wszystkie składniki zostają stracone. Rzecz jasna, gdy będziesz miał odpowiednie składniki, przetworzenie ich da Ci miksturę, której potrzebujesz <<")
+#   while True:
+#     print ("\n----------------------------------")
+#     print ("Używane składniki:",temp_chest)
+#     print ("\n[1] Dodaj/weź składniki \n[2] Spróbuj stworzyć miksturę \n[3] Odejdź")
+#     local = input ("")
+#     print ("\n")
+#     if local == "1":
+#       chests(0,0)
+#     elif local == "2":
+#       sp -= 5
+#       if "Kwiat Hyerbitusa" and "Podgrzana Woda" in temp_chest:
+#         print ("Stworzyłeś małą miksturę zdrowia!")
+#         taken_item = "Mała Mikstura Zdrowia"
+#         inventory(5)
+#         xp_add (5)
+#         temp_chest = []
+#       else:
+#         print ("Niestety, nie udało się stworzyć mikstury")
+#         temp_chest = []
+#     else:
+#       break
+#
+# def cooking(cook_fry):
+#   #cook_fry: 1-ognisko, 2-ognisko z garnkiem
+#   global temp_chest
+#   global equip
+#   global sp
+#   global taken_item
+#   global throw_it
+#   if tutorial_system == 1:
+#     print (">> Gotowanie i pieczenie to nie lada sztuka, a odpowiednie składniki w rękach dobrego kucharza mogą zdziałać cuda. W grze możesz wybierać między gotowaniem a pieczeniem - zależnie, czy jesteś jedynie przy ognisku, czy może jest przy nim garnek. Z kolei gdy włączysz którąkolwiek z opcji, zasada jest podobna - kładąc odpowiednie składniki na 'szali', możesz je ugotować lub upiec, by służyły Ci lepiej. Z reguły rzeczy upieczone są smaczniejsze i lepiej leczą, z kolei zaś ugotowana woda daje Ci możliwości wykorzystania ziół, i nie zatrucia się przy okazji <<")
+#   print ("[1] Upiecz coś")
+#   if cook_fry == 2:
+#     print ("[2] Ugotuj coś")
+#   print ("[3] Odejdź")
+#   local = input("")
+#   if local == "1":
+#     temp_chest = []
+#     if tutorial_system == 1:
+#       print (">> Dość istotna uwaga: piec możesz jedną rzecz naraz. Nie kładź więc do upieczenia więcej niż jedną rzecz, gdyż możesz stracić niepotrzebnie to, co chciałeś upiec. Nie bez kozery mówi się, że 'upiec dwie pieczenie na jednym ogniu' to sztuka - sztuka raczej niedostępna wielu <<")
+#     while True:
+#       print ("\n----------------------------------")
+#       print ("Używane składniki:",temp_chest)
+#       print ("\n[1] Dodaj/weź składnik \n[2] Spróbuj upiec składnik \n[3] Odejdź")
+#       local2 = input ("")
+#       print ("\n")
+#       sp -= 5
+#       if local2 == "1":
+#         chests(0,0)
+#       elif local2 == "2":
+#         if "Szczurze Mięso" in temp_chest:
+#           print ("Upiekłeś szczurze mięso!")
+#           taken_item = "Pieczone Szczurze Mięso"
+#           inventory(5)
+#           xp_add (5)
+#           temp_chest = []
+#         else:
+#           print ("Niestety, nie udało się nic upiec!")
+#           temp_chest = []
+#       else:
+#         break
+#     pass
+#   elif local == "2":
+#     temp_chest = []
+#     while cook_fry == 2:
+#       print ("\n----------------------------------")
+#       print ("Używane składniki:",temp_chest)
+#       print ("\n[1] Dodaj/weź składniki \n[2] Spróbuj ugotować składniki \n[3] Odejdź")
+#       local3 = input ("")
+#       print ("\n")
+#       sp -= 5
+#       if local3 == "1":
+#         chests(0,0)
+#       elif local3 == "2":
+#         #woda na samym końcu!! [by nie gotować wody zawsze przy zupach]
+#         if "Woda" in temp_chest:
+#           print ("Ugotowałeś wodę")
+#           taken_item = "Podgrzana Woda"
+#           inventory(5)
+#           temp_chest = []
+#           xp_add (2)
+#         else:
+#           print ("Niestety, nie udało się nic ugotować!")
+#           temp_chest = []
+#       else:
+#         break
+#     pass
+#   else:
+#     pass

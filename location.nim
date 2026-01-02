@@ -31,9 +31,10 @@ const LocationDestinations* : Table[Location, seq[tuple[loc: Location, key: stri
                         (loc: BAEDOOR,         key: "travel__desi_to_bae",  cost:  0, cond: false, failed: "travel__desi_to_baef"),
                         (loc: DOCKS,           key: "travel__desi_to_dock", cost: 10, cond: true,  failed: "")],
     DESERTED_HOME   : @[(loc: DESERTED_ISLAND, key: "travel__desh_to_desi", cost:  0, cond: true,  failed: "")],
-    DOCKS           : @[], # todo: ADD SHIP_DOCKED + IN OG IT ALLOWS TO COME BACK TO DESERTED ISLAND!
-    EVROS           : @[],
-    FIELDS          : @[],
+    DOCKS           : @[(loc: EVROS,           key: "travel__dock_to_evrs", cost:  0, cond: true,  failed: "")], # todo: ADD SHIP_DOCKED + IN OG IT ALLOWS TO COME BACK TO DESERTED ISLAND!
+    EVROS           : @[(loc: DOCKS,           key: "travel__evrs_to_dock", cost:  0, cond: true,  failed: ""),
+                        (loc: FIELDS,          key: "travel__evrs_to_fiel", cost:  0, cond: true,  failed: "")],
+    FIELDS          : @[(loc: EVROS,           key: "travel__fiel_to_evrs", cost:  0, cond: true,  failed: "")],
     # BAEDOOR # not used here because it's a dummy location
 }.toTable
 
