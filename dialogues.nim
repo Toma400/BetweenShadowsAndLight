@@ -174,7 +174,7 @@ proc processDialogue* (g: Game) =
             let prompt = readLine(stdin)
             case prompt:
                 of "1":
-                    echo getKey(g, "loc__ship_sailor_answer")
+                    echo getKey(g, "loc__docks_sailor_answer")
                     waitForPlayer()
                 of "2":
                     endDialogue(g, mLOCATION)
@@ -215,7 +215,7 @@ proc processDialogue* (g: Game) =
                             addDialogueVariable(g.player, "buy_sleep")
                     of "3":
                         if checkVariable(g.player, TAVERN_KEY):
-                            sleep()
+                            sleep(g.player)
                             echo getKey(g, "loc__docks_tavern_sleep")
                             removeVariable(g.player, TAVERN_KEY)
                             waitForPlayer()
@@ -243,3 +243,72 @@ proc processDialogue* (g: Game) =
                             waitForPlayer()
                     of "2": removeDialogueVariable(g.player, "buy_sleep")
                     else: return
+
+        of MAGICIAN:
+            let dvars = getDialogueVariables(g.player)
+            if "help" notin dvars and "aintrick" notin dvars: # normal section
+                echo getKey(g, "loc__docks_mage")
+                echo getOptionKey(g, "loc__docks_mage_que1", 1)
+                echo getOptionKey(g, "loc__docks_mage_que2", 2)
+                echo getOptionKey(g, "loc__docks_mage_que3", 3)
+                echo getOptionKey(g, "loc__docks_mage_que4", 4)
+                if isQuestActive(g.player, GET_PARCHMENT) and hasItem(g.player, "parchment"):
+                    echo getOptionKey(g, "loc__docks_mage_que5", 5)
+                let prompt = readLine(stdin)
+                case prompt:
+                    of "1": shop(g, MAGICIAN, can_sell=false)
+                    of "2": addDialogueVariable(g.player, "help")
+                    of "3": addDialogueVariable(g.player, "aintrick")
+                    of "4": endDialogue(g, mLOCATION)
+                    of "5":
+                        if isQuestActive(g.player, GET_PARCHMENT) and hasItem(g.player, "parchment"):
+                            echo getKey(g, "loc__docks_mage_happy")
+                            discard removeItemFromInventory(g.player, "parchment")
+                            waitForPlayer()
+                            echo getKey(g, "loc__docks_mage_happy2")
+                            setSpellcasting(g.player, getSpellcasting(g.player) + 1)
+                            finishQuest(g.player, GET_PARCHMENT, 5)
+                            waitForPlayer()
+                    else: return
+            elif "help" notin dvars: # 'aintrick' variable section
+                echo getKey(g, "loc__docks_mage_aintrick")
+                waitForPlayer()
+                echo getKey(g, "loc__docks_mage_a2ntrick")
+                waitForPlayer()
+                echo getKey(g, "loc__docks_mage_a3ntrick")
+                waitForPlayer()
+                if not isQuestActive(g.player, GET_PARCHMENT) and not isQuestFinished(g.player, GET_PARCHMENT):
+                    echo getKey(g, "loc__docks_mage_aintask")
+                    echo getOptionKey(g, "loc__docks_mage_taskre1", 1)
+                    echo getOptionKey(g, "loc__docks_mage_taskre2", 2)
+                    let prompt = readLine(stdin)
+                    case prompt:
+                        of "1":
+                            discard startQuest(g.player, GET_PARCHMENT)
+                            echo getKey(g, "loc__docks_mage_aintask2")
+                            removeDialogueVariable(g.player, "help")
+                            waitForPlayer()
+                        of "2": removeDialogueVariable(g.player, "help")
+                        else: return # will rewrite the above
+            else: # 'help' variable section | after player asks if they can help
+                if isQuestFinished(g.player, GET_PARCHMENT):
+                    echo getKey(g, "loc__docks_mage_taskdone")
+                    removeDialogueVariable(g.player, "help")
+                    waitForPlayer()
+                elif isQuestActive(g.player, GET_PARCHMENT):
+                    echo getKey(g, "loc__docks_mage_taskpend")
+                    removeDialogueVariable(g.player, "help")
+                    waitForPlayer()
+                else:
+                    echo getKey(g, "loc__docks_mage_task")
+                    echo getOptionKey(g, "loc__docks_mage_taskre1", 1)
+                    echo getOptionKey(g, "loc__docks_mage_taskre2", 2)
+                    let prompt = readLine(stdin)
+                    case prompt:
+                        of "1":
+                            discard startQuest(g.player, GET_PARCHMENT)
+                            echo getKey(g, "loc__docks_mage_taskacc")
+                            removeDialogueVariable(g.player, "help")
+                            waitForPlayer()
+                        of "2": removeDialogueVariable(g.player, "help")
+                        else: return # will rewrite the above

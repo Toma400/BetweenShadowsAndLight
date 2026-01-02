@@ -67,10 +67,12 @@ type
     SAILOR_DOCKS
     LE_VELGA
     TAVERN_BARMAN
+    MAGICIAN
     DUMMY   # used to indicate default state (no dialogue)
-  Quest* = enum # strings are language keys
-    TALK_TO_COOK     = "quest__cook"
-    BRING_SWEET_ROLL = "quest__sweet_roll"
+  Quest* = enum # strings are language keys  | xp gain
+    TALK_TO_COOK     = "quest__cook"       # | 0 xp (partial quest)
+    BRING_SWEET_ROLL = "quest__sweet_roll" # | 8 xp
+    GET_PARCHMENT    = "quest__parchment"  # | 5 xp (0 in OG)
   Player* = ref object
     name   : string
     gender : Gender
@@ -122,7 +124,8 @@ const
   DEF_DEF = 0    # default defence
 
 const TRADING_OFFERS* : Table[NPC, seq[tuple[id: string, value: int]]] = {
-    TAVERN_BARMAN : @[("beer", 8)]
+    TAVERN_BARMAN : @[("beer", 8)],
+    MAGICIAN      : @[("scroll_heal", 18), ("scroll_fireball", 20), ("staff_fire", 45), ("staff_earth", 44), ("staff_conn", 35), ("antidote", 15), ("potion_mana_small", 12), ("potion_health_small", 14)]
 }.toTable
 
 # dictionaries
@@ -369,7 +372,7 @@ proc addVariable* (p: Player, variable: Variable) =
     if variable notin p.vars:
         p.vars.add(variable)
 proc addExperience* (p: Player, xp: int) =
-    let int_mod = p.attrs.intelligence/50 + 1
+    let int_mod = getIntelligence(p)/50 + 1
     p.xp += int(float(xp)*int_mod)
 
 # dialogue variables

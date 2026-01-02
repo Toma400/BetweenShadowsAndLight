@@ -288,7 +288,7 @@ proc shop* (g: Game, npc: NPC, can_buy, can_sell: bool = true) =
         elif MODE == 1:
             echo getKey(g, "game__trade_buy")
             let prompt = readLine(stdin)
-            if prompt == "": mode = 0
+            if prompt == "": MODE = 0
             try:
                 let p = parseInt(prompt)
                 if p > len(offers) or p < 1:
@@ -306,7 +306,7 @@ proc shop* (g: Game, npc: NPC, can_buy, can_sell: bool = true) =
         elif MODE == 2:
             echo getKey(g, "game__trade_sell")
             let prompt = readLine(stdin)
-            if prompt == "": mode = 0
+            if prompt == "": MODE = 0
             try:
                 let p = parseInt(prompt)
                 if p > len(getInventory(g.player)) or p < 1:

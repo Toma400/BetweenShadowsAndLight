@@ -41,12 +41,16 @@ for me to make new version just to add it.
 - Added language support
 - Disabled ormath shaman as somewhat difficult to implement class bringing no real value
 - Adjusted race names to revised lore (human -> baedoorian, nord -> vindean, saphtri -> pahtri (due to description))
+- Fixed bug allowing you to repeat magician quest, cheesing the reward
+  - Quest is now doable only once, but gives you also experience points (in OG it didn't)
 
 ### New features (1.2+ version)
 - if not available already: trading would improve trade skill, and trade skill would
   lower the prices?
+- decrease level cap? (100 xp for second level is ridiculous)
 
 ### Lore notes (to be transferred to BE and removed from here)
 - "Pod Złotym Szczurem" (Under Golden Rat) tavern in Evros
+- "Magiczny Wywar" (Magical Brew) shop in Evros (potentially one of FotB initial members?)
 - Sailor's name is Sam
 - (website) 29.7.18 - new version
