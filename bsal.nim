@@ -78,10 +78,11 @@ while isRunning(g):
                 }.toTable
                 let prompt = readLine(stdin)
                 if prompt == "cheat":
-                    addItemToInventory(g.player, "parchment") # TODO: temporary just to test the quest
                     addItemToInventory(g.player, "wood")
                     addItemToInventory(g.player, "chainmail_broken")
                     addItemToInventory(g.player, "iron")
+                    addItemToInventory(g.player, "water_cooked")
+                    addItemToInventory(g.player, "hyerbitus")
                 if prompt.toLowerAscii in conv:
                     switchMenu(g, conv[prompt.toLowerAscii])
                 elif prompt == "cheat":

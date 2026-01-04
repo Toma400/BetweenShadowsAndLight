@@ -366,7 +366,7 @@ proc processDialogue* (g: Game) =
                             addItemToInventory(g.player, "parchment")
                             addVariable(g.player, MERCHANT_ASKED)
                             waitForPlayer()
-                    else: continue
+                    else: return
 
             else: # bullet buying submenu
                 echo getKey(g, "loc__evros_merchant_bull")
@@ -379,10 +379,37 @@ proc processDialogue* (g: Game) =
                             echo getKey(g, "loc__evros_merchant_busu")
                             waitForPlayer()
                         else:
-                            printMessages(g.player) # says you don't have enough money
+                            printMessages(g) # says you don't have enough money
                         removeDialogueVariable(g.player, "bullets")
                     of "2": removeDialogueVariable(g.player, "bullets")
+                    else: return
 
         of HERBALIST:
-            discard
-            WAITING_FOR_IMPLEMENTATION()
+            echo getKey(g, "loc__evros_herbalist")
+            echo getOptionKey(g, "loc__evros_herbalist_qu1", 1)
+            echo getOptionKey(g, "loc__evros_herbalist_qu2", 2)
+            echo getOptionKey(g, "loc__evros_herbalist_qu3", 3)
+            if not checkVariable(g.player, HERBALIST_ASKED):
+                echo getOptionKey(g, "loc__evros_herbalist_qu4", 4)
+            elif hasItem(g.player, "hyerbitus"): # works only if variable exists
+                echo getOptionKey(g, "loc__evros_herbalist_hrb", 4)
+            let prompt = readLine(stdin)
+            case prompt:
+                of "1": shop(g, HERBALIST)
+                of "2":
+                    echo getKey(g, "loc__evros_herbalist_wrk")
+                    waitForPlayer()
+                    alchemy(g)
+                of "3": endDialogue(g, mLOCATION)
+                of "4":
+                    if not checkVariable(g.player, HERBALIST_ASKED):
+                        echo getKey(g, "loc__evros_herbalist_qa4")
+                        addVariable(g.player, HERBALIST_ASKED)
+                        waitForPlayer()
+                    elif hasItem(g.player, "hyerbitus"): # works only if variable exists
+                        echo getKey(g, "loc__evros_herbalist_h2b")
+                        while hasItem(g.player, "hyerbitus"):
+                            discard removeItemFromInventory(g.player, "hyerbitus")
+                            g.player.money += 10
+                        waitForPlayer()
+                else: return

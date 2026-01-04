@@ -18,6 +18,14 @@ const REPAIRING_RECIPES* : Table[string, tuple[repaired: string, reqs: seq[tuple
     "chainmail_broken" : ("chainmail", @[("iron", 1)])
 }.toTable
 
+const ALCHEMY_RECIPES* : Table[string, seq[string]] = {
+    # amount not classified, as alchemy is based only upon singular ingredients and their proper mix
+    # ORDER MATTERS - in case list is expanded, put more expensive things higher (first)
+    #                 this way check will be able to pick the cheaper things only if more expensive one fail
+    # also: remember items here MUST have field .ingr == true, else won't be achievable
+    "potion_health_small" : @["water_cooked", "hyerbitus"]
+}.toTable
+
 proc hasAllResources* (g: Game, reqseq: seq[tuple[id: string, amount: int]]): bool =
     result = true # to be overwritten if fails to gather resources
     var backup: seq[string]
@@ -115,8 +123,68 @@ proc smithing* (g: Game) =
                         waitForPlayer()
                 except ValueError: continue
 
-proc herbalism* () =
-    WAITING_FOR_IMPLEMENTATION()
+proc alchemy* (g: Game) =
+    var used_ingr : seq[string]
+    var MODE      = 0 # 0 = default, 1 = adding to pot
+    while true:
+        if MODE == 0:
+            if g.tutorial:
+                echo getTutorialKey(g, "game__tut_5")
+                echo getTutorialKey(g, "game__tut_6")
+            echo getKey(g, "game__alchemy")
+            echo DIVIDER
+            echo getKey(g, "game__alchemy_used")
+            for ingr in used_ingr:
+                echo "- " & getKey(g, "item__" & ingr)
+            echo DIVIDER
+            echo getOptionKey(g, "game__alchemy_add", 1)
+            echo getOptionKey(g, "game__alchemy_try", 2)
+            echo getOptionKey(g, "game__lock_give_up", 3)
+            let prompt = readLine(stdin)
+            case prompt:
+                of "1": MODE = 1
+                of "2":
+                    var resvlt = "" # empty means failure to craft anything
+                    for recipe in ALCHEMY_RECIPES.keys:
+                        var success = true # will be overwritten if it fails
+                        for req_ingr in ALCHEMY_RECIPES[recipe]:
+                            if req_ingr notin used_ingr: success = false
+                        if success == true: # doesn't get any failed checks
+                            addItemToInventory(g.player, recipe) # it's actually item brewed, not recipe lol
+                            resvlt = recipe # marks the success
+                            break           # ends the process
+                    used_ingr = @[]         # resets the pot
+                    if resvlt != "": echo getKey(g, "game__alchemy_succ") & " | " & getKey(g, "item__" & resvlt)
+                    else:            echo getKey(g, "game__alchemy_fail")
+                    waitForPlayer()
+                of "3": break
+                else: continue
+
+        elif MODE == 1:
+            var available : seq[int] # referrer to available items
+
+            echo DIVIDER
+            echo getKey(g, "game__alchemy_used")
+            for ingr in used_ingr:
+                echo "- " & getKey(g, "item__" & ingr)
+            echo DIVIDER
+            echo getKey(g, "game__alchemy_had")
+            for ix, ingr in getInventory(g.player).pairs():
+                if ITEMS[ingr].ingr: # if is ingredient
+                    echo "- " & getOptionKey(g, "item__" & ingr, ix + 1)
+                    available.add(ix + 1)
+            echo DIVIDER
+            echo getKey(g, "game__alchemy_pick")
+
+            let prompt = readLine(stdin)
+            if prompt == "": MODE = 0
+            try:
+                let p = parseInt(prompt)
+                if p notin available: continue
+                else: # correct pick!
+                    used_ingr.add(getInventory(g.player)[p - 1])
+                    removeItemFromInventory(g.player, p - 1)
+            except ValueError: continue
 
 proc cooking* () =
     WAITING_FOR_IMPLEMENTATION()
@@ -162,7 +230,8 @@ proc banking* (g: Game) =
             except ValueError: continue
 
         elif MODE == 2: # withdraw
-            echo getTutorialKey(g, "game__tut_4")
+            if g.tutorial:
+                echo getTutorialKey(g, "game__tut_4")
             echo getKey(g, "game__bank_mwithdam")
             let prompt = readLine(stdin)
             if prompt == "": MODE = 0

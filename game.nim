@@ -216,8 +216,10 @@ proc chest* (g: Game, lockpower: var int = 0, contents: var seq[string]) = # ope
                         if isSpecialItem(contents[p-1]):
                             let si = debundleSpecialItem(contents[p-1])
                             case si[1]:
-                                of COIN: g.player.money     += si[0]
-                                of LOCK: g.player.lockpicks += si[0]
+                                of COIN:   g.player.money     += si[0]
+                                of LOCK:   g.player.lockpicks += si[0]
+                                of BULLET: g.player.ammo      += si[0]
+                                of ARROW:  g.player.arrows    += si[0]
                             contents.delete(p-1)
                         else: # normal items
                             addItemToInventory(g.player, contents[p-1])

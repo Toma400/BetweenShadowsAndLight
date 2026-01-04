@@ -61,6 +61,7 @@ type
     KNIFE_BOUGHT     # | used to disable "Talk To Cook" quest if we purchase knife
     TAVERN_KEY       # | indicates whether you can sleep in tavern or not
     MERCHANT_ASKED   # | to indicate merchant giving you parchment (so that you can't cheese it)
+    HERBALIST_ASKED  # | to indicate dialogue passing once
   NPC* = enum # npcs you can dialogue with
     CAPTAIN
     SAILOR
@@ -78,6 +79,7 @@ type
     TALK_TO_COOK     = "quest__cook"       # | 0 xp (partial quest)
     BRING_SWEET_ROLL = "quest__sweet_roll" # | 8 xp
     GET_PARCHMENT    = "quest__parchment"  # | 5 xp (0 in OG)
+    # non-listed quasi-quest: delivery for the herbalist (gives 0 xp)
   Player* = ref object
     name   : string
     gender : Gender
@@ -136,6 +138,7 @@ const BUYING_OFFERS* : Table[NPC, seq[tuple[id: string, value: int]]] = {
     MAGICIAN      : @[("scroll_heal", 18), ("scroll_fireball", 20), ("staff_fire", 45), ("staff_earth", 44), ("staff_conn", 35), ("antidote", 15), ("potion_mana_small", 12), ("potion_health_small", 14)],
     SMITH         : @[("chainmail", 50), ("rapier", 30), ("dynamite", 27)],
     MERCHANT      : @[("decor_shotgun", 122), ("potion_health_small", 12), ("antidote", 14), ("scroll_heal", 20), ("water", 9), ("parchment", 6)],
+    HERBALIST     : @[("potion_health_small", 12), ("recipe_health_potion", 25)],
 }.toTable
 const SELLING_OFFERS* : Table[NPC, seq[tuple[id: string, value: int]]] = {
     SMITH    : @[("iron", 10)],

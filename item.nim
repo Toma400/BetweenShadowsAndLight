@@ -9,9 +9,10 @@ type
     BANK_CHEST
   Item = object
     weight*  : int
-    attack*  : int # defaults to 0, meaning no weapon type
-    defence* : int # defaults to 0, meaning no armour type (or broken armour)
-    #value*  : int # default value! traders set this separately
+    attack*  : int  # defaults to 0, meaning no weapon type
+    defence* : int  # defaults to 0, meaning no armour type (or broken armour)
+    ingr*    : bool # if can be used on alchemy table
+    #value*  : int  # default value! traders set this separately
   SpecialItem* = enum
     COIN   = "coin"
     LOCK   = "lock"
@@ -24,23 +25,28 @@ proc isBookType* (item_str: string): bool = return "book" in item_str or "newspa
 # similar to readable things? (separate type?)
 
 const ITEMS* = { # ID : object
+    # specials
+    # - money
+    # - bullets
+    # - arrows
+    # - lockpicks
     # food
-    "roots"            : Item(weight: 0), # korzonki
-    "rat_meat"         : Item(weight: 0), # szczurze mięso
-    "rat_meat_roasted" : Item(weight: 0), # pieczone szczurze mięso
-    "sweet_roll"       : Item(weight: 0), # słodka bułka
-    "herring"          : Item(weight: 0), # śledź
-    "herring_roasted"  : Item(weight: 0), # pieczony śledź
-    "beer"             : Item(weight: 0), # piwo
+    "roots"            : Item(weight: 0, ingr: true), # korzonki
+    "rat_meat"         : Item(weight: 0, ingr: true), # szczurze mięso
+    "rat_meat_roasted" : Item(weight: 0),             # pieczone szczurze mięso
+    "sweet_roll"       : Item(weight: 0),             # słodka bułka
+    "herring"          : Item(weight: 0, ingr: true), # śledź
+    "herring_roasted"  : Item(weight: 0),             # pieczony śledź
+    "beer"             : Item(weight: 0),             # piwo
     # utilities
-    "water"        : Item(weight: 0), # woda
-    "water_cooked" : Item(weight: 0), # podgrzana woda
-    "iron"         : Item(weight: 2), # żelazo
-    "wood"         : Item(weight: 1), # drewno
-    "wheat"        : Item(weight: 0), # pszenica
-    "parchment"    : Item(weight: 0), # pergamin
-    "gunpowder"    : Item(weight: 0), # proch
-    "silk"         : Item(weight: 2), # jedwab
+    "water"        : Item(weight: 0, ingr: true), # woda
+    "water_cooked" : Item(weight: 0, ingr: true), # podgrzana woda
+    "iron"         : Item(weight: 2),             # żelazo
+    "wood"         : Item(weight: 1),             # drewno
+    "wheat"        : Item(weight: 0, ingr: true), # pszenica
+    "parchment"    : Item(weight: 0),             # pergamin
+    "gunpowder"    : Item(weight: 0, ingr: true), # proch
+    "silk"         : Item(weight: 2),             # jedwab
     # weapons
     "rusty_knife"     : Item(weight: 1, attack:  4), # zardzewiały nóż
     "sickle"          : Item(weight: 1, attack:  4), # sierp
@@ -60,18 +66,14 @@ const ITEMS* = { # ID : object
     "staff_conn"  : Item(weight: 1), # kostur połączenia
     "staff_chaos" : Item(weight: 1), # kostur chaosu
     # alchemy
-    "hyerbitus_flower"    : Item(weight: 0), # kwiat hyerbitusa
-    "antidote"            : Item(weight: 0), # odtrutka
-    "potion_health_small" : Item(weight: 0), # mała mikstura zdrowia
-    "potion_mana_small"   : Item(weight: 0), # mała mikstura many
-    # other
-    "newspaper" : Item(weight: 0),
-    "book"      : Item(weight: 0), # gazety, księgi, przepisy | TODO: imo we need to split this into each category, see language files recognising each entry separately
-    # specials
-    # - money
-    # - ammo
-    # - arrows
-    # - lockpicks
+    "hyerbitus"           : Item(weight: 0, ingr: true), # kwiat hyerbitusa
+    "antidote"            : Item(weight: 0),             # odtrutka
+    "potion_health_small" : Item(weight: 0),             # mała mikstura zdrowia
+    "potion_mana_small"   : Item(weight: 0),             # mała mikstura many
+    # readables
+    "newspaper"            : Item(weight: 0),
+    "recipe_health_potion" : Item(weight: 0),
+    "book"                 : Item(weight: 0),
 }.toTable
 
 # before you add new chest here, add one in enum above; for most use cases, use `CHESTS` instead of prefab, prefab is const referrer only [!]
