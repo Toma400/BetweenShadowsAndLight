@@ -37,7 +37,7 @@ for me to make new version just to add it.
 ### Features
 - A hand-crafted steampunk/fantasy world, Baedoor
 - Four locations
-- Nine NPCs
+- Eleven NPCs
 - Two quests
 - Various immersive systems (banking, reading, sleeping needs) alongside well-known ones,
   such as crafting (smithing, cooking, alchemy)
@@ -51,6 +51,7 @@ for me to make new version just to add it.
   - Quest is now doable only once, but gives you also experience points (in OG it didn't)
 - Added some messages whenever additional feedback would be needed
 - Added gunpowder, as an item only partially introduced in OG
+- Fixed merchant's selling you papyrus, as it was likely meant to be parchment
 
 ### New features (1.2+ version)
 - if not available already: trading would improve trade skill, and trade skill would

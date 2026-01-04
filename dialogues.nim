@@ -1,6 +1,7 @@
 import mechanics
 import player
 import game
+import item
 
 proc processDialogue* (g: Game) =
     # use `vars` and `dial_vars` for dialogue checks against events!
@@ -343,3 +344,45 @@ proc processDialogue* (g: Game) =
                     waitForPlayer()
                 of "2": endDialogue(g, mLOCATION)
                 else: return
+
+        of MERCHANT:
+            let quest_active = GET_PARCHMENT in getActiveQuests(g.player) and not checkVariable(g.player, MERCHANT_ASKED)
+
+            if "bullets" notin getDialogueVariables(g.player):
+                echo getKey(g, "loc__evros_merchant")
+                echo getOptionKey(g, "loc__evros_merchant_que1", 1)
+                echo getOptionKey(g, "loc__evros_merchant_que2", 2)
+                echo getOptionKey(g, "loc__evros_merchant_que3", 3)
+                if quest_active:
+                    echo getOptionKey(g, "loc__evros_merchant_que4", 4)
+                let prompt = readLine(stdin)
+                case prompt:
+                    of "1": shop(g, MERCHANT)
+                    of "2": addDialogueVariable(g.player, "bullets")
+                    of "3": endDialogue(g, mLOCATION)
+                    of "4":
+                        if quest_active:
+                            echo getKey(g, "loc__evros_merchant_prch")
+                            addItemToInventory(g.player, "parchment")
+                            addVariable(g.player, MERCHANT_ASKED)
+                            waitForPlayer()
+                    else: continue
+
+            else: # bullet buying submenu
+                echo getKey(g, "loc__evros_merchant_bull")
+                echo getOptionKey(g, "loc__evros_merchant_bubu", 1)
+                echo getOptionKey(g, "loc__evros_merchant_buno", 2)
+                let prompt = readLine(stdin)
+                case prompt:
+                    of "1":
+                        if buy(g.player, BULLET, 10, 10):
+                            echo getKey(g, "loc__evros_merchant_busu")
+                            waitForPlayer()
+                        else:
+                            printMessages(g.player) # says you don't have enough money
+                        removeDialogueVariable(g.player, "bullets")
+                    of "2": removeDialogueVariable(g.player, "bullets")
+
+        of HERBALIST:
+            discard
+            WAITING_FOR_IMPLEMENTATION()

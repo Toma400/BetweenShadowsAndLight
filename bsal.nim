@@ -193,8 +193,8 @@ while isRunning(g):
                     echo getOptionKey(g, "loc__do_nothing", 6)
                     let prompt = readLine(stdin)
                     case prompt:
-                        of "1": WAITING_FOR_IMPLEMENTATION()
-                        of "2": WAITING_FOR_IMPLEMENTATION()
+                        of "1": startDialogue(g, MERCHANT)
+                        of "2": startDialogue(g, HERBALIST)
                         of "3": startDialogue(g, SMITH)
                         of "4": banking(g)
                         of "5": startDialogue(g, PAPERBOY)

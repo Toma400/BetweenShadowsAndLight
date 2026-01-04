@@ -60,6 +60,7 @@ type
     SAM_KNOWS_YOU    # | used for just silly acknowledging you are known to Sam
     KNIFE_BOUGHT     # | used to disable "Talk To Cook" quest if we purchase knife
     TAVERN_KEY       # | indicates whether you can sleep in tavern or not
+    MERCHANT_ASKED   # | to indicate merchant giving you parchment (so that you can't cheese it)
   NPC* = enum # npcs you can dialogue with
     CAPTAIN
     SAILOR
@@ -70,6 +71,8 @@ type
     MAGICIAN
     SMITH
     PAPERBOY
+    MERCHANT
+    HERBALIST
     DUMMY   # used to indicate default state (no dialogue)
   Quest* = enum # strings are language keys  | xp gain
     TALK_TO_COOK     = "quest__cook"       # | 0 xp (partial quest)
@@ -132,9 +135,11 @@ const BUYING_OFFERS* : Table[NPC, seq[tuple[id: string, value: int]]] = {
     TAVERN_BARMAN : @[("beer", 8)],
     MAGICIAN      : @[("scroll_heal", 18), ("scroll_fireball", 20), ("staff_fire", 45), ("staff_earth", 44), ("staff_conn", 35), ("antidote", 15), ("potion_mana_small", 12), ("potion_health_small", 14)],
     SMITH         : @[("chainmail", 50), ("rapier", 30), ("dynamite", 27)],
+    MERCHANT      : @[("decor_shotgun", 122), ("potion_health_small", 12), ("antidote", 14), ("scroll_heal", 20), ("water", 9), ("parchment", 6)],
 }.toTable
 const SELLING_OFFERS* : Table[NPC, seq[tuple[id: string, value: int]]] = {
-    SMITH : @[("iron", 10)],
+    SMITH    : @[("iron", 10)],
+    MERCHANT : @[("bandit_revolver", 11), ("decor_shotgun", 110), ("potion_health_small", 8), ("silk", 100)],
 }.toTable
 # proc to check existence of particular product in tables above
 proc isInOfferTable* (oftable: seq[tuple[id: string, value: int]], item_id: string): bool =
@@ -592,6 +597,19 @@ proc buy* (p: Player, item_str: string, value: int): bool =
     else:
         p.money -= value
         addItemToInventory(p, item_str)
+        return true
+
+proc buy* (p: Player, spitem: SpecialItem, count: int, value: int): bool =
+    if value > p.money:
+        addMessage(p, "game__warn_money")
+        return false
+    else:
+        p.money -= value
+        case spitem:
+          of COIN:   p.money     += count # doesn't make sense??? but abstract systems are abstract
+          of LOCK:   p.lockpicks += count
+          of BULLET: p.ammo      += count
+          of ARROW:  p.arrows    += count
         return true
 
 proc sell* (p: Player, item_str: string, value: int): bool =

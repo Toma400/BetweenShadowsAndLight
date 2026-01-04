@@ -13,8 +13,10 @@ type
     defence* : int # defaults to 0, meaning no armour type (or broken armour)
     #value*  : int # default value! traders set this separately
   SpecialItem* = enum
-    COIN = "coin"
-    LOCK = "lock"
+    COIN   = "coin"
+    LOCK   = "lock"
+    BULLET = "bullet"
+    ARROW  = "arrow"
 
 proc isBookType* (item_str: string): bool = return "book" in item_str or "newspaper" in item_str or "recipe" in item_str
 #proc isWearable* (item_str: string): bool = ITEMS[item_str] # to filter items that can be worn?
