@@ -39,6 +39,8 @@ for me to make new version just to add it.
 - Four locations
 - Nine NPCs
 - Two quests
+- Various immersive systems (banking, reading, sleeping needs) alongside well-known ones,
+  such as crafting (smithing, cooking, alchemy)
 
 ### Differences
 - Minimal QoL additions (most notably in additional text guiding through GUI)
@@ -57,6 +59,10 @@ for me to make new version just to add it.
 - smithing recipes for level 2/3? maybe actually make level 1 get less items
 - also make smith be able to train you in smithing (both for 0->1 and 1->2/3), maybe for
   plenty of money
+- similarly, make repair *chance* depending on repair skill? otherwise it's useless
+  skill; and make smithing and repair have chance to improve your skill after success
+  - note: it may be that `repair` was meant just for vehicle-sque things, see `tut4`
+    string that explains it.. definitely a shit to be more precise in BRPGS 3.0
 - add gunpowder to warehouse chest so it can be found in BSaL
 
 ### Lore notes (to be transferred to BE and removed from here)

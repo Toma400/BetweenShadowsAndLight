@@ -4,13 +4,18 @@ import player
 import game
 import item
 
-const SMITHING_RECIPES* = Table[int, Table[string, seq[tuple[id: string, amount: int]]]] { # first int is smithing level
+const SMITHING_RECIPES* : Table[int, Table[string, seq[tuple[id: string, amount: int]]]] = { # first int is smithing level
     # level 0 is ommited, as it doesn't allow you to smith in OG
     1: {
         "rapier": @[("wood", 1), ("iron", 1)],
         #"bullet": @[("gunpowder", 1)], --> 15
         #"arrow":  @[("wood", 1)], --> 15
     }.toTable,
+}.toTable
+
+const REPAIRING_RECIPES* : Table[string, tuple[repaired: string, reqs: seq[tuple[id: string, amount: int]]]] = {
+    # broken variant : (repaired variant, @[resources needed <type, amount>])
+    "chainmail_broken" : ("chainmail", @[("iron", 1)])
 }.toTable
 
 proc hasAllResources* (g: Game, reqseq: seq[tuple[id: string, amount: int]]): bool =
@@ -29,7 +34,7 @@ proc hasAllResources* (g: Game, reqseq: seq[tuple[id: string, amount: int]]): bo
 
 proc smithing* (g: Game) =
     var MODE     = 0 # 1 = creating, 2 = repairing
-    let sm_items = newTable[string, seq[tuple[id: string, amount: int]]]()
+    var sm_items = newTable[string, seq[tuple[id: string, amount: int]]]()
     for lvl in 0..getSmithing(g.player): # gets all available smithing items player can create
         if lvl in SMITHING_RECIPES:
             for it, val in SMITHING_RECIPES[lvl]:
@@ -59,10 +64,10 @@ proc smithing* (g: Game) =
                 var sm_ref : Table[int, string]      # referrer for later
                 var ix     = 1                       # index
                 for smid, smreq in sm_items.pairs(): # lists items available to smith
-                    var req = ""
+                    var req = "- "
                     for riq in smreq:
-                        req = req & getKey(g, "item__" & riq.id & ": " & $riq.amount)
-                    echo getOptionKey(g, "item__" & smid, ix) & "| " & req
+                        req = req & getKey(g, "item__" & riq.id) & ": " & $riq.amount & " - "
+                    echo getOptionKey(g, "item__" & smid, ix) & " | " & req
                     sm_ref[ix] = smid; ix += 1 # saves to referrer, bumps index by one
                 let prompt = readLine(stdin)
                 try:
@@ -80,8 +85,35 @@ proc smithing* (g: Game) =
                             waitForPlayer()
                 except ValueError: continue # go back
         elif MODE == 2: # repairing
-            MODE = 1 # temporary ... v
-            WAITING_FOR_IMPLEMENTATION()
+            if getSmithing(g.player) == 0:
+                echo getKey(g, "game__smith_skilisue")
+                waitForPlayer()
+                MODE = 0
+            else: # skill > 0
+                var refnums : seq[int] # referrer for available items
+                for ix, it in getInventory(g.player).pairs():
+                    if it in REPAIRING_RECIPES:
+                        echo getOptionKey(g, "item__" & it, ix + 1)
+                        refnums.add(ix + 1)
+                echo DIVIDER
+                echo getKey(g, "game__smith_repque")
+                let prompt = readLine(stdin)
+                if prompt == "": MODE = 0
+                try:
+                    let p = parseInt(prompt)
+                    if p notin refnums: continue
+                    else: # correct pick!
+                        let broken_it = getInventory(g.player)[p-1] # referrer available after removing
+                        if hasAllResources(g, REPAIRING_RECIPES[broken_it].reqs):
+                            removeItemFromInventory(g.player, p-1) # removes broken variant
+                            # resources needed for repair are removed by `hasAllResources` [!]
+                            addItemToInventory(g.player, REPAIRING_RECIPES[broken_it].repaired)
+                            g.player.sp -= 10
+                            echo getKey(g, "game__smith_repsucc") & " " & getKey(g, "item__" & broken_it)
+                        else:
+                            echo getKey(g, "game__smith_resissue")
+                        waitForPlayer()
+                except ValueError: continue
 
 proc herbalism* () =
     WAITING_FOR_IMPLEMENTATION()
@@ -130,6 +162,7 @@ proc banking* (g: Game) =
             except ValueError: continue
 
         elif MODE == 2: # withdraw
+            echo getTutorialKey(g, "game__tut_4")
             echo getKey(g, "game__bank_mwithdam")
             let prompt = readLine(stdin)
             if prompt == "": MODE = 0
@@ -146,40 +179,11 @@ proc banking* (g: Game) =
                 MODE = 0
             except ValueError: continue
 
-# def smithing_use():
-#   global smithing
-#   global equip
-#   global eq_ammo
-#   global eq_arrows
-#   global sp
-#   global taken_item
-#   global throw_it
-#   print ("-------------------------------")
-#   local = input ("[1] Wykuj przedmiot \n[2] Napraw przedmiot \n[3] Odejdź")
-#   if local == "1":
-#     while True:
-#       print ("-------------------------------")
-#       print (equip)
-#       print ("-------------------------------")
-#       if smithing == 0:
-#         print ("Nie masz jeszcze odpowiednio dużych umiejętności!")
-#         break
 #       elif smithing > 1:
 #         print ("[1][RAPIER][Żelazo, Drewno]")
 #         print ("[2][POCISK -15-][Proch]")
 #         print ("[3][STRZAŁA -15-][Drewno]")
 #       i_will_smith = input ("\nWpisz numer broni, którą chcesz stworzyć")
-#       if i_will_smith == "1":
-#         if "Drewno" in equip and "Żelazo" in equip:
-#           throw_it = "Drewno"
-#           inventory(6)
-#           throw_it = "Żelazo"
-#           inventory(6)
-#           taken_item = "Rapier"
-#           inventory(5)
-#           sp -= 15
-#         else:
-#           print ("Brakuje Ci surowca!")
 #       elif i_will_smith == "2":
 #         if "Proch" in equip:
 #           throw_it = "Proch"
@@ -196,39 +200,6 @@ proc banking* (g: Game) =
 #           sp -= 15
 #       else:
 #         "Podałeś zły numer"
-#
-#   elif local == "2":
-#     if tutorial_system == 1:
-#       print (">> System naprawy jest w Between Shadows and Light oparty na dwóch umiejętnościach: naprawy, ale i kucia. Kucie reprezentuje te wszystkie naprawy, które wciąż wymagają umiejętności kowalstwa - z kolei naprawa potrzebna jest głównie do technologicznej części broni i pancerzy (jak i również do maszyn) <<")
-#     while True:
-#       print ("-------------------------------")
-#       print (equip)
-#       question = input ("[1-...] Wpisz numer przedmiotu do naprawy \n[A] Anuluj")
-#       try:
-#         question = int (question)
-#         question -= 1
-#         repairing_item = equip[question]
-#       except IndexError or ValueError:
-#         print ("Błędnie podałeś numer!")
-#
-#       if repairing_item == "Uszkodzona Kolczuga":
-#         if "Żelazo" in equip and smithing > 0:
-#           sp -= 10
-#           throw_it = "Żelazo"
-#           inventory(6)
-#           throw_it = "Uszkodzona Kolczuga"
-#           inventory(6)
-#           taken_item = "Kolczuga"
-#           inventory(5)
-#         elif "Żelazo" in equip:
-#           print ("Za słabo obyłeś się z kowalstwem, by naprawić ten przedmiot")
-#         else:
-#           print ("Nie masz żelaza potrzebnego do naprawy!")
-#       else:
-#         print ("Nie możesz naprawić tego przedmiotu!")
-#
-#   else:
-#     pass
 #
 # def herbalism_use():
 #   global herbalism

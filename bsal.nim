@@ -77,6 +77,11 @@ while isRunning(g):
                     getKey(g, "game__gui_diary").toLowerAscii     : mDIARY
                 }.toTable
                 let prompt = readLine(stdin)
+                if prompt == "cheat":
+                    addItemToInventory(g.player, "parchment") # TODO: temporary just to test the quest
+                    addItemToInventory(g.player, "wood")
+                    addItemToInventory(g.player, "chainmail_broken")
+                    addItemToInventory(g.player, "iron")
                 if prompt.toLowerAscii in conv:
                     switchMenu(g, conv[prompt.toLowerAscii])
                 elif prompt == "cheat":
@@ -175,10 +180,6 @@ while isRunning(g):
                         of "4": startDialogue(g, LE_VELGA)
                         of "5": WAITING_FOR_IMPLEMENTATION() # magazyn
                         of "6": switchMenu(g, mDEFAULT); continue
-                        of "cheat":
-                            addItemToInventory(g.player, "parchment") # TODO: temporary just to test the quest
-                            addItemToInventory(g.player, "wood")
-                            addItemToInventory(g.player, "iron")
                         else: continue
                     printMessages(g)
                     waitForPlayer()

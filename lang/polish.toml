@@ -15,6 +15,7 @@ menu__set_note = "Wpisz nazwę języka lub [%TUT] by przełączyć. Kliknij Ente
 game__tut_1 = "Witaj w grze Between Shadows and Light! Tutorial ten będzie Cię prowadził po meandrach interfejsu - jest on pisany dość bogato w zawartość, jednak mam nadzieję, że nie spowoduje to chaosu."
 game__tut_2 = "Pierwszym elementem gry jest stworzenie postaci, stąd za chwilę do tego przejdziemy - jest to dość istotna kwestia, jednak nie musisz się stresować, gdy nie wiesz, co dokładnie zrobić: gra stara się być tak dostosowana, by gracz z dowolnymi statystykami mógł ją względnie miło ukończyć."
 game__tut_3 = "Istotne wspomnieć jest, że każda statystyka, umiejętność, cecha czy klasa, którą wybierzesz, będzie miała niemały wpływ na dalszy przebieg rozgrywki - wiele tych różnic jednak będziesz mógł zatrzeć w miarę gry, gdyż pierwsze wybory są na równi znaczące, jak i dalej: styl gry i wybory w niej dokonywane."
+game__tut_4 = "System naprawy jest w Between Shadows and Light oparty na dwóch umiejętnościach: naprawy, ale i kucia. Kucie reprezentuje te wszystkie naprawy, które wciąż wymagają umiejętności kowalstwa - z kolei naprawa potrzebna jest głównie do technologicznej części broni i pancerzy (jak i również do maszyn)."
 
 # Tutorials - quests
 quest__mq_tut1 = "Tak więc Twoja przygoda się rozpoczęła! Za chwilę trafisz w pierwsze miejsce wydarzeń, jak i również wyświetli Ci się główne menu gry - z którego to będziesz korzystać później do samego końca."
@@ -266,6 +267,8 @@ game__smith_repair   = "Napraw przedmiot"
 game__smith_skilisue = "Nie masz jeszcze odpowiednio dużych umiejętności!"
 game__smith_resissue = "Brakuje Ci surowca!"
 game__smith_crafted  = "Wykuto"
+game__smith_repque   = "Wpisz numer przedmiotu do naprawy. Naciśnij Enter by wrócić."
+game__smith_repsucc  = "Naprawiono"
 # GUI - messages
 game__warn_weight    = "Jesteś przeciążony!"
 game__warn_tired     = "Jesteś zmęczony!"
