@@ -102,7 +102,6 @@ type
     # inventory
     inv      : seq[string]
     inv_used : seq[string]
-    inv_bank : seq[string]
     # inventory-related
     bank*      : int # bank account balance
     money*     : int

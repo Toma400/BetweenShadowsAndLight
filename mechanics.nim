@@ -2,6 +2,7 @@ import std/strutils
 import std/tables
 import player
 import game
+import item
 
 const SMITHING_RECIPES* = Table[int, Table[string, seq[tuple[id: string, amount: int]]]] { # first int is smithing level
     # level 0 is ommited, as it doesn't allow you to smith in OG
@@ -88,8 +89,62 @@ proc herbalism* () =
 proc cooking* () =
     WAITING_FOR_IMPLEMENTATION()
 
-proc banking* () =
-    WAITING_FOR_IMPLEMENTATION()
+proc banking* (g: Game) =
+    var MODE = 0 # 1 = deposit money, 2 = withdraw money
+    while true:
+        echo getKey(g, "game_bank")
+        echo getKey(g, "game__gui_money") & ": " & $g.player.money
+        echo getKey(g, "game__bank_money") & ": " & $g.player.bank
+        if MODE == 0: # default
+            echo getKey(g, "game__bank_items")
+            for it in CHESTS[BANK_CHEST][1]: # [1] = items
+                echo "- " & getKey(g, "item__" & it)
+            echo DIVIDER
+            echo getOptionKey(g, "game__bank_mdeposit", 1)
+            echo getOptionKey(g, "game__bank_mwithdraw", 2)
+            echo getOptionKey(g, "game__bank_imanage", 3)
+            echo getOptionKey(g, "game__bank_exit", 4)
+            let prompt = readLine(stdin)
+            case prompt:
+                of "1": MODE = 1
+                of "2": MODE = 2
+                of "3": chest(g, CHESTS[BANK_CHEST])
+                of "4": break
+                else: continue
+
+        elif MODE == 1: # deposit
+            echo getKey(g, "game__bank_mdepam")
+            let prompt = readLine(stdin)
+            if prompt == "": MODE = 0
+            try:
+                let p = parseInt(prompt)
+                if p < 1: continue
+                elif p > g.player.money:
+                    echo getKey(g, "game__warn_money")
+                else:
+                    g.player.money -= p
+                    g.player.bank  += p
+                    echo getKey(g, "game__bank_mdepsucc")
+                waitForPlayer()
+                MODE = 0
+            except ValueError: continue
+
+        elif MODE == 2: # withdraw
+            echo getKey(g, "game__bank_mwithdam")
+            let prompt = readLine(stdin)
+            if prompt == "": MODE = 0
+            try:
+                let p = parseInt(prompt)
+                if p < 1: continue
+                elif p > g.player.money:
+                    echo getKey(g, "game__bank_mwithderr")
+                else:
+                    g.player.bank  -= p
+                    g.player.money += p
+                    echo getKey(g, "game__bank_mwithsucc")
+                waitForPlayer()
+                MODE = 0
+            except ValueError: continue
 
 # def smithing_use():
 #   global smithing

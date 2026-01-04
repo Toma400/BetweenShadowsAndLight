@@ -71,6 +71,7 @@ proc throw (g: Game) =
                 echo getKey(g, "game__gui_inv_thrown") & ": " & getKey(g, "item__" & inventory[p-1])
                 removeItemFromInventory(g.player, p-1)
                 waitForPlayer()
+                break # it both saves on resetting `inventory`, but also makes it harder to mistakingly throw something else
         except ValueError: continue
 
 proc characterInventory* (g: Game) =

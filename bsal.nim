@@ -1,5 +1,6 @@
 import std/strutils
 import std/tables
+import mechanics
 import dialogues
 import inventory
 import location
@@ -194,7 +195,7 @@ while isRunning(g):
                         of "1": WAITING_FOR_IMPLEMENTATION()
                         of "2": WAITING_FOR_IMPLEMENTATION()
                         of "3": startDialogue(g, SMITH)
-                        of "4": WAITING_FOR_IMPLEMENTATION()
+                        of "4": banking(g)
                         of "5": startDialogue(g, PAPERBOY)
                         of "6": switchMenu(g, mDEFAULT); continue
                         else: continue

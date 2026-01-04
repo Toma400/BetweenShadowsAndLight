@@ -6,6 +6,7 @@ type
     DESERTED_BARREL
     SHELTER_CHEST
     WAREHOUSE_CHEST
+    BANK_CHEST
   Item = object
     weight*  : int
     attack*  : int # defaults to 0, meaning no weapon type
@@ -71,10 +72,12 @@ const ITEMS* = { # ID : object
     # - lockpicks
 }.toTable
 
+# before you add new chest here, add one in enum above; for most use cases, use `CHESTS` instead of prefab, prefab is const referrer only [!]
 const CHESTS_PREFAB* : Table[Chest, (int, seq[string])] = {
     DESERTED_BARREL: (0, @["4 coins", "15 locks", "sweet_roll", "herring", "herring", "herring"]),
     SHELTER_CHEST:   (0, @["500 coins", "decor_shotgun", "chainmail"]),
     WAREHOUSE_CHEST: (0, @["300 coins", "silk"]),
+    BANK_CHEST:      (0, @[]),
 }.toTable
 
 var CHESTS* = CHESTS_PREFAB # variable version which is editable
