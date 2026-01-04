@@ -3,7 +3,7 @@ import std/tables
 import player
 import game
 
-const SMITHING_REPICES* = Table[int, Table[string, seq[tuple[id: string, amount: int]]]] { # first int is smithing level
+const SMITHING_RECIPES* = Table[int, Table[string, seq[tuple[id: string, amount: int]]]] { # first int is smithing level
     # level 0 is ommited, as it doesn't allow you to smith in OG
     1: {
         "rapier": @[("wood", 1), ("iron", 1)],
@@ -30,8 +30,8 @@ proc smithing* (g: Game) =
     var MODE     = 0 # 1 = creating, 2 = repairing
     let sm_items = newTable[string, seq[tuple[id: string, amount: int]]]()
     for lvl in 0..getSmithing(g.player): # gets all available smithing items player can create
-        if lvl in SMITHING_REPICES:
-            for it, val in SMITHING_REPICES[lvl]:
+        if lvl in SMITHING_RECIPES:
+            for it, val in SMITHING_RECIPES[lvl]:
                 sm_items[it] = val
 
     while true:
@@ -86,6 +86,9 @@ proc herbalism* () =
     WAITING_FOR_IMPLEMENTATION()
 
 proc cooking* () =
+    WAITING_FOR_IMPLEMENTATION()
+
+proc banking* () =
     WAITING_FOR_IMPLEMENTATION()
 
 # def smithing_use():

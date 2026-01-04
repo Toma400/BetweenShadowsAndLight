@@ -69,6 +69,7 @@ type
     TAVERN_BARMAN
     MAGICIAN
     SMITH
+    PAPERBOY
     DUMMY   # used to indicate default state (no dialogue)
   Quest* = enum # strings are language keys  | xp gain
     TALK_TO_COOK     = "quest__cook"       # | 0 xp (partial quest)
@@ -127,6 +128,7 @@ const
 # TRADE TABLES
 # Entry means `shop` proc enables shopping in particular NPC
 # No entry or empty seq means shopping menu will be non-available
+# These tables do not list singular purchases available via `buy` [!]
 const BUYING_OFFERS* : Table[NPC, seq[tuple[id: string, value: int]]] = {
     TAVERN_BARMAN : @[("beer", 8)],
     MAGICIAN      : @[("scroll_heal", 18), ("scroll_fireball", 20), ("staff_fire", 45), ("staff_earth", 44), ("staff_conn", 35), ("antidote", 15), ("potion_mana_small", 12), ("potion_health_small", 14)],
@@ -580,6 +582,9 @@ proc hasItem* (p: Player, item_str: string): bool =
 
 proc getInventory* (p: Player): seq[string] =
     return p.inv
+
+proc getUsedInventory* (p: Player): seq[string] =
+    return p.inv_used
 
 proc buy* (p: Player, item_str: string, value: int): bool =
     if value > p.money:

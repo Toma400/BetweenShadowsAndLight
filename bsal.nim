@@ -1,6 +1,7 @@
 import std/strutils
 import std/tables
 import dialogues
+import inventory
 import location
 import player
 import quest
@@ -69,7 +70,7 @@ while isRunning(g):
                     echo msg
                 let conv = {
                     getKey(g, "game__gui_character").toLowerAscii : mCHARACTER,
-                    # getKey(g, "game__gui_inventory").toLowerAscii : mINVENTORY,
+                    getKey(g, "game__gui_inventory").toLowerAscii : mINVENTORY,
                     getKey(g, "game__gui_location").toLowerAscii  : mLOCATION,
                     getKey(g, "game__gui_map").toLowerAscii       : mMAP,
                     getKey(g, "game__gui_diary").toLowerAscii     : mDIARY
@@ -99,7 +100,9 @@ while isRunning(g):
         of mCHARACTER:
             characterStatistics(g)
 
-        of mINVENTORY: break
+        of mINVENTORY:
+            characterInventory(g)
+
         of mLOCATION:
             processStatistics(g.player)
             case g.location:
@@ -192,7 +195,7 @@ while isRunning(g):
                         of "2": WAITING_FOR_IMPLEMENTATION()
                         of "3": startDialogue(g, SMITH)
                         of "4": WAITING_FOR_IMPLEMENTATION()
-                        of "5": WAITING_FOR_IMPLEMENTATION()
+                        of "5": startDialogue(g, PAPERBOY)
                         of "6": switchMenu(g, mDEFAULT); continue
                         else: continue
                     printMessages(g)

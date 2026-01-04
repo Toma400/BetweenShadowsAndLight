@@ -319,7 +319,7 @@ proc shop* (g: Game, npc: NPC) =
                     continue # if you try to cheese to sell something outside your item range
                 else: # correct pick!
                     let item_str = getInventory(g.player)[p-1]
-                    if sell(g.player, item_str, ITEMS[item_str].value) == true:
+                    if sell(g.player, item_str, getValueFromOfferTable(sell_offers, item_str)) == true:
                         echo getKey(g, "game__trade_sold") & " " & getKey(g, "item__" & item_str)
                     printMessages(g)
                     waitForPlayer()

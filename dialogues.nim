@@ -329,3 +329,17 @@ proc processDialogue* (g: Game) =
                     smithing(g)
                 of "3": endDialogue(g, mLOCATION)
                 else: return
+
+        of PAPERBOY:
+            echo getKey(g, "loc__evros_newspaper")
+            echo getOptionKey(g, "loc__evros_newspaper_buy", 1)
+            echo getOptionKey(g, "loc__evros_newspaper_qui", 2)
+            let prompt = readLine(stdin)
+            case prompt:
+                of "1":
+                    echo getKey(g, "loc__evros_newspaper_bu2")
+                    if not buy(g.player, "newspaper", 2):
+                        printMessages(g)
+                    waitForPlayer()
+                of "2": endDialogue(g, mLOCATION)
+                else: return

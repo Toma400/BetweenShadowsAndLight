@@ -7,11 +7,18 @@ type
     SHELTER_CHEST
     WAREHOUSE_CHEST
   Item = object
-    weight* : int
-    value*  : int # default value! traders set this separately
+    weight*  : int
+    attack*  : int # defaults to 0, meaning no weapon type
+    defence* : int # defaults to 0, meaning no armour type (or broken armour)
+    #value*  : int # default value! traders set this separately
   SpecialItem* = enum
     COIN = "coin"
     LOCK = "lock"
+
+proc isBookType* (item_str: string): bool = return "book" in item_str or "newspaper" in item_str or "recipe" in item_str
+#proc isWearable* (item_str: string): bool = ITEMS[item_str] # to filter items that can be worn?
+# similar to activators?
+# similar to readable things? (separate type?)
 
 const ITEMS* = { # ID : object
     # food
@@ -32,18 +39,18 @@ const ITEMS* = { # ID : object
     "gunpowder"    : Item(weight: 0), # proch
     "silk"         : Item(weight: 2), # jedwab
     # weapons
-    "rusty_knife"     : Item(weight: 1), # zardzewiały nóż
-    "sickle"          : Item(weight: 1), # sierp
-    "rapier"          : Item(weight: 1), # rapier
-    "bandit_revolver" : Item(weight: 1), # bandycki rewolwer
-    "decor_shotgun"   : Item(weight: 2), # zdobiona strzelba
-    "dynamite"        : Item(weight: 0), # dynamit
-    # armors
-    "chainmail"        : Item(weight: 1), # kolczuga
-    "chainmail_broken" : Item(weight: 1), # uszkodzona kolczuga
+    "rusty_knife"     : Item(weight: 1, attack:  4), # zardzewiały nóż
+    "sickle"          : Item(weight: 1, attack:  4), # sierp
+    "rapier"          : Item(weight: 1, attack: 10), # rapier
+    "bandit_revolver" : Item(weight: 1, attack:  5), # bandycki rewolwer | pwr_magic > 10 disables it
+    "decor_shotgun"   : Item(weight: 2, attack: 22), # zdobiona strzelba | pwr_magic > 10 disables it
+    "dynamite"        : Item(weight: 0, attack: 25), # dynamit           | pwr_magic > 10 disables it // can only use it during fight?
+    # armours
+    "chainmail"        : Item(weight: 1, defence: 6), # kolczuga
+    "chainmail_broken" : Item(weight: 1, defence: 0), # uszkodzona kolczuga
     # scrolls
-    "scroll_heal"     : Item(weight: 0), # zwój uzdrowienia
-    "scroll_fireball" : Item(weight: 0), # zwój ognistej kuli
+    "scroll_heal"     : Item(weight: 0), # zwój uzdrowienia   | MP-10, HP+??? // prob usable whenever, but including fight?
+    "scroll_fireball" : Item(weight: 0), # zwój ognistej kuli | A=18, MP-32 // I can guess also only usable in fight
     # magic weapons
     "staff_fire"  : Item(weight: 1), # kostur ognia
     "staff_earth" : Item(weight: 1), # kostur ziemi
@@ -55,7 +62,8 @@ const ITEMS* = { # ID : object
     "potion_health_small" : Item(weight: 0), # mała mikstura zdrowia
     "potion_mana_small"   : Item(weight: 0), # mała mikstura many
     # other
-    "book"     : Item(weight: 0), # gazety, księgi, przepisy | TODO: imo we need to split this into each category, see language files recognising each entry separately
+    "newspaper" : Item(weight: 0),
+    "book"      : Item(weight: 0), # gazety, księgi, przepisy | TODO: imo we need to split this into each category, see language files recognising each entry separately
     # specials
     # - money
     # - ammo

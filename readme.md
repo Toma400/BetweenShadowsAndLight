@@ -36,6 +36,9 @@ for me to make new version just to add it.
 
 ### Features
 - A hand-crafted steampunk/fantasy world, Baedoor
+- Four locations
+- Nine NPCs
+- Two quests
 
 ### Differences
 - Minimal QoL additions (most notably in additional text guiding through GUI)
@@ -44,6 +47,8 @@ for me to make new version just to add it.
 - Adjusted race names to revised lore (human -> baedoorian, nord -> vindean, saphtri -> pahtri (due to description))
 - Fixed bug allowing you to repeat magician quest, cheesing the reward
   - Quest is now doable only once, but gives you also experience points (in OG it didn't)
+- Added some messages whenever additional feedback would be needed
+- Added gunpowder, as an item only partially introduced in OG
 
 ### New features (1.2+ version)
 - if not available already: trading would improve trade skill, and trade skill would
@@ -52,6 +57,7 @@ for me to make new version just to add it.
 - smithing recipes for level 2/3? maybe actually make level 1 get less items
 - also make smith be able to train you in smithing (both for 0->1 and 1->2/3), maybe for
   plenty of money
+- add gunpowder to warehouse chest so it can be found in BSaL
 
 ### Lore notes (to be transferred to BE and removed from here)
 - "Pod Złotym Szczurem" (Under Golden Rat) tavern in Evros
