@@ -284,6 +284,9 @@ game__smith_resissue = "You don't have enough resources for it!"
 game__smith_crafted  = "Forged"
 game__smith_repque   = "Pick number of the item that you want to repair. Press Enter to go back."
 game__smith_repsucc  = "Repaired"
+# GUI - other
+game__gather_succ    = "I was able to gather"
+game__gather_fail    = "I need to wait a bit for them to grow back."
 # GUI - messages
 game__warn_weight    = "You are overburdened!"
 game__warn_tired     = "You are tired!"

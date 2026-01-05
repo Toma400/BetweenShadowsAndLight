@@ -217,9 +217,11 @@ while isRunning(g):
                     case prompt:
                         of "1": discard; WAITING_FOR_IMPLEMENTATION() # fight rats
                         of "2": startDialogue(g, FARMER)
-                        of "3": discard; WAITING_FOR_IMPLEMENTATION() # search plants
+                        of "3": getGatherableItems(g, "hyerbitus", HYERBITUS_GROWTH) # waitForPlayer() happens later
                         of "4": discard; WAITING_FOR_IMPLEMENTATION() # fireplace/cooking
-                        of "5": discard; WAITING_FOR_IMPLEMENTATION() # conditioned
+                        of "5":
+                            if hasItem(g.player, "sickle"):
+                                getGatherableItems(g, "wheat", WHEAT_GROWTH) # waitForPlayer() happens later
                         of "6": switchMenu(g, mDEFAULT); continue
                         else: continue
                     printMessages(g)

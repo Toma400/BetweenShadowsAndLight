@@ -55,6 +55,10 @@ type
     trapspotting  : int
     survival      : int
     sneaking      : int
+  Timer* = enum # remember to add timer count value in hash below [!]
+    HYERBITUS_GROWTH
+    WHEAT_GROWTH
+    # todo: warehouse/night
   Variable* = enum # variables used for checks
     ISLAND_SEEN      # | allows for bringing island topic when talking to sailor
     SAM_KNOWS_YOU    # | used for just silly acknowledging you are known to Sam
@@ -126,10 +130,18 @@ type
     main_quest  : int         # main quest progress
     quests      : seq[Quest]  # active quests
     quests_done : seq[Quest]  # finished/failed quests
+    # timers
+    # table[event, <is_started, counter>] - is_started == true means the counter is set, so it needs to be counted down
+    # events that require time to pass start the timer by passing counter that slowly goes down
+    timers : Table[Timer, tuple[is_started: bool, counter: int]]
 const
   SP_MAX  = 1000 # not fixed value (worth changing for BRPGS 3.x)
   DEF_ATT = 2    # default attack  | I can imagine fists?
   DEF_DEF = 0    # default defence
+  TIMER_COUNTS = {
+      HYERBITUS_GROWTH : 10,
+      WHEAT_GROWTH     :  7,
+  }
 
 # TRADE TABLES
 # Entry means `shop` proc enables shopping in particular NPC
@@ -415,6 +427,23 @@ proc getDialogueVariables* (p: Player): seq[string] =
 proc clearDialogueVariables* (p: Player) =
     p.dial_vars = @[]
 
+# timer
+proc setTimer* (p: Player, tim: Timer) =
+    p.timers[tim] = (is_started : true,
+                     counter    : TIMER_COUNTS[tim]) # sets the timer on value set in const hash
+
+proc countDownTimers* (p: Player, val: int = 1) =
+    for tim in p.timers:
+        if p.timers[tim].is_started:
+            p.timers[tim].counter -= val
+        if p.timers[tim].counter <= 0: # we should catch it before it gets below, but just in case
+            p.timers[tim].is_started = false
+            p.timers[tim].counter    = 0     # similarly we set it to 0 just in case
+
+proc resetTimer* (p: Player, tim: Timer) = # ends countdown
+    p.timers[tim] = (is_started : false,
+                     counter    : 0)
+
 proc processStatistics* (p: Player) =
     # TIREDNESS
     p.sp -= 1 # crazy how little this is
@@ -447,6 +476,8 @@ proc processStatistics* (p: Player) =
     if p.pwr_conn  > 20: p.pwr_conn  = 20
     if p.pwr_chaos > 20: p.pwr_chaos = 20
     # level up removed from here because circular imports, moved to body
+
+    countDownTimers(p)
 
     if len(p.msg) > 0:
         addMessage(p, "game__warn_div")
@@ -507,6 +538,8 @@ proc newPlayer* (name: string, gender: Gender, race: Race, class: Class): Player
     result.main_quest  = 1   # fist stage started
     result.quests      = @[]
     result.quests_done = @[]
+    for tim in Timer.low..Timer.high:
+        result.timers[tim] = (false, 0)
 
 # various getters
 proc getPlayerName* (p: Player): string = return p.name
@@ -549,11 +582,8 @@ proc sleep* (p: Player) =
     p.sp = p.sp_max
     p.mp = p.mp_max
 
-    # todo:
-    # if timer == 1 or timer2 == 1 or timer3 == 1:
-    #     timer = 0
-    #     timer2 = 0
-    #     timer3 = 0
+    for tim in Timer.low..Timer.high:
+        resetTimer(p, tim)
 
 proc isQuestActive*   (p: Player, quest: Quest): bool = return quest in p.quests
 proc isQuestFinished* (p: Player, quest: Quest): bool = return quest in p.quests_done

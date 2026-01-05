@@ -284,6 +284,9 @@ game__smith_resissue = "Brakuje Ci surowca!"
 game__smith_crafted  = "Wykuto"
 game__smith_repque   = "Wpisz numer przedmiotu do naprawy. Naciśnij Enter by wrócić."
 game__smith_repsucc  = "Naprawiono"
+# GUI - other
+game__gather_succ    = "Udało mi się zebrać"
+game__gather_fail    = "Muszę trochę poczekać, aż odrosną."
 # GUI - messages
 game__warn_weight    = "Jesteś przeciążony!"
 game__warn_tired     = "Jesteś zmęczony!"
