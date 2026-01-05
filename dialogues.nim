@@ -413,3 +413,62 @@ proc processDialogue* (g: Game) =
                             g.player.money += 10
                         waitForPlayer()
                 else: return
+
+        of FARMER:
+            if not isQuestActive(g.player, WORK_ON_A_FARM): # w/o quest
+                if "work" notin getDialogueVariables(g.player):
+                    echo getKey(g, "loc__fields_farmer")
+                    if not isQuestFinished(g.player, WORK_ON_A_FARM): # if it's meant to be repicked, change it to something different?
+                        echo getOptionKey(g, "loc__fields_farmer_ask", 1)
+                    echo getOptionKey(g, "game__lock_give_up", 2)
+                    let prompt = readLine(stdin)
+                    case prompt:
+                        of "1":
+                            if not isQuestFinished(g.player, WORK_ON_A_FARM):
+                                addDialogueVariable(g.player, "work")
+                        of "2": endDialogue(g, mLOCATION)
+                        else: return
+                else:
+                    echo getKey(g, "loc__fields_farmer_sure")
+                    echo getOptionKey(g, "loc__fields_farmer_yes", 1)
+                    echo getOptionKey(g, "loc__fields_farmer_no", 2)
+                    let prompt = readLine(stdin)
+                    case prompt:
+                        of "1":
+                            echo getKey(g, "loc__fields_farmer_yesa1")
+                            discard startQuest(g.player, WORK_ON_A_FARM)
+                            addItemToInventory(g.player, "sickle") # added no matter if exists in inventory since it makes more sense, else...
+                            echo getKey(g, "loc__fields_farmer_yesa2") # ...we would need variable to keep track if it was given to you or not
+                            removeDialogueVariable(g.player, "work")
+                            waitForPlayer()
+                        of "2": removeDialogueVariable(g.player, "work")
+                        else: return
+            else:
+                if "resign" notin getDialogueVariables(g.player):
+                    echo getKey(g, "loc__fields_farmer2")
+                    if hasItem(g.player, "wheat"):
+                        echo getOptionKey(g, "loc__fields_farmer_work1", 1)
+                    echo getOptionKey(g, "loc__fields_farmer_work2", 2)
+                    echo getOptionKey(g, "game__lock_give_up", 3)
+                    let prompt = readLine(stdin)
+                    case prompt:
+                        of "1":
+                            if hasItem(g.player, "wheat"):
+                                echo getKey(g, "loc__fields_farmer_give")
+                                while hasItem(g.player, "wheat"):
+                                    discard removeItemFromInventory(g.player, "wheat")
+                                    g.player.money += 9
+                                waitForPlayer()
+                        of "2": addDialogueVariable(g.player, "resign")
+                        of "3": endDialogue(g, mLOCATION)
+                        else: return
+                else: # resign
+                    if not hasItem(g.player, "sickle"): # early return in case you don't have sickle to return to her
+                        echo getKey(g, "loc__fields_farmer_rsgn2")
+                        waitForPlayer()
+                        return
+                    # if you have sickle
+                    echo getKey(g, "loc__fields_farmer_rsgn")
+                    finishQuest(g.player, WORK_ON_A_FARM, 0)
+                    discard removeItemFromInventory(g.player, "sickle")
+                    waitForPlayer()

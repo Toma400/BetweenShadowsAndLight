@@ -74,11 +74,13 @@ type
     PAPERBOY
     MERCHANT
     HERBALIST
+    FARMER
     DUMMY   # used to indicate default state (no dialogue)
   Quest* = enum # strings are language keys  | xp gain
     TALK_TO_COOK     = "quest__cook"       # | 0 xp (partial quest)
     BRING_SWEET_ROLL = "quest__sweet_roll" # | 8 xp
     GET_PARCHMENT    = "quest__parchment"  # | 5 xp (0 in OG)
+    WORK_ON_A_FARM   = "quest__farm"       # | circular (work)
     # non-listed quasi-quest: delivery for the herbalist (gives 0 xp)
   Player* = ref object
     name   : string
@@ -562,6 +564,7 @@ proc startQuest* (p: Player, quest: Quest, repeatable: bool = false): bool =
     if quest in p.quests_done and repeatable == false: return false
     else:
         p.quests.add(quest)
+        return true
 
 proc finishQuest* (p: Player, quest: Quest, xp_gained: int) =
     p.quests.delete(p.quests.find(quest))

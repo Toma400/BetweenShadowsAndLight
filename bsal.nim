@@ -77,16 +77,17 @@ while isRunning(g):
                     getKey(g, "game__gui_diary").toLowerAscii     : mDIARY
                 }.toTable
                 let prompt = readLine(stdin)
-                if prompt == "cheat":
+                if prompt.toLowerAscii in conv:
+                    switchMenu(g, conv[prompt.toLowerAscii])
+                elif prompt == "cheat": # cheat menu, but not the right one
+                    g.player.money += 150
                     addItemToInventory(g.player, "wood")
                     addItemToInventory(g.player, "chainmail_broken")
                     addItemToInventory(g.player, "iron")
                     addItemToInventory(g.player, "water_cooked")
                     addItemToInventory(g.player, "hyerbitus")
-                if prompt.toLowerAscii in conv:
-                    switchMenu(g, conv[prompt.toLowerAscii])
-                elif prompt == "cheat":
-                    discard # todo: make it cheat screen, like in OG
+                    changeLocation(g, EVROS)
+                    WAITING_FOR_IMPLEMENTATION() # todo: make it cheat screen, like in OG
 
         of SETTINGS:
             echo getKey(g, "menu__langcur") & " " & getKey(g, "menu__lang")
@@ -112,7 +113,7 @@ while isRunning(g):
 
         of mLOCATION:
             processStatistics(g.player)
-            case g.location:
+            case g.location: # no -else- so that lacking location is caught by compiler
                 of SHIP:
                     echo getOptionKey(g, "loc__ship_talk_sailor",  1)
                     echo getOptionKey(g, "loc__ship_search_deck",  2)
@@ -203,9 +204,30 @@ while isRunning(g):
                         else: continue
                     printMessages(g)
                     waitForPlayer()
-                # other locations, not important for now
-                else:
-                    break
+                of FIELDS:
+                    echo getKey(g, "loc__fields")
+                    echo getOptionKey(g, "loc__fields_que1", 1)
+                    echo getOptionKey(g, "loc__fields_que2", 2)
+                    echo getOptionKey(g, "loc__fields_que3", 3)
+                    echo getOptionKey(g, "loc__fields_que4", 4)
+                    if hasItem(g.player, "sickle"): # makes more sense than quest gatekeeping
+                        echo getOptionKey(g, "loc__fields_que5", 5)
+                    echo getOptionKey(g, "loc__do_nothing", 6)
+                    let prompt = readLine(stdin)
+                    case prompt:
+                        of "1": discard; WAITING_FOR_IMPLEMENTATION() # fight rats
+                        of "2": startDialogue(g, FARMER)
+                        of "3": discard; WAITING_FOR_IMPLEMENTATION() # search plants
+                        of "4": discard; WAITING_FOR_IMPLEMENTATION() # fireplace/cooking
+                        of "5": discard; WAITING_FOR_IMPLEMENTATION() # conditioned
+                        of "6": switchMenu(g, mDEFAULT); continue
+                        else: continue
+                    printMessages(g)
+                    waitForPlayer()
+                of SHIP_DOCKED:
+                    WAITING_FOR_IMPLEMENTATION() # not available YET (waiting for MQ)
+                of BAEDOOR:
+                    discard # not achievable
 
         of mMAP:
             echo LocationMap
@@ -249,9 +271,9 @@ while isRunning(g):
                 waitForPlayer()
                 continue
             elif prompt == getKey(g, "game__gui_drsave").toLowerAscii:
-                continue
+                continue; WAITING_FOR_IMPLEMENTATION()
             elif prompt == getKey(g, "game__gui_drsavequit").toLowerAscii:
-                continue
+                continue; WAITING_FOR_IMPLEMENTATION()
             elif prompt == getKey(g, "game__gui_drquit").toLowerAscii:
                 resetGameData(g)
                 switchMenu(g, START)

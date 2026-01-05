@@ -37,9 +37,9 @@ for me to make new version just to add it.
 ### Features
 - A hand-crafted steampunk/fantasy world, Baedoor
 - Four locations
-- Eleven NPCs
+- Twelve NPCs
 - Two quests
-- One semi-quest
+- Two semi-quests
 - Various immersive systems (banking, reading, sleeping needs) alongside well-known ones,
   such as crafting (smithing, cooking, alchemy)
 
