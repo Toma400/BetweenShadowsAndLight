@@ -42,19 +42,24 @@ for me to make new version just to add it.
 - Two semi-quests
 - Various immersive systems (banking, reading, sleeping needs) alongside well-known ones,
   such as crafting (smithing, cooking, alchemy)
+- Engaging turn-based combat
 
 ### Differences
-- Minimal QoL additions (most notably in additional text guiding through GUI)
 - Added language support
 - Disabled ormath shaman as somewhat difficult to implement class bringing no real value
 - Adjusted race names to revised lore (human -> baedoorian, nord -> vindean, saphtri -> pahtri (due to description))
+- Added gunpowder to registry, as an item only partially introduced in OG (not foundable
+  however, it will be implemented in 1.2+)
+- Minimal QoL additions (most notably in additional text guiding through GUI)
 - Fixed bug allowing you to repeat magician quest, cheesing the reward
   - Quest is now doable only once, but gives you also experience points (in OG it didn't)
-- Added some messages whenever additional feedback would be needed
-- Added gunpowder, as an item only partially introduced in OG
 - Fixed merchant's selling you papyrus, as it was likely meant to be parchment
+- Fixed normal attack using `swords` skill even if using firearm/ranged weapon
+- Overhauled ranged combat so that not having ammo does not yield attack have zero effect,
+  but use default fist damage (modeled after how standard attack does it for ranged weapons)
 
 ### New features (1.2+ version)
+- add non-binary gender to character creation
 - if not available already: trading would improve trade skill, and trade skill would
   lower the prices?
 - decrease level cap? (100 xp for second level is ridiculous)
@@ -69,6 +74,8 @@ for me to make new version just to add it.
 - while the game actually tells you in tutorial alchemy skills can affect chances of you
   making potion, it doesn't do anything to actually gatekeep that - so if we were to add
   more potions, it'd make sense to make something that rolls against player's skill
+- add `try to escape` option to fights, with `combat/fight` proc bool argument that says
+  if we can do so
 
 ### Lore notes (to be transferred to BE and removed from here)
 - "Pod Złotym Szczurem" (Under Golden Rat) tavern in Evros

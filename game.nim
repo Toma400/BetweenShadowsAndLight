@@ -24,6 +24,7 @@ type
     mMAP
     mDIARY
     mDIALOGUE
+    mDEATH
   Game* = ref object # singular instance of object
     run       : bool
     menu      : MenuType
@@ -377,13 +378,13 @@ proc levelUp* (g: Game) =
     chooseSkillUpgrade(g, sk)
 
 proc getGatherableItems* (g: Game, item_yield: string, tim: Timer) =
-    if g.player.timers[tim].is_started == false:
+    if isTimerStarted(g.player, tim) == false:
         g.player.sp -= 15
         echo getKey(g, "game__gather_succ") & ": " & getKey(g, "item__" & item_yield)
         setTimer(g.player, tim)
         addItemToInventory(g.player, item_yield)
     else:
-        getKey(g, "game__gather_fail")
+        echo getKey(g, "game__gather_fail")
 
 proc WAITING_FOR_IMPLEMENTATION* () = discard # used so that I know points of the game that needs to be made still
 

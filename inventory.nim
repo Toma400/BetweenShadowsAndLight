@@ -79,12 +79,17 @@ proc characterInventory* (g: Game) =
     echo getKey(g, "game__gui_money") & ": " & $g.player.money
     echo getKey(g, "game__lock_lockpicks") & ": " & $g.player.lockpicks
     echo getKey(g, "game__gui_projectiles") & ": " & $g.player.ammo & "/" & $g.player.arrows
+    echo getKey(g, "game__gui_attack")  & ": " & $getAttack(g.player)
+    echo getKey(g, "game__gui_defence") & ": " & $getDefence(g.player) & " (" & $getArmourHealthPercent(g.player.armour.chest, g.player.armour_hp) & "%)"
+    # NOTE -- the above `player.armour.chest` would need to be overhauled if we add more armour types  -----------------^
+    echo DIVIDER
     echo "{ " & getKey(g, "game__gui_inventory") & " }"
     for it in getInventory(g.player):
         echo "- " & getKey(g, "item__" & it)
     echo "{ " & getKey(g, "game__gui_used_items") & " }"
     for it in getUsedInventory(g.player):
         echo "- " & getKey(g, "item__" & it)
+    echo DIVIDER
     echo getOptionKey(g, "game__gui_inv_info", 1)
     echo getOptionKey(g, "game__gui_inv_read", 2)
     echo getOptionKey(g, "game__gui_inv_use", 3)
@@ -102,3 +107,34 @@ proc characterInventory* (g: Game) =
         of "6": throw(g)
         of "7": switchMenu(g, mDEFAULT)
         else: return # loops back
+
+proc fightInventory* (g: Game) =
+    # more concise/limited variant of the above, accessible during the fight
+    while true:
+        echo getKey(g, "game__gui_weight") & ": " & $g.player.weight & "/" & $getMaxWeight(g.player)
+        echo getKey(g, "game__gui_projectiles") & ": " & $g.player.ammo & "/" & $g.player.arrows
+        echo DIVIDER
+        echo getKey(g, "game__gui_health") & ": " & $g.player.hp & " / " & $getMaxHealth(g.player)
+        echo getKey(g, "game__gui_mana")   & ": " & $g.player.mp & " / " & $getMaxMana(g.player)
+        echo getKey(g, "game__gui_attack")  & ": " & $getAttack(g.player)
+        echo getKey(g, "game__gui_defence") & ": " & $getDefence(g.player) & " (" & $getArmourHealthPercent(g.player.armour.chest, g.player.armour_hp) & "%)"
+                  # NOTE -- the above `player.armour.chest` ^^^ would need to be overhauled if we add more armour types
+        echo DIVIDER
+        echo "{ " & getKey(g, "game__gui_inventory") & " }"
+        for it in getInventory(g.player):
+            echo "- " & getKey(g, "item__" & it)
+        echo "{ " & getKey(g, "game__gui_used_items") & " }"
+        for it in getUsedInventory(g.player):
+            echo "- " & getKey(g, "item__" & it)
+        echo DIVIDER
+        echo getOptionKey(g, "game__gui_inv_use", 1)
+        echo getOptionKey(g, "game__gui_inv_usein", 2)
+        echo getOptionKey(g, "game__gui_inv_useoff", 3)
+        echo getOptionKey(g, "game__gui_inv_back", 4)
+        let prompt = readLine(stdin)
+        case prompt:
+            of "1": discard; WAITING_FOR_IMPLEMENTATION()
+            of "2": discard; WAITING_FOR_IMPLEMENTATION()
+            of "3": discard; WAITING_FOR_IMPLEMENTATION()
+            of "4": break
+            else: return # loops back

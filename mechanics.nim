@@ -14,6 +14,7 @@ const SMITHING_RECIPES* : Table[int, Table[string, seq[tuple[id: string, amount:
 }.toTable
 
 const REPAIRING_RECIPES* : Table[string, tuple[repaired: string, reqs: seq[tuple[id: string, amount: int]]]] = {
+    # should collect all items that have entry in BROKEN_VARIANT table (see `item.nim`) and can be repaired
     # broken variant : (repaired variant, @[resources needed <type, amount>])
     "chainmail_broken" : ("chainmail", @[("iron", 1)])
 }.toTable

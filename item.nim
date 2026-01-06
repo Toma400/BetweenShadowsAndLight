@@ -7,11 +7,26 @@ type
     SHELTER_CHEST
     WAREHOUSE_CHEST
     BANK_CHEST
+  WeaponType* = enum
+    NOT_WEAPON   # first type so it's set as default
+    FIST         #              | attack_error == 1 in OG
+    CLOSE_COMBAT #              | eq_style == 1 in OG
+    RANGED       # uses arrows  | eq_style == 2 in OG
+    FIREARM      # uses bullets | eq_style == 3 in OG
+    MAGIC        # staffs       | eq_style == 4 in OG
+  WearableType* = enum
+    NOT_WEARABLE # first type so it's set as default
+    # armours
+    aCHEST
   Item = object
     weight*  : int
-    attack*  : int  # defaults to 0, meaning no weapon type
-    defence* : int  # defaults to 0, meaning no armour type (or broken armour)
-    ingr*    : bool # if can be used on alchemy table
+    attack*  : int        # defaults to 0, meaning no weapon type
+    defence* : int        # defaults to 0, meaning no armour type (or broken armour)
+    ingr*    : bool       # if can be used on alchemy table
+    health*  : int        # used by WearableType
+    # item types -- if NOT_WEAPON && NOT_WEARABLE, it can't be put on player
+    weapon*   : WeaponType
+    wearable* : WearableType
     #value*  : int  # default value! traders set this separately
   SpecialItem* = enum
     COIN   = "coin"
@@ -25,12 +40,14 @@ proc isBookType* (item_str: string): bool = return "book" in item_str or "newspa
 # similar to readable things? (separate type?)
 
 const ITEMS* = { # ID : object
-    # specials
-    # - money
-    # - bullets
-    # - arrows
-    # - lockpicks
-    # food
+    # --- SPECIAL ---
+    # - money      | countable, use `specialItem` to work with it
+    # - bullets    | countable, use `specialItem` to work with it
+    # - arrows     | countable, use `specialItem` to work with it
+    # - lockpicks  | countable, use `specialItem` to work with it
+    "fists"            : Item(weight: 0, attack:  2, weapon:     FIST), # used if `weapon` field of Player is empty
+    "body"             : Item(weight: 0, defence: 0, wearable: aCHEST), # used if `armour` field of Player is empty
+    # --- FOOD ---
     "roots"            : Item(weight: 0, ingr: true), # korzonki
     "rat_meat"         : Item(weight: 0, ingr: true), # szczurze mięso
     "rat_meat_roasted" : Item(weight: 0),             # pieczone szczurze mięso
@@ -38,7 +55,7 @@ const ITEMS* = { # ID : object
     "herring"          : Item(weight: 0, ingr: true), # śledź
     "herring_roasted"  : Item(weight: 0),             # pieczony śledź
     "beer"             : Item(weight: 0),             # piwo
-    # utilities
+    # --- UTILITIES ---
     "water"        : Item(weight: 0, ingr: true), # woda
     "water_cooked" : Item(weight: 0, ingr: true), # podgrzana woda
     "iron"         : Item(weight: 2),             # żelazo
@@ -47,33 +64,39 @@ const ITEMS* = { # ID : object
     "parchment"    : Item(weight: 0),             # pergamin
     "gunpowder"    : Item(weight: 0, ingr: true), # proch
     "silk"         : Item(weight: 2),             # jedwab
-    # weapons
-    "rusty_knife"     : Item(weight: 1, attack:  4), # zardzewiały nóż
-    "sickle"          : Item(weight: 1, attack:  4), # sierp
-    "rapier"          : Item(weight: 1, attack: 10), # rapier
-    "bandit_revolver" : Item(weight: 1, attack:  5), # bandycki rewolwer | pwr_magic > 10 disables it
-    "decor_shotgun"   : Item(weight: 2, attack: 22), # zdobiona strzelba | pwr_magic > 10 disables it
-    "dynamite"        : Item(weight: 0, attack: 25), # dynamit           | pwr_magic > 10 disables it // can only use it during fight?
-    # armours
-    "chainmail"        : Item(weight: 1, defence: 6), # kolczuga
-    "chainmail_broken" : Item(weight: 1, defence: 0), # uszkodzona kolczuga
-    # scrolls
+    # --- WEAPONS ---
+    "rusty_knife"     : Item(weight: 1, attack:  4, weapon: CLOSE_COMBAT), # zardzewiały nóż
+    "sickle"          : Item(weight: 1, attack:  4, weapon: CLOSE_COMBAT), # sierp
+    "rapier"          : Item(weight: 1, attack: 10, weapon: CLOSE_COMBAT), # rapier
+    "bandit_revolver" : Item(weight: 1, attack:  5, weapon: FIREARM),      # bandycki rewolwer | pwr_magic > 10 disables it
+    "decor_shotgun"   : Item(weight: 2, attack: 22, weapon: FIREARM),      # zdobiona strzelba | pwr_magic > 10 disables it
+    "dynamite"        : Item(weight: 0, attack: 25),                       # dynamit           | pwr_magic > 10 disables it // can only use it during fight?
+    # --- ARMOURS ---
+    # broken variants should not be WearableType and be (def:0/hp:0)
+    "chainmail"        : Item(weight: 1, defence: 6, health: 50, wearable: aCHEST), # kolczuga
+    "chainmail_broken" : Item(weight: 1, defence: 0, health:  0),                   # uszkodzona kolczuga
+    # --- SCROLLS ---
     "scroll_heal"     : Item(weight: 0), # zwój uzdrowienia   | MP-10, HP+??? // prob usable whenever, but including fight?
     "scroll_fireball" : Item(weight: 0), # zwój ognistej kuli | A=18, MP-32 // I can guess also only usable in fight
-    # magic weapons
+    # --- MAGIC WEAPONS ---
     "staff_fire"  : Item(weight: 1), # kostur ognia
     "staff_earth" : Item(weight: 1), # kostur ziemi
     "staff_conn"  : Item(weight: 1), # kostur połączenia
     "staff_chaos" : Item(weight: 1), # kostur chaosu
-    # alchemy
+    # --- ALCHEMY ---
     "hyerbitus"           : Item(weight: 0, ingr: true), # kwiat hyerbitusa
     "antidote"            : Item(weight: 0),             # odtrutka
     "potion_health_small" : Item(weight: 0),             # mała mikstura zdrowia
     "potion_mana_small"   : Item(weight: 0),             # mała mikstura many
-    # readables
+    # --- READABLES ---
     "newspaper"            : Item(weight: 0),
     "recipe_health_potion" : Item(weight: 0),
     "book"                 : Item(weight: 0),
+}.toTable
+
+const BROKEN_VARIANT* = {
+    # if entry is meant to be repairable, visit `mechanics.nim` REPAIRING_RECIPES table
+    "chainmail" : "chainmail_broken"
 }.toTable
 
 # before you add new chest here, add one in enum above; for most use cases, use `CHESTS` instead of prefab, prefab is const referrer only [!]
@@ -94,3 +117,11 @@ proc debundleSpecialItem* (item_str: string): tuple[amount: int, kind: SpecialIt
     let itm = if endsWith(spl[1], "s"): spl[1][0..len(spl[1])-2] else: spl[1] # cut 's' if exists
     result.amount = parseInt(spl[0])
     result.kind   = parseEnum[SpecialItem](itm)
+
+proc getArmourHealthPercent* (item: string, current_health: int): int =
+    if item == "" or ITEMS[item].health == 0: return 0 # catches division by 0
+    return int(current_health/ITEMS[item].health) * 100
+
+proc getArmourHealthPercent* (item: Item, current_health: int): int =
+    if item.health == 0: return 0 # catches division by 0
+    return int(current_health/item.health) * 100

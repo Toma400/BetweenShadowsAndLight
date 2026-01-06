@@ -1,6 +1,7 @@
 import std/strutils
 import player
 import game
+import item
 
 proc characterStatistics* (g: Game) =
       echo getKey(g, "game__gui_chinit")
@@ -15,10 +16,8 @@ proc characterStatistics* (g: Game) =
                  getKey(g, "game__gui_mana")   & ": " & $g.player.mp & " / " & $getMaxMana(g.player)   & " | " &
                  getKey(g, "game__gui_attack")  & ": " & $getAttack(g.player)  & " | " &
                  getKey(g, "game__gui_defence") & ": " & $getDefence(g.player) & "}" &
-           # armor | todo: apparently there's [armor / maxarmor]?? is it like item resistance/durability?
-           #         ...but then there's also `armor_hp` wtf
-           "" # for now, so that the above not being filled don't break the string
-           # magic defence (if it exists), from what I see as new line
+                 "(" & $getArmourHealthPercent(g.player.armour.chest, g.player.armour_hp) & "%)" & "}"
+                 # in case more armour variants are made, this ^ will need to be adjusted
       echo DIVSHORT
       echo getKey(g, "game__gui_strength")     & ": " & $getStrength(g.player)
       echo getKey(g, "game__gui_dexterity")    & ": " & $getDexterity(g.player)

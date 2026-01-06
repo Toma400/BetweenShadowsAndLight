@@ -111,8 +111,13 @@ type
     defence : int
     poison  : int
     # inventory
-    inv      : seq[string]
-    inv_used : seq[string]
+    # inv_used is distributed into `weapon` and `armour` for better control
+    # OG used seq[string] and `eq_style==0`/`eq_style2=0` for checking if weapon/armour slot is empty
+    # ...but that's messy as hell
+    inv        : seq[string]
+    weapon*    : string
+    armour*    : tuple[chest: string]
+    armour_hp* : int # summary of all `armour` def points -- would need refactoring with more armour types
     # inventory-related
     bank*      : int # bank account balance
     money*     : int
@@ -120,10 +125,10 @@ type
     arrows*    : int
     lockpicks* : int
     # powers
-    pwr_magic : int
-    pwr_tech  : int
-    pwr_conn  : int
-    pwr_chaos : int
+    pwr_magic* : int
+    pwr_tech*  : int
+    pwr_conn*  : int
+    pwr_chaos* : int
     # quest values
     dialogue    : NPC         # the person player talks with
     dial_vars   : seq[string] # variables used during dialogue (for branching) | removed everytime dialogue ends
@@ -141,7 +146,7 @@ const
   TIMER_COUNTS = {
       HYERBITUS_GROWTH : 10,
       WHEAT_GROWTH     :  7,
-  }
+  }.toTable
 
 # TRADE TABLES
 # Entry means `shop` proc enables shopping in particular NPC
@@ -432,8 +437,14 @@ proc setTimer* (p: Player, tim: Timer) =
     p.timers[tim] = (is_started : true,
                      counter    : TIMER_COUNTS[tim]) # sets the timer on value set in const hash
 
+proc isTimerStarted* (p: Player, tim: Timer): bool =
+    return p.timers[tim].is_started
+
+proc getTimerCountDownValue* (p: Player, tim: Timer): int =
+    return p.timers[tim].counter
+
 proc countDownTimers* (p: Player, val: int = 1) =
-    for tim in p.timers:
+    for tim in p.timers.keys():
         if p.timers[tim].is_started:
             p.timers[tim].counter -= val
         if p.timers[tim].counter <= 0: # we should catch it before it gets below, but just in case
@@ -601,30 +612,76 @@ proc finishQuest* (p: Player, quest: Quest, xp_gained: int) =
     p.quests_done.add(quest)
     addExperience(p, xp_gained)
 
+proc hasItem* (p: Player, item_str: string): bool =
+    return item_str in p.inv
+
 proc addItemToInventory* (p: Player, item_str: string) =
     p.inv.add(item_str)
     p.weight += ITEMS[item_str].weight
 
 proc removeItemFromInventory* (p: Player, item_str: string): bool =
-    if item_str in p.inv: # checks normal inventory
+    # only checks regular inventory
+    if hasItem(p, item_str):
         p.inv.delete(find(p.inv, item_str))
-        return true
-    elif item_str in p.inv_used: # checks weared stuff
-        p.inv_used.delete(find(p.inv_used, item_str))
         return true
     return false
 
 proc removeItemFromInventory* (p: Player, item_index: int) =
     p.inv.delete(item_index)
 
-proc hasItem* (p: Player, item_str: string): bool =
-    return item_str in p.inv
+proc equip* (p: Player, item_index: int): bool =
+    result       = true # to be overwritten
+    let item_str = p.inv[item_index]
+    let item     = ITEMS[item_str]
+    if item.weapon != NOT_WEAPON:
+        p.weapon = item_str
+    elif item.wearable != NOT_WEARABLE:
+        case item.wearable: # do not use 'else', it's meant to err with new armour types [!]
+          of NOT_WEARABLE: discard # never reached
+          of aCHEST: p.armour.chest = item_str; p.armour_hp = item.health; p.defence = item.defence
+          # the above would need refactoring if more armour types are to be added
+    else: result = false
+    if result == true:
+        removeItemFromInventory(p, item_index)
+
+proc equip* (p: Player, item_str: string): bool =
+    if hasItem(p, item_str):
+        return equip(p, find(p.inv, item_str))
+    return false
+
+proc deequip* (p: Player, kind: WeaponType): bool =
+    result = true
+    if p.weapon == "": return false # err
+    else:
+        addItemToInventory(p, p.weapon)
+        p.weapon = "" # resets
+
+proc deequip* (p: Player, kind: WearableType, destroy: bool = false): bool =
+    result = true
+    case kind:
+      of NOT_WEARABLE: return false # err, but should not be reached
+      of aCHEST:
+          if p.armour.chest == "": return false # err
+          else:
+              addItemToInventory(p, p.armour.chest)
+              # if we add more armour types, this would need to be overhauled
+              # we need to keep `= ""` at the end, so `destroy` has reference
+              # but then we need checks for p.armour.X so that we only affect
+              # part of armour we want
+              if destroy:
+                  discard removeItemFromInventory(p, p.armour.chest)
+                  addItemToInventory(p, BROKEN_VARIANT[p.armour.chest])
+              p.armour.chest = "" # for now here, was under case of aCHEST before destroy pushed it down
+              p.armour_hp = 0
+              p.defence   = 0
 
 proc getInventory* (p: Player): seq[string] =
     return p.inv
 
 proc getUsedInventory* (p: Player): seq[string] =
-    return p.inv_used
+    for kind, arm_piece in p.armour.fieldPairs():
+        if arm_piece != "": result.add(arm_piece)
+    if p.weapon       != "": result.add(p.weapon)
 
 proc buy* (p: Player, item_str: string, value: int): bool =
     if value > p.money:

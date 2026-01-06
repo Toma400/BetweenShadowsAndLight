@@ -4,6 +4,7 @@ import mechanics
 import dialogues
 import inventory
 import location
+import battle
 import player
 import quest
 import lang
@@ -53,6 +54,7 @@ while isRunning(g):
                 # general processes
                 processMainQuest(g)
                 processStatistics(g.player)
+                if g.player.hp <= 0: changeLocation(g, mDEATH); continue
                 if getExperience(g.player) > calculateExperienceCap(g.player):
                     levelUp(g)
                 # echos
@@ -113,6 +115,7 @@ while isRunning(g):
 
         of mLOCATION:
             processStatistics(g.player)
+            if g.player.hp <= 0: changeLocation(g, mDEATH); continue
             case g.location: # no -else- so that lacking location is caught by compiler
                 of SHIP:
                     echo getOptionKey(g, "loc__ship_talk_sailor",  1)
@@ -215,7 +218,9 @@ while isRunning(g):
                     echo getOptionKey(g, "loc__do_nothing", 6)
                     let prompt = readLine(stdin)
                     case prompt:
-                        of "1": discard; WAITING_FOR_IMPLEMENTATION() # fight rats
+                        of "1":
+                            if not combat(g, RAT, crouch_available=true):
+                                switchMenu(g, mDEATH); continue
                         of "2": startDialogue(g, FARMER)
                         of "3": getGatherableItems(g, "hyerbitus", HYERBITUS_GROWTH) # waitForPlayer() happens later
                         of "4": discard; WAITING_FOR_IMPLEMENTATION() # fireplace/cooking
@@ -284,3 +289,12 @@ while isRunning(g):
 
         of mDIALOGUE:
             processDialogue(g)
+
+        of mDEATH:
+            case getGender(g.player):
+                of MALE:      echo getKey(g, "game__death_m")
+                of FEMALE:    echo getKey(g, "game__death_f")
+                of NONBINARY: echo getKey(g, "game__death_n")
+                else: discard # not reachable
+            waitForPlayer()
+            switchMenu(g, START)
