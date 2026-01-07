@@ -67,6 +67,7 @@ type
     MERCHANT_ASKED   # | to indicate merchant giving you parchment (so that you can't cheese it)
     HERBALIST_ASKED  # | to indicate dialogue passing once
   NPC* = enum # npcs you can dialogue with
+    CAPTAIN_DOCKED
     CAPTAIN
     SAILOR
     COOK

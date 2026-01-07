@@ -2,6 +2,7 @@ import std/strutils
 import std/random
 import std/tables
 import inventory
+import cheats
 import player
 import item
 import game
@@ -151,6 +152,8 @@ proc fight (g: Game, enemy: Enemy): FightOutcome =
                 WAITING_FOR_IMPLEMENTATION() # or rather, fightInventory awaits for impl
                 fightInventory(g)
                 att_value = 0     # no attack this turn
+            of "heal": # cheat
+                cheatHeal(g)
             else: continue
         # after-attack-calculation feedback
         if att_value > 0: echo getKey(g, "game__combat_hit") & " " & $att_value & " " & getKey(g, "game__combat_dmg")
@@ -246,7 +249,7 @@ proc randomEncounter* (g: Game, enemy_list: seq[Enemy], chance: int): bool =
     # runs combat based on chance %; this variant allows for randomised enemies
     if rand(0..100) <= chance:
         let enemy = sample(enemy_list)
-        echo getKey(g, "game__encounter") & " " & getKey(g, "creature__" & enemy)
+        echo getKey(g, "game__encounter") & " " & getKey(g, "creature__" & $enemy)
         return combat(g, enemy)
 
 proc randomEncounter* (g: Game, enemy: Enemy, chance: int): bool =

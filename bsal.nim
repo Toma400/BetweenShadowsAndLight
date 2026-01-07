@@ -140,6 +140,20 @@ while isRunning(g):
                     if isDialogueStarted(g): continue # lets `mDIALOGUE` handle everything
                     printMessages(g)
                     waitForPlayer()
+                of SHIP_DOCKED: # made dedicated options so it reflects changes
+                    echo getOptionKey(g, "loc__ship_search_deck",  1)
+                    echo getOptionKey(g, "loc__ship_look_around",  2)
+                    echo getOptionKey(g, "loc__ship_talk_captain", 3)
+                    echo getOptionKey(g, "loc__do_nothing", 4)
+                    let prompt = readLine(stdin)
+                    case prompt:
+                        of "1": ship_SearchDeck(g.player)
+                        of "2": ship_lookAroundPort(g.player)
+                        of "3": startDialogue(g, CAPTAIN_DOCKED)
+                        of "4": switchMenu(g, mDEFAULT); continue
+                        else: continue
+                    printMessages(g)
+                    waitForPlayer()
                 of DESERTED_ISLAND:
                     echo getKey(g, "loc__island")
                     echo getOptionKey(g, "loc__island_look_around", 1)
@@ -231,8 +245,6 @@ while isRunning(g):
                         else: continue
                     printMessages(g)
                     waitForPlayer()
-                of SHIP_DOCKED:
-                    WAITING_FOR_IMPLEMENTATION() # not available YET (waiting for MQ)
                 of BAEDOOR:
                     discard # not achievable
 

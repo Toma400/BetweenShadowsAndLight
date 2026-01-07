@@ -29,12 +29,14 @@ const LocationDestinations* : Table[Location, seq[tuple[loc: Location, key: stri
     # - cond   - anonymous proc that is checked against, or `true` if location can be reached no matter what
     # - failed - translation key for message if `cond` results with false (can be "" for `cond == true`)
     SHIP            : @[(loc: EVROS,           key: "travel__sh_dummy",     cost:  0, enc: NO_ENC      , cond: false, failed: "travel__sh_dummyfail")],
-    SHIP_DOCKED     : @[],
+    SHIP_DOCKED     : @[(loc: DOCKS,           key: "travel__dksh_to_dock", cost:  0, enc: NO_ENC      , cond: true,  failed: "")],
     DESERTED_ISLAND : @[(loc: DESERTED_HOME,   key: "travel__desi_to_desh", cost:  0, enc: NO_ENC      , cond: true,  failed: ""),
                         (loc: BAEDOOR,         key: "travel__desi_to_bae",  cost:  0, enc: NO_ENC      , cond: false, failed: "travel__desi_to_baef"),
                         (loc: DOCKS,           key: "travel__desi_to_dock", cost: 10, enc: NO_ENC      , cond: true,  failed: "")],
     DESERTED_HOME   : @[(loc: DESERTED_ISLAND, key: "travel__desh_to_desi", cost:  0, enc: NO_ENC      , cond: true,  failed: "")],
-    DOCKS           : @[(loc: EVROS,           key: "travel__dock_to_evrs", cost:  0, enc: NO_ENC      , cond: true,  failed: "")], # todo: ADD SHIP_DOCKED + IN OG IT ALLOWS TO COME BACK TO DESERTED ISLAND!
+    DOCKS           : @[(loc: EVROS,           key: "travel__dock_to_evrs", cost:  0, enc: NO_ENC      , cond: true,  failed: ""),
+                        (loc: SHIP_DOCKED,     key: "travel__dock_to_dksh", cost:  0, enc: NO_ENC      , cond: true,  failed: "")],
+                         # in OG, it also allows to come back to DESERTED_ISLAND (should `cheat` enable global variable for checks?)
     EVROS           : @[(loc: DOCKS,           key: "travel__evrs_to_dock", cost:  0, enc: NO_ENC      , cond: true,  failed: ""),
                         (loc: FIELDS,          key: "travel__evrs_to_fiel", cost:  0, enc: (25, @[RAT]), cond: true,  failed: "")],
     FIELDS          : @[(loc: EVROS,           key: "travel__fiel_to_evrs", cost:  0, enc: NO_ENC      , cond: true,  failed: "")],
@@ -58,6 +60,9 @@ proc ship_SearchDeck* (p: var Player) =
 proc ship_lookAround* (p: var Player) =
     addMessage(p, "loc__ship_looked_around")
     addVariable(p, ISLAND_SEEN)
+
+proc ship_lookAroundPort* (p: var Player) =
+    addMessage(p, "loc__shipd_looked_around")
 
 proc island_SearchArea* (p: var Player) =
     addMessage(p, "loc__island_roots")

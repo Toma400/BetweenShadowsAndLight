@@ -40,6 +40,7 @@ for me to make new version just to add it.
 - Twelve NPCs
 - Two quests
 - Two semi-quests
+- A narrative-rich tutorial
 - Various immersive systems (banking, reading, sleeping needs) alongside well-known ones,
   such as crafting (smithing, cooking, alchemy)
 - Engaging turn-based combat
@@ -50,6 +51,8 @@ for me to make new version just to add it.
 - Adjusted race names to revised lore (human -> baedoorian, nord -> vindean, saphtri -> pahtri (due to description))
 - Added gunpowder to registry, as an item only partially introduced in OG (not foundable
   however, it will be implemented in 1.2+)
+- Added unique options to docked ship, since OG haven't made any explicit changes, resulting
+  in NPCs behaving the same before and after MQ took place, being unaware of it entirely
 - Minimal QoL additions (most notably in additional text guiding through GUI)
 - Fixed bug allowing you to repeat magician quest, cheesing the reward
   - Quest is now doable only once, but gives you also experience points (in OG it didn't)
@@ -57,6 +60,9 @@ for me to make new version just to add it.
 - Fixed normal attack using `swords` skill even if using firearm/ranged weapon
 - Overhauled ranged combat so that not having ammo does not yield attack have zero effect,
   but use default fist damage (modeled after how standard attack does it for ranged weapons)
+- Cheats slightly changed
+  - You can't go back to abandoned island after going to Evros
+  - You can heal yourself during the fight
 
 ### New features (1.2+ version)
 - add non-binary gender to character creation
