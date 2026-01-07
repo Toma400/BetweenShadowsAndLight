@@ -54,7 +54,7 @@ while isRunning(g):
                 # general processes
                 processMainQuest(g)
                 processStatistics(g.player)
-                if g.player.hp <= 0: changeLocation(g, mDEATH); continue
+                if g.player.hp <= 0: switchMenu(g, mDEATH); continue
                 if getExperience(g.player) > calculateExperienceCap(g.player):
                     levelUp(g)
                 # echos
@@ -115,7 +115,7 @@ while isRunning(g):
 
         of mLOCATION:
             processStatistics(g.player)
-            if g.player.hp <= 0: changeLocation(g, mDEATH); continue
+            if g.player.hp <= 0: switchMenu(g, mDEATH); continue
             case g.location: # no -else- so that lacking location is caught by compiler
                 of SHIP:
                     echo getOptionKey(g, "loc__ship_talk_sailor",  1)
@@ -253,6 +253,8 @@ while isRunning(g):
                 else:
                     let dest = LocationDestinations[g.location][p-1]
                     if dest.cond == true: # checks whether condition is met
+                        if not randomEncounter(g, dest.enc.en, dest.enc.chance): # random encounter
+                            switchMenu(g, mDEATH)
                         journey(g, dest.loc, dest.cost) # menu switch is done here too
                     else:
                         echo getKey(g, dest.failed)

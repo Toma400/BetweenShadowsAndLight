@@ -313,6 +313,7 @@ game__combat_win     = "Enemy killed!"
 game__combat_armbrk  = "Armour was destroyed!"
 game__combat_sneaksc = "Surprised enemy got killed!"
 game__combat_sneakfl = "The enemy saw me.."
+game__encounter      = "Suddenly I saw"
 # GUI - other
 game__gather_succ    = "I was able to gather"
 game__gather_fail    = "I need to wait a bit for them to grow back."

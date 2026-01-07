@@ -313,6 +313,7 @@ game__combat_win     = "Zabito przeciwnika!"
 game__combat_armbrk  = "Pancerz został zniszczony!"
 game__combat_sneaksc = "Atak z zaskoczenia się udał!"
 game__combat_sneakfl = "Przeciwnik mnie zobaczył.."
+game__encounter      = "Nagle pojawił się"
 # GUI - other
 game__gather_succ    = "Udało mi się zebrać"
 game__gather_fail    = "Muszę trochę poczekać, aż odrosną."

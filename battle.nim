@@ -52,7 +52,7 @@ proc fight (g: Game, enemy: Enemy): FightOutcome =
         var att_value = WPN.attack
         var def_value = ARM.defence
         var arm_dmg   = ARM.defence # recognises whether def bonus comes from armor or other means (e.g. dexterity)
-        var has_ammo  = false
+        var has_ammo  = true        # default is yes because if weapon is not ranged, it skips later warning
         # --- AMMO CHECK ---
         if WPN.weapon == RANGED or WPN.weapon == FIREARM:
             if WPN.weapon == RANGED:
@@ -244,8 +244,10 @@ proc combat* (g: Game, enemy: Enemy, crouch_available: bool = false): bool =
 
 proc randomEncounter* (g: Game, enemy_list: seq[Enemy], chance: int): bool =
     # runs combat based on chance %; this variant allows for randomised enemies
-    if rand(0..100) < chance:
-        return combat(g, sample(enemy_list))
+    if rand(0..100) <= chance:
+        let enemy = sample(enemy_list)
+        echo getKey(g, "game__encounter") & " " & getKey(g, "creature__" & enemy)
+        return combat(g, enemy)
 
 proc randomEncounter* (g: Game, enemy: Enemy, chance: int): bool =
     return randomEncounter(g, @[enemy], chance) # variant with one enemy

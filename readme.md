@@ -76,6 +76,12 @@ for me to make new version just to add it.
   more potions, it'd make sense to make something that rolls against player's skill
 - add `try to escape` option to fights, with `combat/fight` proc bool argument that says
   if we can do so
+  - there could be two escapes - one before the fight (when you can choose sneaking) and
+    one during battle; the before-fight option would have higher chance to avoid fight
+  - though this escapability should be gated and/or have dedicated result (former option
+    is easier) because e.g. if we escape wounded pirate in MQ, we would probably let
+    captain be killed, which would have consequence for MQ
+- make all GUI options work upon numbers, not writing down letters
 
 ### Lore notes (to be transferred to BE and removed from here)
 - "Pod Złotym Szczurem" (Under Golden Rat) tavern in Evros

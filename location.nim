@@ -1,6 +1,7 @@
 import std/strutils
 import std/tables
 import player
+import battle
 import game
 import item
 
@@ -11,30 +12,32 @@ const LocationMap* = """
     | Λ           ░░░░░░░░░░░░░░░░    (      ~~    |
     |Λ  ░░░░░░░░░░░░░░░░░░░  ♖-------♖)            |
     | Λ ░░░░░░░░░░░░░░░░░░░  |  Baedoor ♖)      ~~ |
-    |Λ  ░░░░░░░░░░░░░░░░░░░  ♖-------♖⚓)           |
+    |Λ  ░░░░░░░░░░░░░░░░░░░  ♖-------♖⚓)          |
     |Λ  &  ░░░░░░░░░░░░░░░░           (      ~~ X  |
     | Λ Λ Λ Λ Λ Λ Λ   Λ ░░░░░░░░░░░░░  )           |
     ✺----------------------------------------------✺
     """.unindent
 # & = ۩
 
-const LocationDestinations* : Table[Location, seq[tuple[loc: Location, key: string, cost: int, cond: bool, failed: string]]] = {
+const NO_ENC = (0, newSeq[Enemy]()) # used only so Nim doesn't complain below (also explicit)
+const LocationDestinations* : Table[Location, seq[tuple[loc: Location, key: string, cost: int, enc: tuple[chance: int, en: seq[Enemy]], cond: bool, failed: string]]] = {
     # travel destinations - if there's predicates needed for travel (or tiredness counts) make value a seq[tuple<Loc, val1, val2>]
     # - loc    - Location to be travelled to
     # - key    - translation key that will show for this option
     # - cost   - sp cost
+    # - enc    - encounter (chance, seq of enemies)
     # - cond   - anonymous proc that is checked against, or `true` if location can be reached no matter what
     # - failed - translation key for message if `cond` results with false (can be "" for `cond == true`)
-    SHIP            : @[(loc: EVROS,           key: "travel__sh_dummy",     cost:  0, cond: false, failed: "travel__sh_dummyfail")],
+    SHIP            : @[(loc: EVROS,           key: "travel__sh_dummy",     cost:  0, enc: NO_ENC      , cond: false, failed: "travel__sh_dummyfail")],
     SHIP_DOCKED     : @[],
-    DESERTED_ISLAND : @[(loc: DESERTED_HOME,   key: "travel__desi_to_desh", cost:  0, cond: true,  failed: ""),
-                        (loc: BAEDOOR,         key: "travel__desi_to_bae",  cost:  0, cond: false, failed: "travel__desi_to_baef"),
-                        (loc: DOCKS,           key: "travel__desi_to_dock", cost: 10, cond: true,  failed: "")],
-    DESERTED_HOME   : @[(loc: DESERTED_ISLAND, key: "travel__desh_to_desi", cost:  0, cond: true,  failed: "")],
-    DOCKS           : @[(loc: EVROS,           key: "travel__dock_to_evrs", cost:  0, cond: true,  failed: "")], # todo: ADD SHIP_DOCKED + IN OG IT ALLOWS TO COME BACK TO DESERTED ISLAND!
-    EVROS           : @[(loc: DOCKS,           key: "travel__evrs_to_dock", cost:  0, cond: true,  failed: ""),
-                        (loc: FIELDS,          key: "travel__evrs_to_fiel", cost:  0, cond: true,  failed: "")],
-    FIELDS          : @[(loc: EVROS,           key: "travel__fiel_to_evrs", cost:  0, cond: true,  failed: "")],
+    DESERTED_ISLAND : @[(loc: DESERTED_HOME,   key: "travel__desi_to_desh", cost:  0, enc: NO_ENC      , cond: true,  failed: ""),
+                        (loc: BAEDOOR,         key: "travel__desi_to_bae",  cost:  0, enc: NO_ENC      , cond: false, failed: "travel__desi_to_baef"),
+                        (loc: DOCKS,           key: "travel__desi_to_dock", cost: 10, enc: NO_ENC      , cond: true,  failed: "")],
+    DESERTED_HOME   : @[(loc: DESERTED_ISLAND, key: "travel__desh_to_desi", cost:  0, enc: NO_ENC      , cond: true,  failed: "")],
+    DOCKS           : @[(loc: EVROS,           key: "travel__dock_to_evrs", cost:  0, enc: NO_ENC      , cond: true,  failed: "")], # todo: ADD SHIP_DOCKED + IN OG IT ALLOWS TO COME BACK TO DESERTED ISLAND!
+    EVROS           : @[(loc: DOCKS,           key: "travel__evrs_to_dock", cost:  0, enc: NO_ENC      , cond: true,  failed: ""),
+                        (loc: FIELDS,          key: "travel__evrs_to_fiel", cost:  0, enc: (25, @[RAT]), cond: true,  failed: "")],
+    FIELDS          : @[(loc: EVROS,           key: "travel__fiel_to_evrs", cost:  0, enc: NO_ENC      , cond: true,  failed: "")],
     # BAEDOOR # not used here because it's a dummy location
 }.toTable
 
