@@ -185,7 +185,11 @@ proc fight (g: Game, enemy: Enemy): FightOutcome =
 proc loot (g: Game, loot: var seq[string]) =
     while len(loot) > 0:
         for ix, it in loot.pairs():
-            echo getOptionKey(g, "item__" & it, ix + 1)
+            if not isSpecialItem(it):
+                echo getOptionKey(g, "item__" & it, ix + 1)
+            else: # countables
+                let dit = debundleSpecialItem(it)
+                echo getOptionKey(g, "item__" & $dit.kind, ix + 1) & ": " & $dit.amount
         echo getKey(g, "game__combat_loot")
         let prompt = readLine(stdin)
         if prompt == "": break # ends looting
@@ -193,8 +197,17 @@ proc loot (g: Game, loot: var seq[string]) =
             let p = parseInt(prompt)
             if p <= 0 or p > len(loot): continue
             else: # correct pick
-                addItemToInventory(g.player, loot[p-1])
-                loot.delete(p-1)
+                if not isSpecialItem(loot[p-1]):
+                    addItemToInventory(g.player, loot[p-1])
+                    loot.delete(p-1)
+                else: # countables
+                    let dit = debundleSpecialItem(loot[p-1])
+                    case dit.kind:
+                        of COIN:   g.player.money     += dit.amount
+                        of LOCK:   g.player.lockpicks += dit.amount
+                        of BULLET: g.player.ammo      += dit.amount
+                        of ARROW:  g.player.arrows    += dit.amount
+                    loot.delete(p-1)
         except ValueError: continue
     if len(loot) == 0:
         discard # prompt echo
