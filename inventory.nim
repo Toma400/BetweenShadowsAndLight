@@ -54,6 +54,28 @@ proc read (g: Game) =
                 waitForPlayer()
         except ValueError: continue
 
+proc equip (g: Game) =
+    var equippable : seq[int] # will store valid choices
+    while true:
+        let inventory = getInventory(g.player) # in loop because it needs to be updated
+        clearScreen()
+        echo "{ " & getKey(g, "game__gui_inventory") & " }"
+        for ix, it in inventory.pairs():
+            if ITEMS[it].wearable != NOT_WEARABLE or ITEMS[it].weapon != NOT_WEAPON:
+                echo getOptionKey(g, "item__" & it, ix + 1)
+                equippable.add(ix + 1)
+        echo getKey(g, "game__gui_inv_useds")
+        let prompt = readLine(stdin)
+        if prompt == "": break
+        try:
+            let p = parseInt(prompt)
+            if p notin equippable: continue
+            else:
+                echo getKey(g, "game__gui_inv_used") & ": " & getKey(g, "item__" & inventory[p-1]) # goes first bc `equip` removes item later
+                discard equip(g.player, p-1) # shouldn't throw false due to `equippable` check
+                waitForPlayer()
+        except ValueError: continue
+
 proc throw (g: Game) =
     let inventory = getInventory(g.player)
     while true:
@@ -102,7 +124,7 @@ proc characterInventory* (g: Game) =
         of "1": info(g)
         of "2": read(g)
         of "3": discard; WAITING_FOR_IMPLEMENTATION()
-        of "4": discard; WAITING_FOR_IMPLEMENTATION()
+        of "4": equip(g)
         of "5": discard; WAITING_FOR_IMPLEMENTATION()
         of "6": throw(g)
         of "7": switchMenu(g, mDEFAULT)
@@ -134,7 +156,7 @@ proc fightInventory* (g: Game) =
         let prompt = readLine(stdin)
         case prompt:
             of "1": discard; WAITING_FOR_IMPLEMENTATION()
-            of "2": discard; WAITING_FOR_IMPLEMENTATION()
+            of "2": equip(g)
             of "3": discard; WAITING_FOR_IMPLEMENTATION()
             of "4": break
             else: return # loops back

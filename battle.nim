@@ -244,7 +244,7 @@ proc combat* (g: Game, enemy: Enemy, crouch_available: bool = false): bool =
                 echo getKey(g, "game__combat_sneaksc")
                 MODE = 3 # win
             else: # blocked option when failed
-                echo getKey(g, "game__combat_sneakfail")
+                echo getKey(g, "game__combat_sneakfl")
                 CROU = false
                 MODE = 0 # goes back to choice
             waitForPlayer()
