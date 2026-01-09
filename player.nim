@@ -472,7 +472,7 @@ proc processStatistics* (p: Player) =
     # POISONING
     if p.poison > 0:
         addMessage(p, "game__warn_poison")
-        p.hp -= 3
+        p.hp -= 3 * p.poison # OG does inflict -3 no matter the poisoning strength
     # GLOBAL
     p.bank = calculateBankValue(p.bank)
 
@@ -630,6 +630,75 @@ proc removeItemFromInventory* (p: Player, item_str: string): bool =
 proc removeItemFromInventory* (p: Player, item_index: int) =
     p.inv.delete(item_index)
 
+proc use* (p: Player, item_index: int): bool =
+    result       = true # to be overwritten
+    var consumed = true # to be overwritten if not
+    let item_str = p.inv[item_index]
+    let item     = ITEMS[item_str]
+    case item.use:
+        of NOT_CONSUMABLE: return false # should be gated before evoking proc tho
+        of BATTLE:         return false # kinda like the above bc has unique use
+        of REG_HEAL:
+            p.hp += item.use_val
+            if p.hp > p.hp_max:    p.hp = p.hp_max
+            addMessage(p, "item__generic_heal")
+        of REG_MANA:
+            p.mp += item.use_val
+            if p.mp > p.mp_max:    p.mp = p.mp_max
+            addMessage(p, "item__generic_reg")
+        of POISON:
+            if item.use_val != 0: # poison or leveled antidotes (-n..0..+n)
+                p.poison += item.use_val # -1 means weak antidote, 1+ means poison
+                if item.use_val > 0: addMessage(p, "item__generic_poi") # poison
+                if p.poison >= 0: # only if it actually helped
+                    if item.use_val < 0: addMessage(p, "item__generic_ant") # antidote
+                else: # if done on healthy player
+                    p.poison = 0 # resets so that player can't "get poison resistance" this way
+            else: # if POISON set and val is 0, it means resetter (antidote)
+                if p.poison > 0: # doesn't make sense for it to work if we are okay
+                    p.poison = item.use_val # aka 0
+                    addMessage(p, "item__generic_ant") # antidote
+        of UNIQUE:
+          case item_str:
+            of "roots":
+                p.hp += 2*getSurvival(p)
+                if 2*getSurvival(p) > 10:
+                    addMessage(p, "item__generic_heal")
+            of "rat_meat":
+                if getSurvival(p) == 0:
+                    p.poison += 1 # poisoning
+                    addMessage(p, "item__generic_poi")
+                else:
+                    p.hp += 3*getSurvival(p)
+                    if 3*getSurvival(p) > 10:
+                        addMessage(p, "item__generic_heal")
+            of "beer":
+                p.hp += 8
+                p.sp -= 15
+            of "scroll_heal":
+                if p.mp < 10:
+                    consumed = false
+                    addMessage(p, "game__warn_mana")
+                elif p.pwr_tech > 10:
+                    consumed = false
+                    addMessage(p, "game__warn_tech")
+                else:
+                    p.mp -= 10
+                    p.hp += 20
+                    addMessage(p, "item__generic_heal")
+            of "water":
+                p.sp += 15
+                p.hp += 3*getSurvival(p)
+                if 3*getSurvival(p) > 10:
+                    addMessage(p, "item__generic_heal")
+            of "water_cooked":
+                p.hp += 5 + 3*getSurvival(p)
+                if 3*getSurvival(p) > 5: # adjusts to additional 5 pts
+                    addMessage(p, "item__generic_heal")
+    if consumed:
+        if item.use_str != "": addMessage(p, item.use_str)
+        removeItemFromInventory(p, item_index)
+
 proc equip* (p: Player, item_index: int): bool =
     result       = true # to be overwritten
     let item_str = p.inv[item_index]
@@ -651,6 +720,7 @@ proc equip* (p: Player, item_str: string): bool =
     return false
 
 proc deequip* (p: Player, kind: WeaponType): bool =
+    # weapon type is whatever, as it just lets Nim know it's weapon-specific proc picked
     result = true
     if p.weapon == "": return false # err
     else:

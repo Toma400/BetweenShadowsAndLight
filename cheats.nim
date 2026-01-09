@@ -3,6 +3,10 @@
 import player
 import game
 
-proc cheatHeal* (g: Game) =
+proc cheatBattleHeal* (g: Game) =
     # heals you during the fight ('heal' prompt)
     g.player.hp = calculateMaxHealth(g.player)
+
+proc cheatBattleKill* (g: Game, enhp: var int) =
+    # kills the enemy
+    enhp = 0

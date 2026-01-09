@@ -165,6 +165,12 @@ Breaking news! Famous killer Black Tache, known for his incessant activity in Ba
 News from abroad tell us about increased activity of southern peoples, putting safety of our Empire in danger. Evros' governor therefore sent three freshly trained divisions as Ansur tribute to the King.
 Expansion of vermins on Ansur reaches alert states. The rat plague can heavily affect the main income source of the island - farming.
 """
+# -- effects
+item__generic_heal  = "Ah, I feel better now."
+item__generic_reg   = "I feel how energy comes back to me."
+item__generic_poi   = "Uh... I feel awful."
+item__generic_ant   = "I don't feel that awful ache that much now."
+item__hyerbitus_use = "This herb isn't that good raw it seems." # cut the OG's part that was moved to `generic_poi`
 
 # GUI - buttons
 game__gui_character = "Character"
@@ -191,15 +197,16 @@ game__gui_inv_infodsc = "Pick number of the item that you want to get informatio
 game__gui_inv_read    = "Read item"
 game__gui_inv_readdsc = "Pick number of the item that you want to read. Press Enter to go back."
 game__gui_inv_use     = "Use item"
+game__gui_inv_use2    = "Pick number of the item that you want to use. Press Enter to go back."
 game__gui_inv_usein   = "Equip the item"
 game__gui_inv_useds   = "Pick number of the item that you want to equip. Press Enter to go back."
-game__gui_inv_used    = "Equipped the item."
+game__gui_inv_used    = "Equipped the item"
 game__gui_inv_useoff  = "Take off the item"
 game__gui_inv_useofds = "Pick number of the item that you want to take off. Press Enter to go back."
-game__gui_inv_useoffd = "Took the item off."
+game__gui_inv_useoffd = "Took the item off"
 game__gui_inv_throw   = "Throw item away"
 game__gui_inv_throwds = "Pick number of the item that you want to throw. Press Enter to go back."
-game__gui_inv_thrown  = "Thrown the item."
+game__gui_inv_thrown  = "Thrown the item"
 game__gui_inv_back    = "Go back from inventory"
 # GUI - attributes
 game__gui_strength     = "Strength"
@@ -330,6 +337,8 @@ game__warn_tired     = "You are tired!"
 game__warn_poison    = "You are poisoned!"
 game__warn_money     = "You don't have enough money!"
 game__warn_lockpicks = "You don't have lockpicks!"
+game__warn_mana      = "You don't have enough mana!"
+game__warn_tech      = "You are too tech-aligned to use it!"
 game__warn_div       = "----------------------------" # should be as long as the longest `game__warn`
 
 # Creatures

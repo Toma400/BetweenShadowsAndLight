@@ -165,6 +165,12 @@ Niesłychane wieści! Słynny zabójca Czarny Wąs, grasujący nieprzerwanie od 
 Wieści z granicy donoszą o wzmożonej aktywności południowych ludów, zagrażających bezpieczeństwu naszego Imperium. W związku z tym wysłane zostały przez Zarządcę trzy nowo wyszkolone oddziały.
 Ekspansja szkodników na wyspie Evros graniczy już ze stanem alarmowym. Ta plaga szczurów może poważnie uszkodzić główne źródło dochodu wyspy - rolnictwo.
 """
+# -- effects
+item__generic_heal  = "Ah, czuję się lepiej."
+item__generic_reg   = "Czuję, że wraca do mnie energia."
+item__generic_poi   = "Uh... źle się czuję."
+item__generic_ant   = "Nie czuję już tego okropnego uczucia tak mocno."
+item__hyerbitus_use = "Na surowo ta roślina nie jest zbyt dobra.." # cut the OG's part that was moved to `generic_poi`
 
 # GUI - buttons
 game__gui_character = "Postać"
@@ -191,15 +197,16 @@ game__gui_inv_infodsc = "Wybierz numer przedmiotu, by wyświetlić o nim informa
 game__gui_inv_read    = "Przeczytaj przedmiot"
 game__gui_inv_readdsc = "Wybierz numer przedmiotu, który chcesz przeczytać. Naciśnij Enter by wyjść."
 game__gui_inv_use     = "Użyj przedmiot"
+game__gui_inv_use2    = "Wybierz numer przedmiotu, który chcesz użyć. Naciśnij Enter by wyjść."
 game__gui_inv_usein   = "Załóż przedmiot"
 game__gui_inv_useds   = "Wybierz numer przedmiotu, który chcesz założyć. Naciśnij Enter by wyjść."
-game__gui_inv_used    = "Założono przedmiot."
+game__gui_inv_used    = "Założono przedmiot"
 game__gui_inv_useoff  = "Zdejmij przedmiot"
 game__gui_inv_useofds = "Wybierz numer przedmiotu, który chcesz zdjąć. Naciśnij Enter by wyjść."
-game__gui_inv_useoffd = "Zdjęto przedmiot."
+game__gui_inv_useoffd = "Zdjęto przedmiot"
 game__gui_inv_throw   = "Wyrzuć przedmiot"
 game__gui_inv_throwds = "Wybierz numer przedmiotu, który chcesz wyrzucić. Naciśnij Enter by wyjść."
-game__gui_inv_thrown  = "Wyrzucono przedmiot."
+game__gui_inv_thrown  = "Wyrzucono przedmiot"
 game__gui_inv_back    = "Wyjdź z ekwipunku"
 # GUI - attributes
 game__gui_strength     = "Siła"
@@ -330,6 +337,8 @@ game__warn_tired     = "Jesteś zmęczony!"
 game__warn_poison    = "Jesteś zatruty!"
 game__warn_money     = "Nie masz tylu pieniędzy!"
 game__warn_lockpicks = "Nie masz wytrychów!"
+game__warn_mana      = "Nie masz odpowiednio dużo many!"
+game__warn_tech      = "Jesteś zbytnio po technologicznej stronie, by tego użyć!"
 game__warn_div       = "-------------------" # should be as long as the longest `game__warn`
 
 # Creatures

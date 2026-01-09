@@ -18,15 +18,26 @@ type
     NOT_WEARABLE # first type so it's set as default
     # armours
     aCHEST
+  ConsumableType* = enum
+    NOT_CONSUMABLE # first type so it's set as default
+    REG_HEAL
+    REG_MANA
+    POISON
+    BATTLE         # should only be used in battle, skipped during normal inventory calls
+    UNIQUE         # either unique effect, or specific conditions - needs to be manually added in `player.nim/use` proc [!]
   Item = object
     weight*  : int
     attack*  : int        # defaults to 0, meaning no weapon type
     defence* : int        # defaults to 0, meaning no armour type (or broken armour)
     ingr*    : bool       # if can be used on alchemy table
     health*  : int        # used by WearableType
+    use_val* : int        # used by ConsumableType
+    use_str* : string     # additional string printed after use (keep empty if not needed)
     # item types -- if NOT_WEAPON && NOT_WEARABLE, it can't be put on player
     weapon*   : WeaponType
     wearable* : WearableType
+    # if NOT_CONSUMABLE, it can't be used by player
+    use*      : ConsumableType
     #value*  : int  # default value! traders set this separately
   SpecialItem* = enum
     COIN   = "coin"
@@ -48,13 +59,13 @@ const ITEMS* = { # ID : object
     "fists"            : Item(weight: 0, attack:  2, weapon:     FIST), # used if `weapon` field of Player is empty
     "body"             : Item(weight: 0, defence: 0, wearable: aCHEST), # used if `armour` field of Player is empty
     # --- FOOD ---
-    "roots"            : Item(weight: 0, ingr: true), # korzonki
-    "rat_meat"         : Item(weight: 0, ingr: true), # szczurze mięso
-    "rat_meat_roasted" : Item(weight: 0),             # pieczone szczurze mięso
-    "sweet_roll"       : Item(weight: 0),             # słodka bułka
-    "herring"          : Item(weight: 0, ingr: true), # śledź
-    "herring_roasted"  : Item(weight: 0),             # pieczony śledź
-    "beer"             : Item(weight: 0),             # piwo
+    "roots"            : Item(weight: 0, ingr: true, use: UNIQUE),                # korzonki
+    "rat_meat"         : Item(weight: 0, ingr: true, use: UNIQUE),                # szczurze mięso
+    "rat_meat_roasted" : Item(weight: 0,             use: REG_HEAL, use_val: 20), # pieczone szczurze mięso
+    "sweet_roll"       : Item(weight: 0,             use: REG_HEAL, use_val:  5), # słodka bułka
+    "herring"          : Item(weight: 0, ingr: true, use: REG_HEAL, use_val:  7), # śledź
+    "herring_roasted"  : Item(weight: 0,             use: REG_HEAL, use_val: 15), # pieczony śledź
+    "beer"             : Item(weight: 0,             use: UNIQUE),                # piwo
     # --- UTILITIES ---
     "water"        : Item(weight: 0, ingr: true), # woda
     "water_cooked" : Item(weight: 0, ingr: true), # podgrzana woda
@@ -70,24 +81,24 @@ const ITEMS* = { # ID : object
     "rapier"          : Item(weight: 1, attack: 10, weapon: CLOSE_COMBAT), # rapier
     "bandit_revolver" : Item(weight: 1, attack:  5, weapon: FIREARM),      # bandycki rewolwer | pwr_magic > 10 disables it
     "decor_shotgun"   : Item(weight: 2, attack: 22, weapon: FIREARM),      # zdobiona strzelba | pwr_magic > 10 disables it
-    "dynamite"        : Item(weight: 0, attack: 25),                       # dynamit           | pwr_magic > 10 disables it // can only use it during fight?
+    "dynamite"        : Item(weight: 0, attack: 25, use: BATTLE),          # dynamit           | pwr_magic > 10 disables it // can only use it during fight?
     # --- ARMOURS ---
     # broken variants should not be WearableType and be (def:0/hp:0)
     "chainmail"        : Item(weight: 1, defence: 6, health: 50, wearable: aCHEST), # kolczuga
     "chainmail_broken" : Item(weight: 1, defence: 0, health:  0),                   # uszkodzona kolczuga
     # --- SCROLLS ---
-    "scroll_heal"     : Item(weight: 0), # zwój uzdrowienia   | MP-10, HP+??? // prob usable whenever, but including fight?
-    "scroll_fireball" : Item(weight: 0), # zwój ognistej kuli | A=18, MP-32 // I can guess also only usable in fight
+    "scroll_heal"     : Item(weight: 0, use: UNIQUE), # zwój uzdrowienia   | MP-10, HP+??? // prob usable whenever, but including fight?
+    "scroll_fireball" : Item(weight: 0, use: BATTLE), # zwój ognistej kuli | A=18, MP-32 // I can guess also only usable in fight
     # --- MAGIC WEAPONS ---
     "staff_fire"  : Item(weight: 1), # kostur ognia
     "staff_earth" : Item(weight: 1), # kostur ziemi
     "staff_conn"  : Item(weight: 1), # kostur połączenia
     "staff_chaos" : Item(weight: 1), # kostur chaosu
     # --- ALCHEMY ---
-    "hyerbitus"           : Item(weight: 0, ingr: true), # kwiat hyerbitusa
-    "antidote"            : Item(weight: 0),             # odtrutka
-    "potion_health_small" : Item(weight: 0),             # mała mikstura zdrowia
-    "potion_mana_small"   : Item(weight: 0),             # mała mikstura many
+    "hyerbitus"           : Item(weight: 0, ingr: true, use: POISON,   use_val:  1, use_str: "item__hyerbitus_use"), # kwiat hyerbitusa
+    "antidote"            : Item(weight: 0,             use: POISON,   use_val:  0), # | 0 resets poisoning fully    # odtrutka
+    "potion_health_small" : Item(weight: 0,             use: REG_HEAL, use_val: 25),                                 # mała mikstura zdrowia
+    "potion_mana_small"   : Item(weight: 0,             use: REG_MANA, use_val: 25),                                 # mała mikstura many
     # --- READABLES ---
     "newspaper"            : Item(weight: 0),
     "recipe_health_potion" : Item(weight: 0),

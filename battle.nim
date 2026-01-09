@@ -24,8 +24,8 @@ const ENEMIES* : Table[Enemy, tuple[lvl, hp, dmg, rng, xp_gained, detect: int]] 
     RAT            : (lvl: 1, hp: 15, dmg:  5, rng: 1, xp_gained:  5, detect: 7),
     # pirates got `detect` value based on my perception of mechanic, their values
     # weren't noted in OG due to their `i_crouch` switch being false
-    PIRATE         : (lvl: 1, hp: 40, dmg:  5, rng: 0, xp_gained: 18, detect: 7),
-    PIRATE_WOUNDED : (lvl: 1, hp: 70, dmg: 10, rng: 0, xp_gained: 22, detect: 10)
+    PIRATE_WOUNDED : (lvl: 1, hp: 40, dmg:  5, rng: 0, xp_gained: 18, detect:  7),
+    PIRATE         : (lvl: 1, hp: 70, dmg: 10, rng: 0, xp_gained: 22, detect: 10),
 }.toTable
 
 const LOOT_TABLE* : Table[Enemy, seq[string]] = {
@@ -151,9 +151,11 @@ proc fight (g: Game, enemy: Enemy): FightOutcome =
             of "9":
                 WAITING_FOR_IMPLEMENTATION() # or rather, fightInventory awaits for impl
                 fightInventory(g)
-                att_value = 0     # no attack this turn
-            of "heal": # cheat
-                cheatHeal(g)
+                att_value = 0                # no attack this turn
+            of "heal", "kill": # cheats
+                if   prompt == "heal": cheatBattleHeal(g)
+                elif prompt == "kill": cheatBattleKill(g, ENHP)
+                att_value = 0
             else: continue
         # after-attack-calculation feedback
         if att_value > 0: echo getKey(g, "game__combat_hit") & " " & $att_value & " " & getKey(g, "game__combat_dmg")

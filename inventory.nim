@@ -54,6 +54,29 @@ proc read (g: Game) =
                 waitForPlayer()
         except ValueError: continue
 
+proc use (g: Game) =
+    let PROHIB_CT = [NOT_CONSUMABLE, BATTLE] # gatekeeps battle too
+    let inventory = getInventory(g.player)
+    var allowed   = newSeq[int]() # allows for type checks later
+    while true:
+        clearScreen()
+        echo "{ " & getKey(g, "game__gui_inventory") & " }"
+        for ix, it in inventory.pairs():
+            if ITEMS[it].use notin PROHIB_CT:
+                echo getOptionKey(g, "item__" & it, ix + 1)
+                allowed.add(ix + 1)
+        echo getKey(g, "game__gui_inv_use2")
+        let prompt = readLine(stdin)
+        if prompt == "": break
+        try:
+            let p = parseInt(prompt)
+            if p notin allowed: continue
+            else:
+                discard use(g.player, p-1)
+                printMessages(g)
+                waitForPlayer()
+        except ValueError: continue
+
 proc equip (g: Game) =
     var equippable : seq[int] # will store valid choices
     while true:
@@ -75,6 +98,29 @@ proc equip (g: Game) =
                 discard equip(g.player, p-1) # shouldn't throw false due to `equippable` check
                 waitForPlayer()
         except ValueError: continue
+
+proc deequip (g: Game) =
+    while true:
+        clearScreen()
+        echo "{ " & getKey(g, "game__gui_used_items") & " }"
+        if g.player.armour.chest != "":
+            echo getOptionKey(g, "item__" & g.player.armour.chest, 1)
+        if g.player.weapon != "":
+            echo getOptionKey(g, "item__" & g.player.weapon , 2)
+        echo getKey(g, "game__gui_inv_useofds")
+        let prompt = readLine(stdin)
+        case prompt:
+            of "1":
+                if g.player.armour.chest != "": # if we add more armour variants we need to adjust this, blah blah blah
+                    echo getKey(g, "game__gui_inv_useoffd") & ": " & getKey(g, "item__" & g.player.armour.chest)
+                    discard deequip(g.player, FIST) # doesn't matter what type tbh, so FIST is good as anything else
+            of "2":
+                if g.player.weapon != "":
+                    echo getKey(g, "game__gui_inv_useoffd") & ": " & getKey(g, "item__" & g.player.weapon)
+                    discard deequip(g.player, aCHEST)
+            of "": break
+            else: continue
+        waitForPlayer()
 
 proc throw (g: Game) =
     let inventory = getInventory(g.player)
@@ -123,9 +169,9 @@ proc characterInventory* (g: Game) =
     case prompt:
         of "1": info(g)
         of "2": read(g)
-        of "3": discard; WAITING_FOR_IMPLEMENTATION()
+        of "3": use(g)
         of "4": equip(g)
-        of "5": discard; WAITING_FOR_IMPLEMENTATION()
+        of "5": deequip(g)
         of "6": throw(g)
         of "7": switchMenu(g, mDEFAULT)
         else: return # loops back
@@ -155,8 +201,8 @@ proc fightInventory* (g: Game) =
         echo getOptionKey(g, "game__gui_inv_back", 4)
         let prompt = readLine(stdin)
         case prompt:
-            of "1": discard; WAITING_FOR_IMPLEMENTATION()
+            of "1": use(g)
             of "2": equip(g)
-            of "3": discard; WAITING_FOR_IMPLEMENTATION()
+            of "3": deequip(g)
             of "4": break
             else: return # loops back

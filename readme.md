@@ -63,6 +63,9 @@ for me to make new version just to add it.
 - Cheats slightly changed
   - You can't go back to abandoned island after going to Evros
   - You can heal yourself during the fight
+- Poisoning has levels that inflict stronger penalties (based on OG using `int` type for
+  poisoning instead of bool)
+  - To bring the point home, antidotes are also leveled 
 
 ### New features (1.2+ version)
 - add non-binary gender to character creation
@@ -88,6 +91,15 @@ for me to make new version just to add it.
     is easier) because e.g. if we escape wounded pirate in MQ, we would probably let
     captain be killed, which would have consequence for MQ
 - make all GUI options work upon numbers, not writing down letters
+- big health/mana potions, big health potion should also be weak antidote (level -1)?
+- change RNG for normal pirate to 1?
+
+### New cheats systematised (to be transferred to BE)
+- `cheat` in main menu transports you out of tutorial and gives some resources
+  (to be replaced later)
+- combat
+  - `heal` - heals you to maximum health
+  - `kill` - kills enemy immediately
 
 ### Lore notes (to be transferred to BE and removed from here)
 - "Pod Złotym Szczurem" (Under Golden Rat) tavern in Evros
