@@ -65,7 +65,8 @@ for me to make new version just to add it.
   - You can heal yourself during the fight
 - Poisoning has levels that inflict stronger penalties (based on OG using `int` type for
   poisoning instead of bool)
-  - To bring the point home, antidotes are also leveled 
+  - To bring the point home, antidotes are also leveled
+- Added herring cooking recipe, absent in OG despite herring having cooked variant
 
 ### New features (1.2+ version)
 - add non-binary gender to character creation
@@ -93,6 +94,8 @@ for me to make new version just to add it.
 - make all GUI options work upon numbers, not writing down letters
 - big health/mana potions, big health potion should also be weak antidote (level -1)?
 - change RNG for normal pirate to 1?
+- fishing? since `herring` is ultimately useless, you can't roast it nor get it
+  and it would be nice way to gather food, very baedoorey as well
 
 ### New cheats systematised (to be transferred to BE)
 - `cheat` in main menu transports you out of tutorial and gives some resources

@@ -16,7 +16,7 @@ const SMITHING_RECIPES* : Table[int, Table[string, seq[tuple[id: string, amount:
 const REPAIRING_RECIPES* : Table[string, tuple[repaired: string, reqs: seq[tuple[id: string, amount: int]]]] = {
     # should collect all items that have entry in BROKEN_VARIANT table (see `item.nim`) and can be repaired
     # broken variant : (repaired variant, @[resources needed <type, amount>])
-    "chainmail_broken" : ("chainmail", @[("iron", 1)])
+    "chainmail_broken" : ("chainmail", @[("iron", 1)]),
 }.toTable
 
 const ALCHEMY_RECIPES* : Table[string, seq[string]] = {
@@ -24,7 +24,21 @@ const ALCHEMY_RECIPES* : Table[string, seq[string]] = {
     # ORDER MATTERS - in case list is expanded, put more expensive things higher (first)
     #                 this way check will be able to pick the cheaper things only if more expensive one fail
     # also: remember items here MUST have field .ingr == true, else won't be achievable
-    "potion_health_small" : @["water_cooked", "hyerbitus"]
+    "potion_health_small" : @["water_cooked", "hyerbitus"],
+}.toTable
+
+const BOILING_RECIPES* : Table[string, seq[string]] = {
+    # similarly to the above, soups should go first, water be at the end
+    # TODO: it might be worthy doing different format, so that you can both
+    #       boil `water` and `water_cooked`? so like alternative options
+    #       -- but table allows us only one recipe for each item --
+    "water_cooked" : @["water"],
+}.toTable
+
+const ROASTING_RECIPES* : Table[string, string] = {
+    # this one is 1 -> 1 recipe, as I don't imagine it needing multiple items
+    "rat_meat" : "rat_meat_cooked",
+    "herring"  : "herring_cooked",
 }.toTable
 
 proc hasAllResources* (g: Game, reqseq: seq[tuple[id: string, amount: int]]): bool =
@@ -50,11 +64,12 @@ proc smithing* (g: Game) =
                 sm_items[it] = val
 
     while true:
+        clearScreen()
         if MODE == 0: # no mode
             echo "{ " & getKey(g, "game__smith_anvil") & " }"
             echo getOptionKey(g, "game__smith_create", 1)
             echo getOptionKey(g, "game__smith_repair", 2)
-            echo getOptionKey(g, "game__lock_give_up", 3)
+            echo getOptionKey(g, "game__leave", 3)
             let prompt = readLine(stdin)
             case prompt:
                 of "1": MODE = 1
@@ -128,6 +143,7 @@ proc alchemy* (g: Game) =
     var used_ingr : seq[string]
     var MODE      = 0 # 0 = default, 1 = adding to pot
     while true:
+        clearScreen()
         if MODE == 0:
             if g.tutorial:
                 echo getTutorialKey(g, "game__tut_5")
@@ -140,7 +156,7 @@ proc alchemy* (g: Game) =
             echo DIVIDER
             echo getOptionKey(g, "game__alchemy_add", 1)
             echo getOptionKey(g, "game__alchemy_try", 2)
-            echo getOptionKey(g, "game__lock_give_up", 3)
+            echo getOptionKey(g, "game__leave", 3)
             let prompt = readLine(stdin)
             case prompt:
                 of "1": MODE = 1
@@ -193,6 +209,7 @@ proc cooking* () =
 proc banking* (g: Game) =
     var MODE = 0 # 1 = deposit money, 2 = withdraw money
     while true:
+        clearScreen()
         echo getKey(g, "game_bank")
         echo getKey(g, "game__gui_money") & ": " & $g.player.money
         echo getKey(g, "game__bank_money") & ": " & $g.player.bank
@@ -271,39 +288,36 @@ proc banking* (g: Game) =
 #       else:
 #         "Podałeś zły numer"
 #
-# def herbalism_use():
-#   global herbalism
-#   global temp_chest
-#   global equip
-#   global sp
-#   global taken_item
-#   global throw_it
-#   temp_chest = []
-#   if tutorial_system == 1:
-#     print (">> Pamiętaj, że możesz eksperymentować, nie znając przepisów - tak samo, jak znając przepis, może nie udać Ci się stworzyć mikstury, jeśli brak Ci umiejętności <<")
-#     print (">> Wkładając składniki do przetworzenia, pamiętaj, że po spróbowaniu zrobienia mikstury - jak i również przy wyjściu z laboratorium - wszystkie składniki zostają stracone. Rzecz jasna, gdy będziesz miał odpowiednie składniki, przetworzenie ich da Ci miksturę, której potrzebujesz <<")
-#   while True:
-#     print ("\n----------------------------------")
-#     print ("Używane składniki:",temp_chest)
-#     print ("\n[1] Dodaj/weź składniki \n[2] Spróbuj stworzyć miksturę \n[3] Odejdź")
-#     local = input ("")
-#     print ("\n")
-#     if local == "1":
-#       chests(0,0)
-#     elif local == "2":
-#       sp -= 5
-#       if "Kwiat Hyerbitusa" and "Podgrzana Woda" in temp_chest:
-#         print ("Stworzyłeś małą miksturę zdrowia!")
-#         taken_item = "Mała Mikstura Zdrowia"
-#         inventory(5)
-#         xp_add (5)
-#         temp_chest = []
-#       else:
-#         print ("Niestety, nie udało się stworzyć mikstury")
-#         temp_chest = []
-#     else:
-#       break
-#
+
+proc cooking* (g: Game, pot: bool) =
+    # pot variable decides whether we can roast something
+    var MODE = 0 # 1 = roasting, 2 = boiling
+    # empty containers, to be used (and resetted) by respective actions
+    var FIRE : string      # single item
+    var POT  : seq[string] # seq
+    while true:
+        if MODE == 0: # choose option
+            clearScreen()
+            if g.tutorial:
+                echo getTutorialKey(g, "game__tut_9")
+            echo getOptionKey(g, "game__cooking_roast", 1)
+            if pot:
+                echo getOptionKey(g, "game__cooking_boil", 2)
+            echo getOptionKey(g, "game__leave", 3)
+            let prompt = readLine(stdin)
+            case prompt:
+                of "1": MODE = 1
+                of "2":
+                    if pot: MODE = 2
+                of "3": break
+                else: continue
+        elif MODE == 1:
+            if g.tutorial:
+                echo getTutorialKey(g, "game__tut_10")
+            MODE = 0
+        elif MODE == 2:
+            MODE = 0
+
 # def cooking(cook_fry):
 #   #cook_fry: 1-ognisko, 2-ognisko z garnkiem
 #   global temp_chest

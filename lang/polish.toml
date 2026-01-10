@@ -12,14 +12,16 @@ menu__disabled = "Wyłączony"
 menu__set_note = "Wpisz nazwę języka lub [%TUT] by przełączyć. Kliknij Enter by wrócić do menu."
 
 # Tutorials - general
-game__tut_1 = "Witaj w grze Between Shadows and Light! Tutorial ten będzie Cię prowadził po meandrach interfejsu - jest on pisany dość bogato w zawartość, jednak mam nadzieję, że nie spowoduje to chaosu."
-game__tut_2 = "Pierwszym elementem gry jest stworzenie postaci, stąd za chwilę do tego przejdziemy - jest to dość istotna kwestia, jednak nie musisz się stresować, gdy nie wiesz, co dokładnie zrobić: gra stara się być tak dostosowana, by gracz z dowolnymi statystykami mógł ją względnie miło ukończyć."
-game__tut_3 = "Istotne wspomnieć jest, że każda statystyka, umiejętność, cecha czy klasa, którą wybierzesz, będzie miała niemały wpływ na dalszy przebieg rozgrywki - wiele tych różnic jednak będziesz mógł zatrzeć w miarę gry, gdyż pierwsze wybory są na równi znaczące, jak i dalej: styl gry i wybory w niej dokonywane."
-game__tut_4 = "System naprawy jest w Between Shadows and Light oparty na dwóch umiejętnościach: naprawy, ale i kucia. Kucie reprezentuje te wszystkie naprawy, które wciąż wymagają umiejętności kowalstwa - z kolei naprawa potrzebna jest głównie do technologicznej części broni i pancerzy (jak i również do maszyn)."
-game__tut_5 = "Pamiętaj, że możesz eksperymentować, nie znając przepisów - tak samo, jak znając przepis, może nie udać Ci się stworzyć mikstury, jeśli brak Ci umiejętności."
-game__tut_6 = "Wkładając składniki do przetworzenia, pamiętaj, że po spróbowaniu zrobienia mikstury - jak i również przy wyjściu z laboratorium - wszystkie składniki zostają stracone. Rzecz jasna, gdy będziesz miał odpowiednie składniki, przetworzenie ich da Ci miksturę, której potrzebujesz."
-game__tut_7 = "Za chwilę pojawi się panel walki - jest on raczej intuicyjny. Powinniśmy jednak napomknieć o tym, że są różne rodzaje ataku - zależne od aktualnie trzymanej broni. Każdy z nich ma inną charakterystykę, skupiającą się na innej taktyce walki."
-game__tut_8 = "Jeżeli do tej pory nie korzystałeś z ekwipunku, i nie dobyłeś broni (poprzez 'włożenie jej na siebie'), uczyń to podczas walki wybierając opcję ekwipunku. Pamiętaj, że każde skorzystanie z ekwipunku zabiera Ci rundę."
+game__tut_1  = "Witaj w grze Between Shadows and Light! Tutorial ten będzie Cię prowadził po meandrach interfejsu - jest on pisany dość bogato w zawartość, jednak mam nadzieję, że nie spowoduje to chaosu."
+game__tut_2  = "Pierwszym elementem gry jest stworzenie postaci, stąd za chwilę do tego przejdziemy - jest to dość istotna kwestia, jednak nie musisz się stresować, gdy nie wiesz, co dokładnie zrobić: gra stara się być tak dostosowana, by gracz z dowolnymi statystykami mógł ją względnie miło ukończyć."
+game__tut_3  = "Istotne wspomnieć jest, że każda statystyka, umiejętność, cecha czy klasa, którą wybierzesz, będzie miała niemały wpływ na dalszy przebieg rozgrywki - wiele tych różnic jednak będziesz mógł zatrzeć w miarę gry, gdyż pierwsze wybory są na równi znaczące, jak i dalej: styl gry i wybory w niej dokonywane."
+game__tut_4  = "System naprawy jest w Between Shadows and Light oparty na dwóch umiejętnościach: naprawy, ale i kucia. Kucie reprezentuje te wszystkie naprawy, które wciąż wymagają umiejętności kowalstwa - z kolei naprawa potrzebna jest głównie do technologicznej części broni i pancerzy (jak i również do maszyn)."
+game__tut_5  = "Pamiętaj, że możesz eksperymentować, nie znając przepisów - tak samo, jak znając przepis, może nie udać Ci się stworzyć mikstury, jeśli brak Ci umiejętności."
+game__tut_6  = "Wkładając składniki do przetworzenia, pamiętaj, że po spróbowaniu zrobienia mikstury - jak i również przy wyjściu z laboratorium - wszystkie składniki zostają stracone. Rzecz jasna, gdy będziesz miał odpowiednie składniki, przetworzenie ich da Ci miksturę, której potrzebujesz."
+game__tut_7  = "Za chwilę pojawi się panel walki - jest on raczej intuicyjny. Powinniśmy jednak napomknieć o tym, że są różne rodzaje ataku - zależne od aktualnie trzymanej broni. Każdy z nich ma inną charakterystykę, skupiającą się na innej taktyce walki."
+game__tut_8  = "Jeżeli do tej pory nie korzystałeś z ekwipunku, i nie dobyłeś broni (poprzez 'włożenie jej na siebie'), uczyń to podczas walki wybierając opcję ekwipunku. Pamiętaj, że każde skorzystanie z ekwipunku zabiera Ci rundę."
+game__tut_9  = "Gotowanie i pieczenie to nie lada sztuka, a odpowiednie składniki w rękach dobrego kucharza mogą zdziałać cuda. W grze możesz wybierać między gotowaniem a pieczeniem - zależnie, czy jesteś jedynie przy ognisku, czy może jest przy nim garnek. Z kolei gdy włączysz którąkolwiek z opcji, zasada jest podobna - kładąc odpowiednie składniki na 'szali', możesz je ugotować lub upiec, by służyły Ci lepiej. Z reguły rzeczy upieczone są smaczniejsze i lepiej leczą, z kolei zaś ugotowana woda daje Ci możliwości wykorzystania ziół, i nie zatrucia się przy okazji."
+game__tut_10 = "Dość istotna uwaga: piec możesz jedną rzecz naraz. Nie kładź więc do upieczenia więcej niż jedną rzecz, gdyż możesz stracić niepotrzebnie to, co chciałeś upiec. Nie bez kozery mówi się, że 'upiec dwie pieczenie na jednym ogniu' to sztuka - sztuka raczej niedostępna wielu."
 
 # Tutorials - quests
 quest__mq_tut1 = "Tak więc Twoja przygoda się rozpoczęła! Za chwilę trafisz w pierwsze miejsce wydarzeń, jak i również wyświetli Ci się główne menu gry - z którego to będziesz korzystać później do samego końca."
@@ -253,6 +255,9 @@ game__alchemy_try    = "Spróbuj zrobić miksturę"
 game__alchemy_pick   = "Wybierz numer przedmiotu, który chcesz wrzucić do kociołka. Naciśnij Enter by wrócić."
 game__alchemy_succ   = "Udało ci się stworzyć miksturę!"
 game__alchemy_fail   = "Niestety, nie udało się stworzyć żadnej mikstury."
+# GUI - cooking
+game__cooking_roast  = "Upiecz coś"
+game__cooking_boil   = "Ugotuj coś"
 # GUI - chest
 game__chest          = "Pojemnik"
 game__chest_take     = "Weź rzeczy"
@@ -340,6 +345,7 @@ game__warn_lockpicks = "Nie masz wytrychów!"
 game__warn_mana      = "Nie masz odpowiednio dużo many!"
 game__warn_tech      = "Jesteś zbytnio po technologicznej stronie, by tego użyć!"
 game__warn_div       = "-------------------" # should be as long as the longest `game__warn`
+game__leave          = "Odejdź"
 
 # Creatures
 creature__rat            = "Szczur"

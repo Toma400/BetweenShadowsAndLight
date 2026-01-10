@@ -12,14 +12,16 @@ menu__disabled = "Disabled"
 menu__set_note = "Write language name or [%TUT] to switch. Press Enter to come back to menu."
 
 # Tutorials - general
-game__tut_1 = "Welcome in Between Shadows and Light! This tutorial will guide you through game's interface."
-game__tut_2 = "First step in the game is creating a character - it is quite important aspect, but you don't need to stress if you don't know what focus to take. The game was made in a way that should let you end it smoothly no matter what choices you take."
-game__tut_3 = "Every statistics, skill, attribute or class you pick will have influence on your gameplay - a lot of these differences you will be able to minimise during game, as the choices done on the beginning are as important as the following gameplay style and decisions."
-game__tut_4 = "Repair system is based on two skills in Between Shadows: repair and smithing. Smithing is used for all the repairs that need those skills to be in place - repair on the other hand is needed for technological needs (including machines)."
-game__tut_5 = "Remember that you can experiment, even when not knowing recipes - samely, you can fail at making stronger potions without enough skills."
-game__tut_6 = "Putting ingredients, remember that you consume them all when attempting to make a mixture. The same will happen when you exit the laboratorium."
-game__tut_7 = "Soon you will see fight panel - it should be rather intuitive. It's good to mention however that there are various attack techniques - depending on weapon held. Each has different traits, bringing you unique bonuses and disadvantages."
-game__tut_8 = "If you haven't used equipment and didn't equip any weapon, do it during the fight using inventory option. Remember each time you use inventory, you won't deal damage to the enemy in that turn."
+game__tut_1  = "Welcome in Between Shadows and Light! This tutorial will guide you through game's interface."
+game__tut_2  = "First step in the game is creating a character - it is quite important aspect, but you don't need to stress if you don't know what focus to take. The game was made in a way that should let you end it smoothly no matter what choices you take."
+game__tut_3  = "Every statistics, skill, attribute or class you pick will have influence on your gameplay - a lot of these differences you will be able to minimise during game, as the choices done on the beginning are as important as the following gameplay style and decisions."
+game__tut_4  = "Repair system is based on two skills in Between Shadows: repair and smithing. Smithing is used for all the repairs that need those skills to be in place - repair on the other hand is needed for technological needs (including machines)."
+game__tut_5  = "Remember that you can experiment, even when not knowing recipes - samely, you can fail at making stronger potions without enough skills."
+game__tut_6  = "Putting ingredients, remember that you consume them all when attempting to make a mixture. The same will happen when you exit the laboratorium."
+game__tut_7  = "Soon you will see fight panel - it should be rather intuitive. It's good to mention however that there are various attack techniques - depending on weapon held. Each has different traits, bringing you unique bonuses and disadvantages."
+game__tut_8  = "If you haven't used equipment and didn't equip any weapon, do it during the fight using inventory option. Remember each time you use inventory, you won't deal damage to the enemy in that turn."
+game__tut_9  = "Gotowanie i pieczenie to nie lada sztuka, a odpowiednie składniki w rękach dobrego kucharza mogą zdziałać cuda. W grze możesz wybierać między gotowaniem a pieczeniem - zależnie, czy jesteś jedynie przy ognisku, czy może jest przy nim garnek. Z kolei gdy włączysz którąkolwiek z opcji, zasada jest podobna - kładąc odpowiednie składniki na 'szali', możesz je ugotować lub upiec, by służyły Ci lepiej. Z reguły rzeczy upieczone są smaczniejsze i lepiej leczą, z kolei zaś ugotowana woda daje Ci możliwości wykorzystania ziół, i nie zatrucia się przy okazji."
+game__tut_10 = "Dość istotna uwaga: piec możesz jedną rzecz naraz. Nie kładź więc do upieczenia więcej niż jedną rzecz, gdyż możesz stracić niepotrzebnie to, co chciałeś upiec. Nie bez kozery mówi się, że 'upiec dwie pieczenie na jednym ogniu' to sztuka - sztuka raczej niedostępna wielu."
 
 # Tutorials - quests
 quest__mq_tut1 = "So, your adventure begins! In a second you will get to the first place of events, and so you will see first game menu - which you will use to the very end."
@@ -253,6 +255,9 @@ game__alchemy_try    = "Try to make a potion"
 game__alchemy_pick   = "Pick number of the item that you want to put in the pot. Press Enter to go back."
 game__alchemy_succ   = "You succeeded in making a potion!"
 game__alchemy_fail   = "Unfortunately, you failed to make any potion."
+# GUI - cooking
+game__cooking_roast  = "Upiecz coś"
+game__cooking_boil   = "Ugotuj coś"
 # GUI - chest
 game__chest          = "Container"
 game__chest_take     = "Take things"
@@ -340,6 +345,7 @@ game__warn_lockpicks = "You don't have lockpicks!"
 game__warn_mana      = "You don't have enough mana!"
 game__warn_tech      = "You are too tech-aligned to use it!"
 game__warn_div       = "----------------------------" # should be as long as the longest `game__warn`
+game__leave          = "Leave"
 
 # Creatures
 creature__rat            = "Rat"
