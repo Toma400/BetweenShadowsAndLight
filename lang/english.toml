@@ -20,8 +20,8 @@ game__tut_5  = "Remember that you can experiment, even when not knowing recipes 
 game__tut_6  = "Putting ingredients, remember that you consume them all when attempting to make a mixture. The same will happen when you exit the laboratorium."
 game__tut_7  = "Soon you will see fight panel - it should be rather intuitive. It's good to mention however that there are various attack techniques - depending on weapon held. Each has different traits, bringing you unique bonuses and disadvantages."
 game__tut_8  = "If you haven't used equipment and didn't equip any weapon, do it during the fight using inventory option. Remember each time you use inventory, you won't deal damage to the enemy in that turn."
-game__tut_9  = "Gotowanie i pieczenie to nie lada sztuka, a odpowiednie składniki w rękach dobrego kucharza mogą zdziałać cuda. W grze możesz wybierać między gotowaniem a pieczeniem - zależnie, czy jesteś jedynie przy ognisku, czy może jest przy nim garnek. Z kolei gdy włączysz którąkolwiek z opcji, zasada jest podobna - kładąc odpowiednie składniki na 'szali', możesz je ugotować lub upiec, by służyły Ci lepiej. Z reguły rzeczy upieczone są smaczniejsze i lepiej leczą, z kolei zaś ugotowana woda daje Ci możliwości wykorzystania ziół, i nie zatrucia się przy okazji."
-game__tut_10 = "Dość istotna uwaga: piec możesz jedną rzecz naraz. Nie kładź więc do upieczenia więcej niż jedną rzecz, gdyż możesz stracić niepotrzebnie to, co chciałeś upiec. Nie bez kozery mówi się, że 'upiec dwie pieczenie na jednym ogniu' to sztuka - sztuka raczej niedostępna wielu."
+game__tut_9  = "Cooking and roasting is an art in itself, and proper ingredients in cook's hands can achieve a lot. In the game you can choose between cooking and roasting - depending on whether there's a pot provided near the campfire. Once you enter any of these modes, just select item or items to be used. Roasted food tends to heal you better, meanwhile cooked water lets you use herbs more effectively and without risk of poisoning yourself."
+game__tut_10 = "Quite important: you can roast only one item at once."
 
 # Tutorials - quests
 quest__mq_tut1 = "So, your adventure begins! In a second you will get to the first place of events, and so you will see first game menu - which you will use to the very end."
@@ -256,8 +256,12 @@ game__alchemy_pick   = "Pick number of the item that you want to put in the pot.
 game__alchemy_succ   = "You succeeded in making a potion!"
 game__alchemy_fail   = "Unfortunately, you failed to make any potion."
 # GUI - cooking
-game__cooking_roast  = "Upiecz coś"
-game__cooking_boil   = "Ugotuj coś"
+game__cooking_roast  = "Roast something"
+game__cooking_boil   = "Cook something"
+game__cooking_ritem  = "Pick item to be roasted"
+game__cooking_rdo    = "Roast"
+game__cooking_rsucc  = "Successfully roasted"
+game__cooking_rfail  = "Roasting has failed!"
 # GUI - chest
 game__chest          = "Container"
 game__chest_take     = "Take things"

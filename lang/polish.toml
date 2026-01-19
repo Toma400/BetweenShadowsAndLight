@@ -21,7 +21,7 @@ game__tut_6  = "Wkładając składniki do przetworzenia, pamiętaj, że po spró
 game__tut_7  = "Za chwilę pojawi się panel walki - jest on raczej intuicyjny. Powinniśmy jednak napomknieć o tym, że są różne rodzaje ataku - zależne od aktualnie trzymanej broni. Każdy z nich ma inną charakterystykę, skupiającą się na innej taktyce walki."
 game__tut_8  = "Jeżeli do tej pory nie korzystałeś z ekwipunku, i nie dobyłeś broni (poprzez 'włożenie jej na siebie'), uczyń to podczas walki wybierając opcję ekwipunku. Pamiętaj, że każde skorzystanie z ekwipunku zabiera Ci rundę."
 game__tut_9  = "Gotowanie i pieczenie to nie lada sztuka, a odpowiednie składniki w rękach dobrego kucharza mogą zdziałać cuda. W grze możesz wybierać między gotowaniem a pieczeniem - zależnie, czy jesteś jedynie przy ognisku, czy może jest przy nim garnek. Z kolei gdy włączysz którąkolwiek z opcji, zasada jest podobna - kładąc odpowiednie składniki na 'szali', możesz je ugotować lub upiec, by służyły Ci lepiej. Z reguły rzeczy upieczone są smaczniejsze i lepiej leczą, z kolei zaś ugotowana woda daje Ci możliwości wykorzystania ziół, i nie zatrucia się przy okazji."
-game__tut_10 = "Dość istotna uwaga: piec możesz jedną rzecz naraz. Nie kładź więc do upieczenia więcej niż jedną rzecz, gdyż możesz stracić niepotrzebnie to, co chciałeś upiec. Nie bez kozery mówi się, że 'upiec dwie pieczenie na jednym ogniu' to sztuka - sztuka raczej niedostępna wielu."
+game__tut_10 = "Dość istotna uwaga: piec możesz jedną rzecz naraz."
 
 # Tutorials - quests
 quest__mq_tut1 = "Tak więc Twoja przygoda się rozpoczęła! Za chwilę trafisz w pierwsze miejsce wydarzeń, jak i również wyświetli Ci się główne menu gry - z którego to będziesz korzystać później do samego końca."
@@ -258,6 +258,10 @@ game__alchemy_fail   = "Niestety, nie udało się stworzyć żadnej mikstury."
 # GUI - cooking
 game__cooking_roast  = "Upiecz coś"
 game__cooking_boil   = "Ugotuj coś"
+game__cooking_ritem  = "Wybierz przedmiot do upieczenia"
+game__cooking_rdo    = "Upiecz"
+game__cooking_rsucc  = "Udało się upiec"
+game__cooking_rfail  = "Pieczenie się nie udało!"
 # GUI - chest
 game__chest          = "Pojemnik"
 game__chest_take     = "Weź rzeczy"
