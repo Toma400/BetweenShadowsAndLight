@@ -32,6 +32,7 @@ const BOILING_RECIPES* : Table[string, seq[string]] = {
     # TODO: it might be worthy doing different format, so that you can both
     #       boil `water` and `water_cooked`? so like alternative options
     #       -- but table allows us only one recipe for each item --
+    # all in all, it makes sense you want to pre-emptively cook water for recipes
     "water_cooked" : @["water"],
 }.toTable
 
@@ -203,9 +204,6 @@ proc alchemy* (g: Game) =
                     removeItemFromInventory(g.player, p - 1)
             except ValueError: continue
 
-proc cooking* () =
-    WAITING_FOR_IMPLEMENTATION()
-
 proc banking* (g: Game) =
     var MODE = 0 # 1 = deposit money, 2 = withdraw money
     while true:
@@ -291,11 +289,19 @@ proc banking* (g: Game) =
 
 proc cooking* (g: Game, pot: bool) =
     # pot variable decides whether we can roast something
-    var MODE = 0 # 1 = roasting, 2 = boiling
+    var MODE = 0 # 1 = roasting, 2 = boiling, 3/4 = adding to the fire/pot
     # empty containers, to be used (and resetted) by respective actions
     var FIRE : string      # single item
     var POT  : seq[string] # seq
     while true:
+        # info on stuff that is put on fire/pot
+        if FIRE != "":
+            echo getKey(g, "game__cooking_fire") & ": " & getKey(g, "item__" & FIRE)
+        if len(POT) > 0:
+            echo getKey(g, "game__cooking_pot") & ":"
+            for it in POT:
+                echo "- " & getKey(g, "item__" & it)
+
         if MODE == 0: # choose option
             clearScreen()
             if g.tutorial:
@@ -314,9 +320,86 @@ proc cooking* (g: Game, pot: bool) =
         elif MODE == 1:
             if g.tutorial:
                 echo getTutorialKey(g, "game__tut_10")
-            MODE = 0
+            if FIRE == "": # empty fire
+                echo getOptionKey(g, "game__cooking_ritem", 1)
+            else:
+                echo getOptionKey(g, "game__cooking_rdo", 1)
+            echo getOptionKey(g, "game__leave", 2)
+            let prompt = readLine(stdin)
+            case prompt:
+                of "":  MODE = 0
+                of "1":
+                    if FIRE == "": MODE = 3 # if empty, lets you choose item to put there
+                    else: # cook stuff
+                        if FIRE in ROASTING_RECIPES: # can be also gated by skill if we make that someday
+                            addItemToInventory(g.player, ROASTING_RECIPES[FIRE])
+                            echo getKey(g, "game__cooking_rsucc") & ": " & getKey(g, "item__" & ROASTING_RECIPES[FIRE])
+                        else:
+                            echo getKey(g, "game__cooking_rfail")
+                        FIRE = "" # clear the fire
+                        waitForPlayer()
+                of "2": MODE = 0
+                else: continue
         elif MODE == 2:
-            MODE = 0
+            if len(POT) == 0: # empty pot
+                echo getOptionKey(g, "game__cooking_citem", 1)
+            else:
+                echo getOptionKey(g, "game__cooking_cdo", 1)
+            echo getOptionKey(g, "game__leave", 2)
+            let prompt = readLine(stdin)
+            case prompt:
+                of "":  MODE = 0
+                of "1":
+                    if len(POT) == 0: MODE = 4 # FOR NOW IT'S 3, but may need to be 4?
+                    else: # cook stuff
+                        var resvlt = "" # empty means failure to craft anything
+                        for recipe in BOILING_RECIPES.keys:
+                            var success = true # will be overwritten if it fails
+                            for req_ingr in BOILING_RECIPES[recipe]:
+                                if req_ingr notin POT: success = false
+                            if success == true: # doesn't get any failed checks
+                                addItemToInventory(g.player, recipe) # it's actually item cooked, not recipe lol
+                                resvlt = recipe # marks the success
+                                break           # ends the process
+                        POT = @[]         # resets the pot
+                        if resvlt != "": echo getKey(g, "game__cooking_csucc") & " | " & getKey(g, "item__" & resvlt)
+                        else:            echo getKey(g, "game__cooking_cfail")
+                        waitForPlayer()
+                of "2": MODE = 0
+                else: continue
+        elif MODE == 3: # adding to the fire
+            echo DIVIDER
+            for ix, it in getInventory(g.player).pairs():
+                echo "- " & getOptionKey(g, "item__" & it, ix + 1)
+            echo DIVIDER
+            echo getKey(g, "game__cooking_ritem")
+
+            let prompt = readLine(stdin)
+            if prompt == "": MODE = 1
+            try:
+                let p = parseInt(prompt)
+                if p <= 0 or p > len(getInventory(g.player)): continue
+                else: # correct pick!
+                    FIRE = getInventory(g.player)[p - 1]
+                    removeItemFromInventory(g.player, p - 1)
+                    MODE = 1 # automatically goes back, as you can only add one item to fire
+            except ValueError: continue
+        elif MODE == 4: # adding to the pot
+            echo DIVIDER
+            for ix, it in getInventory(g.player).pairs():
+                echo "- " & getOptionKey(g, "item__" & it, ix + 1)
+            echo DIVIDER
+            echo getKey(g, "game__cooking_citem")
+
+            let prompt = readLine(stdin)
+            if prompt == "": MODE = 2
+            try:
+                let p = parseInt(prompt)
+                if p <= 0 or p > len(getInventory(g.player)): continue
+                else: # correct pick!
+                    POT.add(getInventory(g.player)[p - 1])
+                    removeItemFromInventory(g.player, p - 1)
+            except ValueError: continue
 
 # def cooking(cook_fry):
 #   #cook_fry: 1-ognisko, 2-ognisko z garnkiem

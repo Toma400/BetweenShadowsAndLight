@@ -237,7 +237,7 @@ while isRunning(g):
                                 switchMenu(g, mDEATH); continue
                         of "2": startDialogue(g, FARMER)
                         of "3": getGatherableItems(g, "hyerbitus", HYERBITUS_GROWTH) # waitForPlayer() happens later
-                        of "4": discard; WAITING_FOR_IMPLEMENTATION() # fireplace/cooking
+                        of "4": cooking(g, true)
                         of "5":
                             if hasItem(g.player, "sickle"):
                                 getGatherableItems(g, "wheat", WHEAT_GROWTH) # waitForPlayer() happens later

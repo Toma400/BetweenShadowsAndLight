@@ -256,12 +256,18 @@ game__alchemy_pick   = "Wybierz numer przedmiotu, który chcesz wrzucić do koci
 game__alchemy_succ   = "Udało ci się stworzyć miksturę!"
 game__alchemy_fail   = "Niestety, nie udało się stworzyć żadnej mikstury."
 # GUI - cooking
+game__cooking_fire   = "Ogień"
+game__cooking_pot    = "Garnek"
 game__cooking_roast  = "Upiecz coś"
 game__cooking_boil   = "Ugotuj coś"
 game__cooking_ritem  = "Wybierz przedmiot do upieczenia"
 game__cooking_rdo    = "Upiecz"
 game__cooking_rsucc  = "Udało się upiec"
 game__cooking_rfail  = "Pieczenie się nie udało!"
+game__cooking_citem  = "Wybierz przedmiot, który chcesz wrzucić do garnka"
+game__cooking_cdo    = "Ugotuj"
+game__cooking_csucc  = "Udało się ugotować"
+game__cooking_cfail  = "Gotowanie się nie udało!"
 # GUI - chest
 game__chest          = "Pojemnik"
 game__chest_take     = "Weź rzeczy"

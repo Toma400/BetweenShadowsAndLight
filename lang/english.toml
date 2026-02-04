@@ -256,12 +256,18 @@ game__alchemy_pick   = "Pick number of the item that you want to put in the pot.
 game__alchemy_succ   = "You succeeded in making a potion!"
 game__alchemy_fail   = "Unfortunately, you failed to make any potion."
 # GUI - cooking
+game__cooking_fire   = "Fire"
+game__cooking_pot    = "Pot"
 game__cooking_roast  = "Roast something"
 game__cooking_boil   = "Cook something"
 game__cooking_ritem  = "Pick item to be roasted"
 game__cooking_rdo    = "Roast"
 game__cooking_rsucc  = "Successfully roasted"
 game__cooking_rfail  = "Roasting has failed!"
+game__cooking_citem  = "Pick item you want to put in the pot"
+game__cooking_cdo    = "Cook"
+game__cooking_csucc  = "Successfully cooked"
+game__cooking_cfail  = "Cooking has failed!"
 # GUI - chest
 game__chest          = "Container"
 game__chest_take     = "Take things"
