@@ -341,17 +341,16 @@ proc cooking* (g: Game, pot: bool) =
                 of "2": MODE = 0
                 else: continue
         elif MODE == 2:
-            if len(POT) == 0: # empty pot
-                echo getOptionKey(g, "game__cooking_citem", 1)
-            else:
-                echo getOptionKey(g, "game__cooking_cdo", 1)
-            echo getOptionKey(g, "game__leave", 2)
+            echo getOptionKey(g, "game__cooking_citem", 1)
+            if len(POT) > 0:
+                echo getOptionKey(g, "game__cooking_cdo", 2)
+            echo getOptionKey(g, "game__leave", 3)
             let prompt = readLine(stdin)
             case prompt:
                 of "":  MODE = 0
-                of "1":
-                    if len(POT) == 0: MODE = 4 # FOR NOW IT'S 3, but may need to be 4?
-                    else: # cook stuff
+                of "1": MODE = 4
+                of "2": # cook stuff
+                    if len(POT) > 0:
                         var resvlt = "" # empty means failure to craft anything
                         for recipe in BOILING_RECIPES.keys:
                             var success = true # will be overwritten if it fails
@@ -365,7 +364,7 @@ proc cooking* (g: Game, pot: bool) =
                         if resvlt != "": echo getKey(g, "game__cooking_csucc") & " | " & getKey(g, "item__" & resvlt)
                         else:            echo getKey(g, "game__cooking_cfail")
                         waitForPlayer()
-                of "2": MODE = 0
+                of "3": MODE = 0
                 else: continue
         elif MODE == 3: # adding to the fire
             echo DIVIDER
