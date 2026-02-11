@@ -35,6 +35,60 @@ const LOOT_TABLE* : Table[Enemy, seq[string]] = {
     PIRATE_WOUNDED : @["bandit_revolver", "20 coins", "5 bullets"],
 }.toTable
 
+proc spell (g: Game, attack_val: var int) =
+    let mod_magic = int(g.player.pwr_magic/2) - int(g.player.pwr_tech/2)
+    let mod_chaos = int(g.player.pwr_chaos/2) - int(g.player.pwr_conn/2)  - int(g.player.pwr_tech/2)
+    let mod_conn  = int(g.player.pwr_conn/2)  - int(g.player.pwr_chaos/2) - int(g.player.pwr_tech/2)
+
+    proc spellUse (g: Game, aval: var int, staff, spell: string): bool =
+        if g.player.mp >= STAFFS[staff][spell].mana_cost:
+            aval         = STAFFS[staff][spell].attack
+            g.player.mp -= STAFFS[staff][spell].mana_cost
+            g.player.hp += STAFFS[staff][spell].heal
+            g.player.hp -= STAFFS[staff][spell].self_dmg
+            return true
+        return false
+
+    if getSpellcasting(g.player) < 1:
+        echo getKey(g, "game__combat_skissue")
+        waitForPlayer()
+    elif g.player.weapon notin STAFFS:
+        echo getKey(g, "game__combat_stissue")
+        waitForPlayer()
+     # and having mod_magic at some level????
+    else: # proper spellcasting
+        clearScreen()
+        var spell_result = false
+        echo getKey(g, "game__combat_schoose")
+        case g.player.weapon:
+            of "staff_fire":
+                echo getOptionKey(g, "game__combat_sfire1",  1)
+                let prompt = readLine(stdin)
+                case prompt:
+                  of "1": spell_result = spellUse(g, attack_val, "staff_fire", "fireball")
+                  else: return
+            of "staff_earth": # earth
+                echo getOptionKey(g, "game__combat_searth1", 1)
+                let prompt = readLine(stdin)
+                case prompt:
+                  of "1": spell_result = spellUse(g, attack_val, "staff_earth", "thorns")
+                  else: return
+            of "staff_conn": # connection
+                echo getOptionKey(g, "game__combat_sconn1",  1)
+                let prompt = readLine(stdin)
+                case prompt:
+                  of "1": spell_result = spellUse(g, attack_val, "staff_conn", "small_heal")
+                  else: return
+            of "staff_chaos": # chaos
+                echo getOptionKey(g, "game__combat_schaos1", 1)
+                let prompt = readLine(stdin)
+                case prompt:
+                  of "1": spell_result = spellUse(g, attack_val, "staff_chaos", "soul_devour")
+                  else: return
+        if spell_result:
+            echo getKey(g, "game__combat_snemana")
+            waitForPlayer()
+
 proc fight (g: Game, enemy: Enemy): FightOutcome =
     # main combat; return true when won, false when failed (death or escape)
     var ENHP = ENEMIES[enemy].hp
@@ -145,11 +199,10 @@ proc fight (g: Game, enemy: Enemy): FightOutcome =
             of "7":
                 if WPN.weapon != MAGIC: continue # loops back, being soft penalty (sp-5)
                 else: # correct option
-                    discard; WAITING_FOR_IMPLEMENTATION() # CAST SPELLING MENU!!!!
+                    spell(g, att_value)
             of "8":
                 discard; WAITING_FOR_IMPLEMENTATION() # SOME SPECIAL EQUIPMENT CHOISE????
             of "9":
-                WAITING_FOR_IMPLEMENTATION() # or rather, fightInventory awaits for impl
                 fightInventory(g)
                 att_value = 0                # no attack this turn
             of "heal", "kill": # cheats

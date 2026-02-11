@@ -50,6 +50,22 @@ proc isBookType* (item_str: string): bool = return "book" in item_str or "newspa
 # similar to activators?
 # similar to readable things? (separate type?)
 
+# const used for spellcasting
+const STAFFS* = {
+    "staff_fire": {
+        "fireball":    (mana_cost: 20, attack: 15, heal: 0,  self_dmg: 0)
+    }.toTable,
+    "staff_earth": {
+        "thorns":      (mana_cost:  9, attack: 8,  heal: 0,  self_dmg: 0)
+    }.toTable,
+    "staff_conn": {
+        "small_heal":  (mana_cost: 10, attack: 0,  heal: 20, self_dmg: 0)
+    }.toTable,
+    "staff_chaos": {
+        "soul_devour": (mana_cost: 30, attack: 40, heal: 0,  self_dmg: 25)
+    }.toTable,
+}.toTable
+
 const ITEMS* = { # ID : object
     # --- SPECIAL ---
     # - money      | countable, use `specialItem` to work with it
@@ -90,10 +106,11 @@ const ITEMS* = { # ID : object
     "scroll_heal"     : Item(weight: 0, use: UNIQUE), # zwój uzdrowienia   | MP-10, HP+??? // prob usable whenever, but including fight?
     "scroll_fireball" : Item(weight: 0, use: BATTLE), # zwój ognistej kuli | A=18, MP-32 // I can guess also only usable in fight
     # --- MAGIC WEAPONS ---
-    "staff_fire"  : Item(weight: 1), # kostur ognia
-    "staff_earth" : Item(weight: 1), # kostur ziemi
-    "staff_conn"  : Item(weight: 1), # kostur połączenia
-    "staff_chaos" : Item(weight: 1), # kostur chaosu
+    # new ones need to be added to -STAFFS- const to be used correctly; also add implementation to `battle.spell` proc's switch
+    "staff_fire"  : Item(weight: 1, weapon: MAGIC), # kostur ognia
+    "staff_earth" : Item(weight: 1, weapon: MAGIC), # kostur ziemi
+    "staff_conn"  : Item(weight: 1, weapon: MAGIC), # kostur połączenia
+    "staff_chaos" : Item(weight: 1, weapon: MAGIC), # kostur chaosu
     # --- ALCHEMY ---
     "hyerbitus"           : Item(weight: 0, ingr: true, use: POISON,   use_val:  1, use_str: "item__hyerbitus_use"), # kwiat hyerbitusa
     "antidote"            : Item(weight: 0,             use: POISON,   use_val:  0), # | 0 resets poisoning fully    # odtrutka

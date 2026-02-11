@@ -67,6 +67,7 @@ for me to make new version just to add it.
   poisoning instead of bool)
   - To bring the point home, antidotes are also leveled
 - Added herring cooking recipe, absent in OG despite herring having cooked variant
+- Removed weird limitation for spell casting not being possible after level 3
 
 ### New features (1.2+ version)
 - add non-binary gender to character creation
@@ -96,6 +97,11 @@ for me to make new version just to add it.
 - change RNG for normal pirate to 1?
 - fishing? since `herring` is ultimately useless, you can't roast it nor get it
   and it would be nice way to gather food, very baedoorey as well
+- second spell for staffs
+  - conn should have `paralysis` because otherwise it makes little sense to use
+    this staff, as you need a lot to do just to... heal yourself?
+  - maybe conn could even have three spells, with one being small damage?
+  - survey for staffs being achievable in game even
 
 ### New cheats systematised (to be transferred to BE)
 - `cheat` in main menu transports you out of tutorial and gives some resources
