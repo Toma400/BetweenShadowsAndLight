@@ -102,6 +102,10 @@ for me to make new version just to add it.
     this staff, as you need a lot to do just to... heal yourself?
   - maybe conn could even have three spells, with one being small damage?
   - survey for staffs being achievable in game even
+- questing
+  - TG follow-up quest to expand on changed lore & offer any questline-like experience that it was meant to have
+  - some new books, this time pickable? maybe even one more magazine that would
+    change over time
 
 ### New cheats systematised (to be transferred to BE)
 - `cheat` in main menu transports you out of tutorial and gives some resources
