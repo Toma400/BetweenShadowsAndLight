@@ -70,12 +70,24 @@ proc smithing* (g: Game) =
             echo "{ " & getKey(g, "game__smith_anvil") & " }"
             echo getOptionKey(g, "game__smith_create", 1)
             echo getOptionKey(g, "game__smith_repair", 2)
-            echo getOptionKey(g, "game__leave", 3)
+            if hasItem(g.player, "wood"):      echo getOptionKey(g, "game__smith_arrow", 3)
+            if hasItem(g.player, "gunpowder"): echo getOptionKey(g, "game__smith_bullet", 4)
+            echo getOptionKey(g, "game__leave", 5)
             let prompt = readLine(stdin)
             case prompt:
                 of "1": MODE = 1
                 of "2": MODE = 2
-                of "3": break # ends smithing
+                of "3":
+                   if removeItemFromInventory(g.player, "wood"): # this functionally includes hasItem check
+                     echo getKey(g, "game__smith_arrtrue")
+                     g.player.arrows += 15
+                     waitForPlayer()
+                of "4":
+                   if removeItemFromInventory(g.player, "gunpowder"): # this functionally includes hasItem check
+                     echo getKey(g, "game__smith_bulltrue")
+                     g.player.ammo += 15
+                     waitForPlayer()
+                of "5": break # ends smithing
         elif MODE == 1: # creating
             if getSmithing(g.player) == 0:
                 echo getKey(g, "game__smith_skilisue")
