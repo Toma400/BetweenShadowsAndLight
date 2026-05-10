@@ -58,7 +58,7 @@ type
   Timer* = enum # remember to add timer count value in hash below [!]
     HYERBITUS_GROWTH
     WHEAT_GROWTH
-    # todo: warehouse/night
+    WAREHOUSE_QUEST
   Variable* = enum # variables used for checks
     ISLAND_SEEN      # | allows for bringing island topic when talking to sailor
     SAM_KNOWS_YOU    # | used for just silly acknowledging you are known to Sam
@@ -66,6 +66,7 @@ type
     TAVERN_KEY       # | indicates whether you can sleep in tavern or not
     MERCHANT_ASKED   # | to indicate merchant giving you parchment (so that you can't cheese it)
     HERBALIST_ASKED  # | to indicate dialogue passing once
+    ATG_REJECTED     # | used for cleaner handling of rejecting ATG initial quest
   NPC* = enum # npcs you can dialogue with
     CAPTAIN_DOCKED
     CAPTAIN
@@ -73,6 +74,7 @@ type
     COOK
     SAILOR_DOCKS
     LE_VELGA
+    ATG_SCOUT
     TAVERN_BARMAN
     MAGICIAN
     SMITH
@@ -86,6 +88,8 @@ type
     BRING_SWEET_ROLL = "quest__sweet_roll" # | 8 xp
     GET_PARCHMENT    = "quest__parchment"  # | 5 xp (0 in OG)
     WORK_ON_A_FARM   = "quest__farm"       # | circular (work)
+    ATG_1_WAREHOUSE  = "quest__warehouse"  # | 20 xp (10 if reported to guard)
+    ATG_1_SILKBOY    = "quest__silkboy"    # |
     # non-listed quasi-quest: delivery for the herbalist (gives 0 xp)
   Player* = ref object
     name   : string
@@ -147,6 +151,7 @@ const
   TIMER_COUNTS = {
       HYERBITUS_GROWTH : 10,
       WHEAT_GROWTH     :  7,
+      WAREHOUSE_QUEST  :  5,
   }.toTable
 
 # TRADE TABLES

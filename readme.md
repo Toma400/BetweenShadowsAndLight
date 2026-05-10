@@ -68,9 +68,14 @@ for me to make new version just to add it.
   - To bring the point home, antidotes are also leveled
 - Added herring cooking recipe, absent in OG despite herring having cooked variant
 - Removed weird limitation for spell casting not being possible after level 3
+- Slightly tweaked and expanded TG quest dialogue, introducing us to our hire who now
+  has a name
+  - Adjusted Hrevir dialogue to not indicate him being in (West) Baedoor, per new ATG
+    lore and keeping scope to Ansur only
+  - Raised TG quest experience reward to 20 due to the quest being fairly difficult
+  - Made TG recommendation letter description, as it was lacking in OG
 
 ### New features (1.2+ version)
-- add non-binary gender to character creation
 - if not available already: trading would improve trade skill, and trade skill would
   lower the prices?
 - decrease level cap? (100 xp for second level is ridiculous)
@@ -102,10 +107,24 @@ for me to make new version just to add it.
     this staff, as you need a lot to do just to... heal yourself?
   - maybe conn could even have three spells, with one being small damage?
   - survey for staffs being achievable in game even
+- some new books, this time pickable? maybe even one more magazine that would
+  change over time
 - questing
-  - TG follow-up quest to expand on changed lore & offer any questline-like experience that it was meant to have
-  - some new books, this time pickable? maybe even one more magazine that would
-    change over time
+  - Thieves Guild
+    - TG follow-up quest to expand on changed lore & offer any questline-like experience
+      that it was meant to have (Hrevir is our contact)
+    - being able to enter warehouse no matter the time, just having additional
+      check for skills (should count for both TG quest *and* reentering)
+    - being able to report warehouse theft even after rejecting the offer
+    - set the timer after you "leave" the warehouse when night comes, so that there
+      can be some sort of penalty (but `echo` that so player knows)
+    - chests in warehouse should also be locked?
+    - redesign quest slightly so that warehouse entering is separate dialogue
+      and maybe allow you to loot more than one chest
+    - being able to be caught? for now the quest and getting into warehouse is very
+      forgiving
+    - set lock-after-burglary to 8, so that only guards attention is higher, but lock
+      level remains the same - makes little sense to up its level here
 
 ### New cheats systematised (to be transferred to BE)
 - `cheat` in main menu transports you out of tutorial and gives some resources

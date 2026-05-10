@@ -118,8 +118,9 @@ const ITEMS* = { # ID : object
     "potion_mana_small"   : Item(weight: 0,             use: REG_MANA, use_val: 25),                                 # mała mikstura many
     # --- READABLES ---
     "newspaper"            : Item(weight: 0),
+    "atg_recommendation"   : Item(weight: 0),
     "recipe_health_potion" : Item(weight: 0),
-    "book"                 : Item(weight: 0),
+    "book"                 : Item(weight: 0), # TODO: description is empty, meaning it's more of placeholder
 }.toTable
 
 const BROKEN_VARIANT* = {

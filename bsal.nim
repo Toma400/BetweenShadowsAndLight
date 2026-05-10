@@ -197,7 +197,7 @@ while isRunning(g):
                         of "2": startDialogue(g, MAGICIAN)
                         of "3": startDialogue(g, SAILOR_DOCKS)
                         of "4": startDialogue(g, LE_VELGA)
-                        of "5": WAITING_FOR_IMPLEMENTATION() # magazyn
+                        of "5": startDialogue(g, ATG_SCOUT)
                         of "6": switchMenu(g, mDEFAULT); continue
                         else: continue
                     printMessages(g)

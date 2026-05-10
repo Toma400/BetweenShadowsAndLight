@@ -208,6 +208,135 @@ proc processDialogue* (g: Game) =
                     endDialogue(g, mLOCATION)
                 else: return
 
+        of ATG_SCOUT:
+            if isQuestActive(g.player, ATG_1_WAREHOUSE): # picked up quest
+                if getTimerCountDownValue(g.player, WAREHOUSE_QUEST) == 0: # night comes
+                    echo getOptionKey(g, "loc__docks_atg_burg1", 1)
+                    echo getOptionKey(g, "loc__docks_atg_burg2", 2)
+                    echo getOptionKey(g, "loc__docks_atg_burg3", 3)
+                    let prompt = readLine(stdin)
+                    case prompt:
+                      of "1":
+                          if crouch(g.player, 5):
+                              echo getKey(g, "loc__docks_atg_burgenter")
+                              if lock(g.player, 8):
+                                  echo getKey(g, "loc__docks_atg_burgwin")
+                                  waitForPlayer()
+                                  # TODO: here ideally should be switch to separate NPC called "Warehouse"
+                                  # this would ensure less nesting, but also a way in/out for other situations
+                                  # when we want to steal from warehouse
+                                  echo getKey(g, "loc__docks_atg_burgche")
+                                  chest(g.player, CHESTS[WAREHOUSE_CHEST])
+                                  if hasItem(g.player, "silk"):
+                                      finishQuest(g.player, ATG_1_WAREHOUSE, 0) # xp gain when Silkboy is finished
+                                      startQuest(g.player, ATG_1_SILKBOY)
+                                  # endDialogue here would allow us to sell silk, but would require silk check
+                                  # in second check of this dialogue; not sure if we want to cover that?
+                                  # (how does OG do???)
+                                  # ...but yeah, it does slightly limit player's ability
+                              else:
+                                  echo getKey(g, "loc__docks_atg_burgfail2")
+                                  waitForPlayer()
+                          else:
+                              echo getKey(g, "loc__docks_atg_burgfail1")
+                              waitForPlayer()
+                      of "2":
+                          echo getKey(g, "loc__docks_atg_rep1")
+                          echo getKey(g, "loc__docks_atg_rep2")
+                          g.player.money += 50
+                          finishQuest(ATG_1_WAREHOUSE, 10)
+                      of "3": endDialogue(g, mLOCATION)
+                      else: return
+                else:
+                    echo getKey(g, "loc__docks_atg_wait")
+                    waitForPlayer()
+                    endDialogue(g, mLOCATION)
+            elif isQuestActive(g.player, ATG_1_SILKBOY): # when you were able to steal the items
+                # no need for silk check because unless we `endDialogue` earlier, we jump straight into this dialogue
+                echo getKey(g, "loc__docks_atg_suc1")
+                waitForPlayer()
+                echo getKey(g, "loc__docks_atg_suc2")
+                waitForPlayer()
+                echo getKey(g, "loc__docks_atg_suc3")
+                echo getKey(g, "loc__docks_atg_suc4")
+                echo getKey(g, "loc__docks_atg_suc5")
+                discard removeItemFromInventory(g.player, "silk")
+                addItemToInventory(g.player, "")
+                finishQuest(g.player, ATG_1_SILKBOY, 20)
+                # recommendation is only conveyed by letter, there's no point in adding quest
+                # (it also forces player to continue ATG, while in reality it was more of an introduction/taste)
+                waitForPlayer()
+                endDialogue(g, mLOCATION)
+            elif isQuestFinished(g.player, ATG_1_SILKBOY):
+                echo getKey(g, "loc__docks_atg_reenter")
+                echo getOptionKey(g, "loc__docks_atg_burg1", 1)
+                echo getOptionKey(g, "loc__docks_atg_burg3", 2)
+                let prompt = readLine(stdin)
+                case prompt:
+                    of "1":
+                        if crouch(g.player, 10):
+                            echo getKey(g, "loc__docks_atg_burgenter")
+                            if lock(g.player, 14):
+                                echo getKey(g, "loc__docks_atg_burgwin")
+                                waitForPlayer()
+                                chest(g.player, CHESTS[WAREHOUSE_CHEST])
+                                endDialogue(g, mLOCATION) # maybe unnecessary? just wanted to avoid loop-back
+                            else:
+                                echo getKey(g, "loc__docks_atg_burgfail2")
+                                waitForPlayer()
+                        else:
+                            echo getKey(g, "loc__docks_atg_burgfail1")
+                            waitForPlayer()
+                    of "2": endDialogue(g, mLOCATION)
+            elif isQuestFinished(g.player, ATG_1_WAREHOUSE) or checkVariable(g.player, ATG_REJECTED): # no guy here
+                # TODO: still possible to enter the warehouse here, but should be wary of whether we helped
+                #       the guard, rejected ATG guy, or else
+                echo getKey(g, "loc__docks_atg_finished")
+                waitForPlayer()
+                endDialogue(g, mLOCATION)
+            else: # quest wasn't picked up yet
+                if "further" notin getDialogueVariables(g.player):
+                    echo getKey(g, "loc__docks_atg_ini1"); waitForPlayer()
+                    echo getKey(g, "loc__docks_atg_ini2"); waitForPlayer()
+                    echo getKey(g, "loc__docks_atg_ini3"); waitForPlayer()
+                    echo getKey(g, "loc__docks_atg_ini4"); waitForPlayer()
+                    echo getOptionKey(g, "loc__docks_atg_que1", 1)
+                    echo getOptionKey(g, "loc__docks_atg_que2", 2)
+                    echo getOptionKey(g, "loc__docks_atg_que3", 3)
+                    let prompt = readLine(stdin)
+                    case prompt:
+                        of "1" or "2": addDialogueVariable(g.player, "further")
+                        of "3":
+                            echo getKey(g, "loc__docks_atg_rej")
+                            addVariable(g.player, ATG_REJECTED)
+                            waitForPlayer()
+                            endDialogue(g, mLOCATION)
+                        else: return
+                else: # "further" is in (aka the player agrees, but is given chance to resign still)
+                    echo getKey(g, "loc__docks_atg_quea1")
+                    echo getKey(g, "loc__docks_atg_quea2")
+                    echo getOptionKey(g, "loc__docks_atg_queagr", 1)
+                    echo getOptionKey(g, "loc__docks_atg_quemor", 2)
+                    echo getOptionKey(g, "loc__docks_atg_querej", 3)
+                    let prompt = readLine(stdin)
+                    case prompt:
+                        of "1":
+                            echo getKey(g, "loc__docks_atg_agreed")
+                            startQuest(g, ATG_1_WAREHOUSE)
+                            setTimer(g.player, WAREHOUSE_QUEST)
+                            waitForPlayer()
+                            block learning:
+                              setLockpicking(g.player, getLockpicking(g.player) + 1)
+                              setSneaking(g.player,    getSneaking(g.player)    + 1)
+                              g.player.lockpicks += 5
+                            endDialogue(g, mLOCATION)
+                        of "2" or "3":
+                            echo getKey(g, "loc__docks_atg_rej")
+                            addVariable(g.player, ATG_REJECTED)
+                            waitForPlayer()
+                            endDialogue(g, mLOCATION)
+                        else: return
+
         of TAVERN_BARMAN:
             if "buy_sleep" notin getDialogueVariables(g.player):
                 echo getKey(g, "loc__docks_tavern")

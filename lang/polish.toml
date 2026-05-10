@@ -125,6 +125,7 @@ item__potion_mana_small    = "Mała mikstura many"
 item__book                 = "Książka"
 item__recipe_health_potion = "Przepis na małą miksturę leczniczą"
 item__newspaper            = "Gazeta Evros, 1.12.216 n.e."
+item__atg_recommendation   = "Rekomendacja do Gildii Złodziei"
 # -- descriptions
 item__roots_descr               = "Drobne trawne zioła, chociaż więcej z nich korzyści dla zielarza niż zwykłego śmiertelnika."
 item__rat_meat_descr            = "Surowe szczurze mięso jest raczej niezbyt dobre dla organizmu.."
@@ -166,6 +167,11 @@ item__newspaper_read            = """
 Niesłychane wieści! Słynny zabójca Czarny Wąs, grasujący nieprzerwanie od miesięcy w Baedoor, został pojmany przez straże. Wszystko zawdzięczamy dzielnemu dziennikarzowi, który odkrył demaskujące go szczegóły.
 Wieści z granicy donoszą o wzmożonej aktywności południowych ludów, zagrażających bezpieczeństwu naszego Imperium. W związku z tym wysłane zostały przez Zarządcę trzy nowo wyszkolone oddziały.
 Ekspansja szkodników na wyspie Evros graniczy już ze stanem alarmowym. Ta plaga szczurów może poważnie uszkodzić główne źródło dochodu wyspy - rolnictwo.
+"""
+item__atg_recommendation_read   = """
+Rekomenduję to zacne ostrze, cięcie przeszło bezproblemowo przez materiał. Dowód świetnej ostrości.
+
+- Lan
 """
 # -- effects
 item__generic_heal  = "Ah, czuję się lepiej."
@@ -366,7 +372,7 @@ game__warn_money     = "Nie masz tylu pieniędzy!"
 game__warn_lockpicks = "Nie masz wytrychów!"
 game__warn_mana      = "Nie masz odpowiednio dużo many!"
 game__warn_tech      = "Jesteś zbytnio po technologicznej stronie, by tego użyć!"
-game__warn_div       = "-------------------" # should be as long as the longest `game__warn`
+game__warn_div       = "--------------------------------------------------------" # should be as long as the longest `game__warn`
 game__leave          = "Odejdź"
 
 # Creatures
@@ -391,6 +397,8 @@ quest__cook       = "Porozmawiaj z kucharzem"
 quest__sweet_roll = "Przynieś słodką bułkę marynarzowi"
 quest__parchment  = "Zdobądź pergamin w Evros"
 quest__farm       = "Praca na farmie Evros"
+quest__warehouse  = "Zdobądź jedwab dla nieznajomego" # originally as 'Enter the warehouse', but decided same names would work better
+quest__silkboy    = "Zdobądź jedwab dla nieznajomego"
 
 # Travel
 travel__ask          = "Gdzie chcesz się udać? Wybierz numer lub naciśnij Enter by wrócić."
@@ -486,6 +494,39 @@ loc__docks_le_velga_que3 = "Żegnaj"
 loc__docks_le_velga_an1  = "Kim jestem? To niezbyt chyba Ci potrzebne.."
 loc__docks_le_velga_an2  = "Ale jeśli nalegasz. Dominic le Velga, z rodu Velgów. Doglądam tu załadunku statku mojego ojca, nic więcej."
 loc__docks_le_velga_no   = "Zrobić? Doceniam chęci, ale nie sądzę, żebym czegoś potrzebował od Ciebie."
+loc__docks_atg_ini1      = "Magazyn jest zamknięty, i pilnowany przez wielu żołnierzy.. może lepiej się tu nie kręcić."
+loc__docks_atg_ini2      = "Shhhh!"
+loc__docks_atg_ini3      = "Pewien mężczyzna próbuje zwrócić moją uwagę, lekko machając dłonią."
+loc__docks_atg_ini4      = "Hej, chcesz może sobie dorobić? Mogę mieć.. pewną robótkę. *puszcza oko porozumiewawczo*"
+loc__docks_atg_que1      = "Pewnie, dorabianie to moje całe życie! O co chodzi?"
+loc__docks_atg_que2      = "Co masz na myśli?"
+loc__docks_atg_que3      = "Daj spokój..."
+loc__docks_atg_quea1     = "Widzisz, ten magazyn. Wiem co mają w środku. Moi klienci.. potrzebują pewnego towaru ze środka."
+loc__docks_atg_quea2     = "Za kilka godzin się ściemni. Strażnicy będą wtedy łatwiejsi do ominięcia. Dam ci kilka wytrychów i pokażę pewien fajny trik. Przynieś mi jedwab, który znajdziesz w magazynie. To wszystko czego potrzebuję, resztę rzeczy jaką znajdziesz możesz zatrzymać dla siebie."
+loc__docks_atg_queagr    = "Pewnie, brzmi jak dobry interes!"
+loc__docks_atg_quemor    = "Mowy nie ma! Nie wspominałeś, że mówimy o kradzieży!"
+loc__docks_atg_querej    = "Nie, to nie dla mnie."
+loc__docks_atg_agreed    = "Czułem, że wybierzesz mądrze. Będę tutaj gdy będziesz z powrotem z jedwabiem dla mnie. Do później!"
+loc__docks_atg_rej       = "W porządku, przyjacielu. Może się spotkamy któregoś dnia. A może nie."
+loc__docks_atg_finished  = "Cóż, magazyn. Nic specjalnego, poza może ilością strażników go pilnujących."
+loc__docks_atg_wait      = "Jest jeszcze zbyt wcześnie!"
+loc__docks_atg_burg1     = "Spróbuj dostać się do magazynu"
+loc__docks_atg_burg2     = "Zgłoś plan nieznajomego strażnikowi"
+loc__docks_atg_burg3     = "Odejdź"
+loc__docks_atg_burgenter = "Udało się ominąć tego strażnika. Teraz tylko otworzyć ten zamek.."
+loc__docks_atg_burgwin   = "Udało się! Mogę teraz wejść do środka."
+loc__docks_atg_burgche   = "A oto i ta słynna skrzynia.."
+loc__docks_atg_burgfail1 = "Oh, o mało mnie nie nakrył strażnik. Trzeba mi bardziej uważać."
+loc__docks_atg_burgfail2 = "Ten zamek jest dość trudny.."
+loc__docks_atg_suc1      = "Wiedziałem, że mogę na Ciebie liczyć! Dziękuję za ten jedwab.. chociaż muszę Ci się do czegoś przyznać."
+loc__docks_atg_suc2      = "Pracuję jako agent straży!"
+loc__docks_atg_suc3      = "Ha ha, nie no. Przepraszam za ten paskudny żart. Jest dokładnie odwrotnie. Poszukuję ludzi ze smykałką do takich rzeczy jak Twoja. Musimy sobie pomagać. Po to jest gildia. Z pewnością o niej słyszałeś?"
+loc__docks_atg_suc4      = "Nasza sława nas wyprzedza. Choć nie jest to wcale bezpieczna rzecz, z Imperium które próbuje nas zdusić w każdym zakątku. W każdym razie, dobra robota z tym jedwabiem."
+loc__docks_atg_suc5      = "Jeśli interesowałaby cię gildia.. poszukaj niejakiego Hrevira. Nie powiem ci gdzie jest, ale jeśli go znajdziesz, to przedstawi Cię on nam wszystkim."
+loc__docks_atg_suc6      = "Jestem Lannot, swoją drogą. Na wypadek jakby to było ci potrzebne. Muszę już iść, ale pewnie jeszcze się spotkamy. Trzymaj się!"
+loc__docks_atg_rep1      = "Dziękuję za to zgłoszenie, obywatelu! Przypilnujemy, by ta łachudra dostała za swoje."
+loc__docks_atg_rep2      = "Proszę, to nagroda za tę obywatelską postawę. Pięćdziesiąt funtów. To wszystko co mogę zaoferować z naszych funduszy, ale powinno ci starczyć na kilka kolejek w tawernie."
+loc__docks_atg_reenter   = "Mogę się ponownie włamać do magazynu, ale straż stała się jakby czujniejsza.."
 loc__docks_tavern        = "Wchodzisz do tawerny, przepełnionej wymieszanym zapachem piwa i potu. Grupki marynarzy siedzą przy stołach, rozmawiając na różne tematy, czasami grając w karty bądź rechocząc z nieśmiesznych żartów rzucanych przez towarzyszy."
 loc__docks_tavern_que1   = "Kup coś u gospodarza"
 loc__docks_tavern_que2   = "Zamów noc w gospodzie"
