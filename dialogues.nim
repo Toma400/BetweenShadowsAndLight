@@ -1,3 +1,4 @@
+import std/tables
 import mechanics
 import player
 import game
@@ -226,10 +227,10 @@ proc processDialogue* (g: Game) =
                                   # this would ensure less nesting, but also a way in/out for other situations
                                   # when we want to steal from warehouse
                                   echo getKey(g, "loc__docks_atg_burgche")
-                                  chest(g.player, CHESTS[WAREHOUSE_CHEST])
+                                  chest(g, CHESTS[WAREHOUSE_CHEST])
                                   if hasItem(g.player, "silk"):
                                       finishQuest(g.player, ATG_1_WAREHOUSE, 0) # xp gain when Silkboy is finished
-                                      startQuest(g.player, ATG_1_SILKBOY)
+                                      discard startQuest(g.player, ATG_1_SILKBOY)
                                   # endDialogue here would allow us to sell silk, but would require silk check
                                   # in second check of this dialogue; not sure if we want to cover that?
                                   # (how does OG do???)
@@ -240,11 +241,13 @@ proc processDialogue* (g: Game) =
                           else:
                               echo getKey(g, "loc__docks_atg_burgfail1")
                               waitForPlayer()
-                      of "2":
+                      of "2": # guard
                           echo getKey(g, "loc__docks_atg_rep1")
                           echo getKey(g, "loc__docks_atg_rep2")
                           g.player.money += 50
-                          finishQuest(ATG_1_WAREHOUSE, 10)
+                          finishQuest(g.player, ATG_1_WAREHOUSE, 10)
+                          waitForPlayer()
+                          endDialogue(g, mLOCATION)
                       of "3": endDialogue(g, mLOCATION)
                       else: return
                 else:
@@ -279,7 +282,7 @@ proc processDialogue* (g: Game) =
                             if lock(g.player, 14):
                                 echo getKey(g, "loc__docks_atg_burgwin")
                                 waitForPlayer()
-                                chest(g.player, CHESTS[WAREHOUSE_CHEST])
+                                chest(g, CHESTS[WAREHOUSE_CHEST])
                                 endDialogue(g, mLOCATION) # maybe unnecessary? just wanted to avoid loop-back
                             else:
                                 echo getKey(g, "loc__docks_atg_burgfail2")
@@ -305,7 +308,7 @@ proc processDialogue* (g: Game) =
                     echo getOptionKey(g, "loc__docks_atg_que3", 3)
                     let prompt = readLine(stdin)
                     case prompt:
-                        of "1" or "2": addDialogueVariable(g.player, "further")
+                        of "1", "2": addDialogueVariable(g.player, "further")
                         of "3":
                             echo getKey(g, "loc__docks_atg_rej")
                             addVariable(g.player, ATG_REJECTED)
@@ -322,7 +325,7 @@ proc processDialogue* (g: Game) =
                     case prompt:
                         of "1":
                             echo getKey(g, "loc__docks_atg_agreed")
-                            startQuest(g, ATG_1_WAREHOUSE)
+                            discard startQuest(g.player, ATG_1_WAREHOUSE)
                             setTimer(g.player, WAREHOUSE_QUEST)
                             waitForPlayer()
                             block learning:
@@ -330,7 +333,7 @@ proc processDialogue* (g: Game) =
                               setSneaking(g.player,    getSneaking(g.player)    + 1)
                               g.player.lockpicks += 5
                             endDialogue(g, mLOCATION)
-                        of "2" or "3":
+                        of "2", "3":
                             echo getKey(g, "loc__docks_atg_rej")
                             addVariable(g.player, ATG_REJECTED)
                             waitForPlayer()
