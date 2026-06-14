@@ -324,7 +324,6 @@ while isRunning(g):
                 continue
             elif prompt == getKey(g, "game__gui_drsave").toLowerAscii:
                 saveGame(g)
-                g = loadGame(getPlayerName(g.player))
             elif prompt == getKey(g, "game__gui_drsavequit").toLowerAscii:
                 saveGame(g)
                 resetGameData(g)

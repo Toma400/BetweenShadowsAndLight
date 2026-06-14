@@ -8,6 +8,7 @@ import std/tables
 import parsetoml
 import player
 import game
+import item
 
 proc toTable (o: object): OrderedTable =
   for name, val in fieldPairs(o):
@@ -25,6 +26,15 @@ proc listSaves* (): seq[string] =
 proc saveExists* (nm: string): bool =
     return nm in listSaves()
 
+# empty checks so that TOML never has empty seq, but recognises it during load
+proc initEmpty*  (): string =
+    return "\"<>\"" # signifies empty seq
+proc resetEmpty* (s: var string) =
+    if s[0..3] == "\"<>\"": s[0..3] = ""
+proc isEmpty* (t: TomlValueRef): bool =
+    if getStr(t) == "<>": return true
+    return false
+
 proc saveGame* (g: Game) =
     let nm = getPlayerName(g.player) # used for pathing
     if not dirExists(fmt"saves/{nm}"):
@@ -40,10 +50,11 @@ proc saveGame* (g: Game) =
         close(mf)
     block StatsFile:
         let sf = open(fmt"saves/{nm}/stats.toml", fmWrite)
-        var vs = "" # global variables list
+        var vs = initEmpty() # global variables list
         for v in Variable.low..Variable.high:
           if checkVariable(g.player, v):
-            vs.add($v & ",\n")
+            resetEmpty(vs)
+            vs.add(&"\"{$v}\"" & ",\n")
         sf.write(fmt"""
         level  = {getLevel(g.player)}
         xp     = {getExperience(g.player)}
@@ -67,33 +78,42 @@ proc saveGame* (g: Game) =
         close(sf)
     block InventoryFile:
         let ef = open(fmt"saves/{nm}/inventory.toml", fmWrite)
-        var ev = "" # inventory list
+        var ev = initEmpty() # inventory list
+        var ch = ""          # chests list
         for it in getInventory(g.player):
-            ev.add(it & ",\n")
+            resetEmpty(ev)
+            ev.add(&"\"{it}\"" & ",\n")
+        for chest_id, chest_content in CHESTS.pairs():
+            var chinv = $chest_content[1]; chinv = chinv[1..len(chinv) - 1] # cuts `@` from seq string repr so it works with TOML
+            add(ch, &"{chest_id} = " & "{ " & fmt"lock = {chest_content[0]}, inventory = {chinv}" & " }\n")
         ef.write(fmt"""
         bank      = {g.player.bank}
         money     = {g.player.money}
         ammo      = {g.player.ammo}
         arrows    = {g.player.arrows}
         lockpicks = {g.player.lockpicks}
-        weapon    = {g.player.weapon}
+        weapon    = "{g.player.weapon}"
         inventory = [
             {ev}]
         [armour]
-        chest     = {g.player.armour.chest}
+        chest     = "{g.player.armour.chest}"
+        [chests]
+        {ch}
         """.unindent())
         close(ef)
     block QuestFile:
         let qf = open(fmt"saves/{nm}/quests.toml", fmWrite)
-        var qs = "" # quests started list
-        var qd = "" # quests done list
-        var tm = "" # timers list
+        var qs = initEmpty() # quests started list
+        var qd = initEmpty() # quests done list
+        var tm = ""          # timers list
         for q in getActiveQuests(g.player):
-            add(qs, $q & ",\n")
+            resetEmpty(qs)
+            add(qs, &"\"{$q}\"" & ",\n")
         for q in getFinishedQuests(g.player):
-            add(qd, $q & ",\n")
+            resetEmpty(qd)
+            add(qd, &"\"{$q}\"" & ",\n")
         for t in Timer.low..Timer.high:
-            add(tm, fmt"{t} = [{isTimerStarted(g.player, t)}, {getTimerCountDownValue(g.player, t)}]" & "\n")
+            add(tm, &"{t} = " & "{ " & fmt"start = {isTimerStarted(g.player, t)}, count = {getTimerCountDownValue(g.player, t)}" & " }\n")
         qf.write(fmt"""
         mq_progress = {getMainQuestProgress(g.player)}
         quests_started = [
@@ -120,6 +140,18 @@ proc loadGame* (nm: string): Game =
     #       by combat bc then item properties are used!)
     # TODO: `armour_hp` as above - does it reset each time you take off armour?
     #        is it battle only thing? (resets after battle?) how to approach this?
+    block ChestRefill:
+        CHESTS = CHESTS_PREFAB # ensures saves' compatibility in case of new chests across saves
+        # overwriting of known contents
+        for chest_id in getTable(ef["chests"]).keys():
+            let chest_data  = getTable(ef["chests"][chest_id])
+            var chest_items = newSeq[string]()
+            for toml_item in getElems(chest_data["inventory"]):
+                add(chest_items, getStr(toml_item))
+            CHESTS[parseEnum[Chest](chest_id)] = (
+                getInt(chest_data["lock"]),
+                chest_items
+            )
     block PlayerBuilder:
         # stats
         result.player = newPlayer(name   = nm,
@@ -174,6 +206,7 @@ proc loadGame* (nm: string): Game =
             result.player.mp     = getInt(sf["mp"])
             result.player.sp     = getInt(sf["sp"])
             for tv in getElems(sf["global_variables"]):
+                if isEmpty(tv): break # skips empty list
                 addVariable(result.player, parseEnum[Variable](tv.getStr()))
             result.player.pwr_magic = getInt(sf["powers"]["magic"])
             result.player.pwr_tech  = getInt(sf["powers"]["tech"])
@@ -185,7 +218,8 @@ proc loadGame* (nm: string): Game =
             result.player.ammo      = getInt(ef["ammo"])
             result.player.arrows    = getInt(ef["arrows"])
             result.player.lockpicks = getInt(ef["lockpicks"])
-            for ti in getElems(sf["inventory"]):
+            for ti in getElems(ef["inventory"]):
+                if isEmpty(ti): break # skips empty list
                 addItemToInventory(result.player, ti.getStr())
             result.player.weapon = getStr(ef["weapon"])
             result.player.armour = (
@@ -194,9 +228,11 @@ proc loadGame* (nm: string): Game =
         block SetQuests:
             setMainQuestProgress(result.player, getInt(qf["mq_progress"]))
             for q in getElems(qf["quests_started"]):
+                if isEmpty(q): break # skips empty list
                 pureAddQuest(result.player, parseEnum[Quest](q.getStr()))
             for q in getElems(qf["quests_done"]):
+                if isEmpty(q): break # skips empty list
                 pureAddQuestDone(result.player, parseEnum[Quest](q.getStr()))
             for t in getTable(qf["timers"]).keys():
-                let tdata = getElems(qf["timers"][t])
-                setTimer(result.player, parseEnum[Timer](t), getBool(tdata[0]), getInt(tdata[1]))
+                let tdata = getTable(qf["timers"][t])
+                setTimer(result.player, parseEnum[Timer](t), getBool(tdata["start"]), getInt(tdata["count"]))

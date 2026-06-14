@@ -72,7 +72,12 @@ proc resetGameData* (g: Game) =
     CHESTS     = CHESTS_PREFAB # and that all chests have their contents resetted
 
 proc `$`* (g: Game): string =
-    return $g.player
+    return fmt"""
+    Menu:     {$g.menu}
+    Location: {$g.location}
+    Player:
+    {$g.player}
+    """
 
 proc isRunning* (g: Game): bool =
     return g.run

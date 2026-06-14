@@ -104,7 +104,7 @@ const ITEMS* = { # ID : object
     "chainmail_broken" : Item(weight: 1, defence: 0, health:  0),                   # uszkodzona kolczuga
     # --- SCROLLS ---
     "scroll_heal"     : Item(weight: 0, use: UNIQUE), # zwój uzdrowienia   | MP-10, HP+??? // prob usable whenever, but including fight?
-    "scroll_fireball" : Item(weight: 0, use: BATTLE), # zwój ognistej kuli | A=18, MP-32 // I can guess also only usable in fight
+    "scroll_fireball" : Item(weight: 0, use: BATTLE), # zwój ognistej kuli | A=18, MP-32   // I can guess also only usable in fight
     # --- MAGIC WEAPONS ---
     # new ones need to be added to -STAFFS- const to be used correctly; also add implementation to `battle.spell` proc's switch
     "staff_fire"  : Item(weight: 1, weapon: MAGIC), # kostur ognia
