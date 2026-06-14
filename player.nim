@@ -99,7 +99,7 @@ type
     attrs  : Attributes
     skills : Skills
     msg    : seq[string]   # seq of keys, printed by Game object
-    vars   : seq[Variable]
+    vars   : seq[Variable] # global variables
     # other values | max values are editable by procs for explicitness
     level  : int
     hp*    : int # health
@@ -462,6 +462,19 @@ proc resetTimer* (p: Player, tim: Timer) = # ends countdown
                      counter    : 0)
 
 proc processStatistics* (p: Player) =
+    # UPDATES | need to be first, so that later correct value is used against
+    # max value updates
+    p.hp_max     = calculateMaxHealth(p)
+    p.mp_max     = calculateMaxMana(p)
+    p.sp_max     = SP_MAX
+    p.weight_max = calculateMaxWeight(p)
+    # limiters
+    if p.pwr_magic > 20: p.pwr_magic = 20
+    if p.pwr_tech  > 20: p.pwr_tech  = 20
+    if p.pwr_conn  > 20: p.pwr_conn  = 20
+    if p.pwr_chaos > 20: p.pwr_chaos = 20
+    # level up removed from here because circular imports, moved to body
+
     # TIREDNESS
     p.sp -= 1 # crazy how little this is
     if p.weight > p.weight_max:
@@ -480,19 +493,6 @@ proc processStatistics* (p: Player) =
         p.hp -= 3 * p.poison # OG does inflict -3 no matter the poisoning strength
     # GLOBAL
     p.bank = calculateBankValue(p.bank)
-
-    # UPDATES
-    # max value updates
-    p.hp_max     = calculateMaxHealth(p)
-    p.mp_max     = calculateMaxMana(p)
-    p.sp_max     = SP_MAX
-    p.weight_max = calculateMaxWeight(p)
-    # limiters
-    if p.pwr_magic > 20: p.pwr_magic = 20
-    if p.pwr_tech  > 20: p.pwr_tech  = 20
-    if p.pwr_conn  > 20: p.pwr_conn  = 20
-    if p.pwr_chaos > 20: p.pwr_chaos = 20
-    # level up removed from here because circular imports, moved to body
 
     countDownTimers(p)
 
@@ -602,9 +602,10 @@ proc sleep* (p: Player) =
     for tim in Timer.low..Timer.high:
         resetTimer(p, tim)
 
-proc isQuestActive*   (p: Player, quest: Quest): bool = return quest in p.quests
-proc isQuestFinished* (p: Player, quest: Quest): bool = return quest in p.quests_done
-proc getActiveQuests* (p: Player): seq[Quest]         = return p.quests
+proc isQuestActive*     (p: Player, quest: Quest): bool = return quest in p.quests
+proc isQuestFinished*   (p: Player, quest: Quest): bool = return quest in p.quests_done
+proc getActiveQuests*   (p: Player): seq[Quest]         = return p.quests
+proc getFinishedQuests* (p: Player): seq[Quest]         = return p.quests_done
 
 proc startQuest* (p: Player, quest: Quest, repeatable: bool = false): bool =
     # returns whether quest can be done
@@ -821,3 +822,15 @@ proc lock* (p: Player, lockpower: int): bool =
             p.lockpicks -= 1
             addMessage(p, "game__lock_fail")
             return false
+
+# save-specific getters, not for regular game use
+proc getSvAttributes*  (p: Player): Attributes   = return p.attrs
+proc getSvSkills*      (p: Player): Skills       = return p.skills
+proc setSvLevel*       (p: var Player, n: int)   = p.level  = n
+proc setSvExperience*  (p: var Player, n: int)   = p.xp     = n
+proc setSvPoison*      (p: var Player, n: int)   = p.poison = n
+proc pureAddQuest*     (p: var Player, q: Quest) = add(p.quests, q)
+proc pureAddQuestDone* (p: var Player, q: Quest) = add(p.quests_done, q)
+proc setTimer* (p: Player, tim: Timer, val: bool, count: int) =
+    p.timers[tim] = (is_started : val,
+                     counter    : count)

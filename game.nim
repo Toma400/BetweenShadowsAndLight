@@ -390,3 +390,7 @@ proc WAITING_FOR_IMPLEMENTATION* () = discard # used so that I know points of th
 
 proc exitGame* (g: Game) =
     g.run = false
+
+# save-specific procs, not to be used outside of that context
+proc setRunning* (g: Game) =
+    g.run = true

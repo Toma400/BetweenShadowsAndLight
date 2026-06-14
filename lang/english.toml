@@ -11,6 +11,11 @@ menu__enabled  = "Enabled"
 menu__disabled = "Disabled"
 menu__set_note = "Write language name or [%TUT] to switch. Press Enter to come back to menu."
 
+# Save - load
+load__info    = "Load game by entering number of respective save. If number is preceded by minus sign, the save will be deleted. Press Enter to come back to menu."
+load__deleted = "Successfully deleted saved character:"
+load__loaded  = "Successfully loaded game:"
+
 # Tutorials - general
 game__tut_1  = "Welcome in Between Shadows and Light! This tutorial will guide you through game's interface."
 game__tut_2  = "First step in the game is creating a character - it is quite important aspect, but you don't need to stress if you don't know what focus to take. The game was made in a way that should let you end it smoothly no matter what choices you take."

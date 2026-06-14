@@ -1,3 +1,4 @@
+import std/strformat
 import std/strutils
 import std/tables
 import mechanics
@@ -7,6 +8,7 @@ import location
 import battle
 import player
 import quest
+import saves
 import lang
 import item
 import init
@@ -29,14 +31,43 @@ while isRunning(g):
             if prompt.toLowerAscii in [getKey(g, "menu__start").toLowerAscii]:
                 switchMenu(g, mDEFAULT)
             elif prompt.toLowerAscii in [getKey(g, "menu__load").toLowerAscii]:
-                discard
+                switchMenu(g, LOAD)
             elif prompt.toLowerAscii in [getKey(g, "menu__settings").toLowerAscii]:
                 switchMenu(g, SETTINGS)
             elif prompt.toLowerAscii in [getKey(g, "menu__quit").toLowerAscii, "q"]:
                 exitGame(g)
+
         of LOAD:
-            switchMenu(g, mDEFAULT) # this should eventually happen after successful load
-            # you set g.player object etc. of course
+            let saves = listSaves()
+            echo getKey(g, "load__info") # info how to load or delete
+            for ix, save in saves.pairs():
+                echo fmt"[{ix + 1}] {save}"
+            let prompt = readLine(stdin)
+            if len(prompt) > 0: # if anything was written
+                if prompt[0] == '-': # deletion
+                  try:
+                    let deleted_save = parseInt(prompt[1..len(prompt)-1])
+                    if deleted_save > 0 and deleted_save <= len(saves): # available option
+                      removeDir(fmt"saves/{saves[deleted_save - 1]}")
+                      echo getKey(g, "load__deleted") & saves[deleted_save - 1]
+                      waitForPlayer()
+                      # returns to load menu
+                    else: continue # out of range
+                  except: continue # resets menu if not pure int
+                else: # loading
+                  try:
+                    let loaded_save = parseInt(prompt)
+                    if loaded_save > 0 and loaded_save <= len(saves): # available option
+                      g = loadGame(saves[loaded_save - 1])
+                      echo getKey(g, "load__loaded") & saves[loaded_save - 1]
+                      waitForPlayer()
+                      switchMenu(g, mDEFAULT)
+                      # goes to the game
+                    else: continue # out of range
+                  except: continue # resets menu if not pure int
+            else:
+                switchMenu(g, START) # enter makes us back to previous menu
+
         of mDEFAULT:
             # tuple used for creating character, in case one isn't made yet
             var player_tuple = (
@@ -292,9 +323,12 @@ while isRunning(g):
                 waitForPlayer()
                 continue
             elif prompt == getKey(g, "game__gui_drsave").toLowerAscii:
-                continue; WAITING_FOR_IMPLEMENTATION()
+                saveGame(g)
+                g = loadGame(getPlayerName(g.player))
             elif prompt == getKey(g, "game__gui_drsavequit").toLowerAscii:
-                continue; WAITING_FOR_IMPLEMENTATION()
+                saveGame(g)
+                resetGameData(g)
+                switchMenu(g, START)
             elif prompt == getKey(g, "game__gui_drquit").toLowerAscii:
                 resetGameData(g)
                 switchMenu(g, START)

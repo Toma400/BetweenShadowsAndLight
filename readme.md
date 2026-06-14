@@ -16,7 +16,7 @@ in nothing except being located in the same area.
 
 ### Remake
 That's why I decided to start writing a remake - a proper, terminal
-version, like the BSaL from seven years ago.  
+version, like the BSaL from seven years ago.
 It is meant to preserve almost every of original's quirks, but
 improve its code quality, make it crash-free and fix the more
 important bugs. And, most importantly, provide English version, so

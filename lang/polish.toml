@@ -11,6 +11,11 @@ menu__enabled  = "Włączony"
 menu__disabled = "Wyłączony"
 menu__set_note = "Wpisz nazwę języka lub [%TUT] by przełączyć. Kliknij Enter by wrócić do menu."
 
+# Save - load
+load__info    = "Załaduj grę przez wpisanie numeru odpowiedniego zapisu. Możesz usunąć zapis przez wpisanie minusa przed numerem zapisu. Kliknij Enter by wrócić do menu."
+load__deleted = "Usunięto zapis gry dla postaci:"
+load__loaded  = "Załadowano grę:"
+
 # Tutorials - general
 game__tut_1  = "Witaj w grze Between Shadows and Light! Tutorial ten będzie Cię prowadził po meandrach interfejsu - jest on pisany dość bogato w zawartość, jednak mam nadzieję, że nie spowoduje to chaosu."
 game__tut_2  = "Pierwszym elementem gry jest stworzenie postaci, stąd za chwilę do tego przejdziemy - jest to dość istotna kwestia, jednak nie musisz się stresować, gdy nie wiesz, co dokładnie zrobić: gra stara się być tak dostosowana, by gracz z dowolnymi statystykami mógł ją względnie miło ukończyć."
