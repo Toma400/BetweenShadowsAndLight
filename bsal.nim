@@ -318,6 +318,7 @@ while isRunning(g):
                 continue
             elif prompt == getKey(g, "game__gui_drsave").toLowerAscii:
                 saveGame(g)
+                switchMenu(g, mDEFAULT)
             elif prompt == getKey(g, "game__gui_drsavequit").toLowerAscii:
                 saveGame(g)
                 resetGameData(g)

@@ -95,7 +95,9 @@ proc equip (g: Game) =
             if p notin equippable: continue
             else:
                 echo getKey(g, "game__gui_inv_used") & ": " & getKey(g, "item__" & inventory[p-1]) # goes first bc `equip` removes item later
-                discard equip(g.player, p-1) # shouldn't throw false due to `equippable` check
+                let res = equip(g.player, p-1) # `equippable` check covers type, but can still yield false if slot is used
+                if res == false: # slot used
+                    echo getKey(g, "game__gui_inv_usedfl")
                 waitForPlayer()
         except ValueError: continue
 
@@ -205,4 +207,43 @@ proc fightInventory* (g: Game) =
             of "2": equip(g)
             of "3": deequip(g)
             of "4": break
-            else: return # loops back
+            else: continue # loops back
+
+proc specialInventory* (g: Game) =
+    # variant of `fightInventory` for explosives and scrolls
+    while true:
+        echo getKey(g, "game__gui_health") & ": " & $g.player.hp & " / " & $getMaxHealth(g.player)
+        echo getKey(g, "game__gui_mana")   & ": " & $g.player.mp & " / " & $getMaxMana(g.player)
+        echo getKey(g, "game__gui_attack")  & ": " & $getAttack(g.player)
+        echo getKey(g, "game__gui_defence") & ": " & $getDefence(g.player) & " (" & $getArmourHealthPercent(g.player.armour.chest, g.player.armour_hp) & "%)"
+                  # NOTE -- the above `player.armour.chest` ^^^ would need to be overhauled if we add more armour types
+        echo DIVIDER
+        let inventory     = getInventory(g.player)      # only use for reading
+        let id_transcript = newOrderedTable[int, int]() # relative printed index -- inventory index
+        var count         = 0
+        var used_item     = 0 # default (unreachable) value
+        for ix, it in inventory.pairs():
+            if ITEMS[it].use == BATTLE or it in ["scroll_heal"]:
+                count += 1 # set before so that
+                id_transcript[count] = ix
+        for ix in id_transcript.keys():
+            echo getOptionKey(g, "item__" & inventory[ix], ix)
+
+        if count > 0: # any item is available at all
+            echo getKey(g, "game__combat_thruse")
+            let prompt = readLine(stdin)
+            if prompt == "": break
+            else:
+              try:
+                  used_item = parseInt(prompt)
+                  if used_item notin 1..count:
+                      continue # loops back?
+              except: continue # loops back
+        else:
+            echo getKey(g, "game__combat_thrnone")
+            waitForPlayer()
+            break
+        #(if "scroll" in ID) -- check for magic/tech etc.
+
+        # use of the item (check for used_item != 0 doesn't needed, resolved above)
+        let inv_index = id_transcript[used_item]

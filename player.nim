@@ -710,11 +710,16 @@ proc equip* (p: Player, item_index: int): bool =
     let item_str = p.inv[item_index]
     let item     = ITEMS[item_str]
     if item.weapon != NOT_WEAPON:
+        if p.weapon != "": return false # slot in use
         p.weapon = item_str
     elif item.wearable != NOT_WEARABLE:
         case item.wearable: # do not use 'else', it's meant to err with new armour types [!]
           of NOT_WEARABLE: discard # never reached
-          of aCHEST: p.armour.chest = item_str; p.armour_hp = item.health; p.defence = item.defence
+          of aCHEST:
+              if p.armour.chest != "": return false # slot in use
+              p.armour.chest = item_str
+              p.armour_hp    = item.health
+              p.defence      = item.defence
           # the above would need refactoring if more armour types are to be added
     else: result = false
     if result == true:
