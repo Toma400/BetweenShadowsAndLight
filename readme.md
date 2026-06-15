@@ -48,7 +48,8 @@ for me to make new version just to add it.
 ### Differences
 - Added language support
 - Disabled ormath shaman as somewhat difficult to implement class bringing no real value
-- Adjusted race names to revised lore (human -> baedoorian, nord -> vindean, saphtri -> pahtri (due to description))
+- Adjusted race names to revised lore (human -> baedoorian, nord -> vindean, saphtri -> pahtri
+  (due to description, but also fitting Ansur vicinity much more))
 - Added gunpowder to registry, as an item only partially introduced in OG (not foundable
   however, it will be implemented in 1.2+)
 - Added unique options to docked ship, since OG haven't made any explicit changes, resulting
@@ -62,7 +63,8 @@ for me to make new version just to add it.
   but use default fist damage (modeled after how standard attack does it for ranged weapons)
 - Cheats slightly changed
   - You can't go back to abandoned island after going to Evros
-  - You can heal yourself during the fight
+  - Cheat allowing you to see game information was removed
+  - Added some new cheats for combat
 - Poisoning has levels that inflict stronger penalties (based on OG using `int` type for
   poisoning instead of bool)
   - To bring the point home, antidotes are also leveled
@@ -74,8 +76,12 @@ for me to make new version just to add it.
     lore and keeping scope to Ansur only
   - Raised TG quest experience reward to 20 due to the quest being fairly difficult
   - Made TG recommendation letter description, as it was lacking in OG
+- Small changes to combat
+  - Using explosives or scrolls limits your choice only to see relevant items, making
+    it distinct from picking up inventory itself
 
 ### New features (1.2+ version)
+The list here is more of loose planning than anything concrete until 1.2 version is out.
 - if not available already: trading would improve trade skill, and trade skill would
   lower the prices?
 - decrease level cap? (100 xp for second level is ridiculous)
@@ -127,14 +133,10 @@ for me to make new version just to add it.
       level remains the same - makes little sense to up its level here
 
 ### New cheats systematised (to be transferred to BE)
-- `cheat` in main menu transports you out of tutorial and gives some resources
-  (to be replaced later)
+- `cheat` in main menu transports you out of tutorial and gives some money
 - combat
   - `heal` - heals you to maximum health
   - `kill` - kills enemy immediately
 
 ### Lore notes (to be transferred to BE and removed from here)
-- "Pod Złotym Szczurem" (Under Golden Rat) tavern in Evros
-- "Magiczny Wywar" (Magical Brew) shop in Evros (potentially one of FotB initial members?)
-- Sailor's name is Sam
 - (website) 29.7.18 - new version

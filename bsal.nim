@@ -5,6 +5,7 @@ import mechanics
 import dialogues
 import inventory
 import location
+import cheats
 import battle
 import player
 import quest
@@ -112,15 +113,8 @@ while isRunning(g):
                 let prompt = readLine(stdin)
                 if prompt.toLowerAscii in conv:
                     switchMenu(g, conv[prompt.toLowerAscii])
-                elif prompt == "cheat": # cheat menu, but not the right one
-                    g.player.money += 150
-                    addItemToInventory(g.player, "wood")
-                    addItemToInventory(g.player, "chainmail_broken")
-                    addItemToInventory(g.player, "iron")
-                    addItemToInventory(g.player, "water_cooked")
-                    addItemToInventory(g.player, "hyerbitus")
-                    changeLocation(g, EVROS)
-                    WAITING_FOR_IMPLEMENTATION() # todo: make it cheat screen, like in OG
+                elif prompt == "cheat":
+                    cheatSkip(g)
 
         of SETTINGS:
             echo getKey(g, "menu__langcur") & " " & getKey(g, "menu__lang")

@@ -1,5 +1,6 @@
 import std/tables
 import mechanics
+import cheats
 import player
 import game
 import item
@@ -25,11 +26,7 @@ proc processDialogue* (g: Game) =
                     of "cheat": addDialogueVariable(g.player, "cheat") # branches flow
                     else:       return
             else:
-                echo getKey(g, "loc__ship_captain_cheat1")
-                changeLocation(g, DESERTED_ISLAND)
-                waitForPlayer()
-                echo getKey(g, "loc__ship_captain_cheat2")
-                waitForPlayer()
+                cheatCaptain(g)
                 endDialogue(g, mDEFAULT)
 
         of CAPTAIN_DOCKED:
