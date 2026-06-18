@@ -682,16 +682,7 @@ proc use* (p: Player, item_index: int): bool =
                 p.hp += 8
                 p.sp -= 15
             of "scroll_heal":
-                if p.mp < 10:
-                    consumed = false
-                    addMessage(p, "game__warn_mana")
-                elif p.pwr_tech > 10:
-                    consumed = false
-                    addMessage(p, "game__warn_tech")
-                else:
-                    p.mp -= 10
-                    p.hp += 20
-                    addMessage(p, "item__generic_heal")
+                consumed = magicUse(10, 20, "item__generic_heal")
             of "water":
                 p.sp += 15
                 p.hp += 3*getSurvival(p)

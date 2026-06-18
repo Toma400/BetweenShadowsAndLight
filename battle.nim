@@ -201,7 +201,7 @@ proc fight (g: Game, enemy: Enemy): FightOutcome =
                 else: # correct option
                     spell(g, att_value)
             of "8":
-                discard; WAITING_FOR_IMPLEMENTATION() # SOME SPECIAL EQUIPMENT CHOISE????
+                specialInventory(g, att_value)
             of "9":
                 fightInventory(g)
                 att_value = 0                # no attack this turn

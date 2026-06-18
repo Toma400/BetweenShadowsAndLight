@@ -39,6 +39,7 @@ type
     # if NOT_CONSUMABLE, it can't be used by player
     use*      : ConsumableType
     #value*  : int  # default value! traders set this separately
+    scroll*   : tuple[cost, hp, att: int, msg: string]
   SpecialItem* = enum
     COIN   = "coin"
     LOCK   = "lock"
@@ -103,8 +104,8 @@ const ITEMS* = { # ID : object
     "chainmail"        : Item(weight: 1, defence: 6, health: 50, wearable: aCHEST), # kolczuga
     "chainmail_broken" : Item(weight: 1, defence: 0, health:  0),                   # uszkodzona kolczuga
     # --- SCROLLS ---
-    "scroll_heal"     : Item(weight: 0, use: UNIQUE), # zwój uzdrowienia   | MP-10, HP+??? // prob usable whenever, but including fight?
-    "scroll_fireball" : Item(weight: 0, use: BATTLE), # zwój ognistej kuli | A=18, MP-32   // I can guess also only usable in fight
+    "scroll_heal"     : Item(weight: 0, scroll: (10, 20,  0, "item__generic_heal"), use: UNIQUE), # zwój uzdrowienia   // prob usable whenever, but including fight?
+    "scroll_fireball" : Item(weight: 0, scroll: (32,  0, 18, "item__fireball_use"), use: BATTLE), # zwój ognistej kuli // I can guess also only usable in fight
     # --- MAGIC WEAPONS ---
     # new ones need to be added to -STAFFS- const to be used correctly; also add implementation to `battle.spell` proc's switch
     "staff_fire"  : Item(weight: 1, weapon: MAGIC), # kostur ognia

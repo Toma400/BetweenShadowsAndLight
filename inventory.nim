@@ -4,6 +4,30 @@ import player
 import game
 import item
 
+proc magicUse* (p: Player, mp_cost, hp_change, att_value: int, succ_msg: string, att_var: var int = 0): bool =
+      # checks if possible to use item (respectively to pwr_magic)
+      result = true # default, overwritten later
+      if p.mp < mp_cost:
+          result = false
+          addMessage(p, "game__warn_mana")
+      elif p.pwr_tech > 10:
+          result = false
+          addMessage(p, "game__warn_tech")
+      else:
+          p.mp    -= mp_cost
+          p.hp    += hp_change
+          att_var  = att_value
+          addMessage(p, succ_msg)
+
+proc techUse* (g: Game, att_value: int, att_var: var int): bool =
+    # checks if possible to use item (respectively to pwr_tech)
+    result = true # default, overwritten later
+    if p.pwr_magic > 10:
+        result = false
+        addMessage(p, "game__warn_magic")
+    else:
+        att_var  = att_value
+
 proc info (g: Game) =
     let inventory = getInventory(g.player)
     var avail_nb  = newSeq[int]() # allows for type checks (no books)
@@ -209,7 +233,7 @@ proc fightInventory* (g: Game) =
             of "4": break
             else: continue # loops back
 
-proc specialInventory* (g: Game) =
+proc specialInventory* (g: Game, att_value: var int) =
     # variant of `fightInventory` for explosives and scrolls
     while true:
         echo getKey(g, "game__gui_health") & ": " & $g.player.hp & " / " & $getMaxHealth(g.player)
@@ -243,7 +267,20 @@ proc specialInventory* (g: Game) =
             echo getKey(g, "game__combat_thrnone")
             waitForPlayer()
             break
-        #(if "scroll" in ID) -- check for magic/tech etc.
 
         # use of the item (check for used_item != 0 doesn't needed, resolved above)
         let inv_index = id_transcript[used_item]
+        let item_id   = getInventory()[inv_index]
+        if "scroll_" in item_id: # works for all BATTLE scrolls & UNIQUE ones
+            let data = ITEMS[item_id].scroll
+            if magicUse(data.cost, data.hp, data.att, data.msg, att_value):
+                removeItemFromInventory(g.player, inv_index)
+        elif ITEMS[item_id].use == BATTLE: # all non-scroll items (e.g. dynamite)
+            let data = ITEMS[item_id]
+            if techUse(data.attack, att_value):
+                removeItemFromInventory(g.player, inv_index)
+        else: continue # ???? should not happen???
+
+        for msg in getMessages(g): # these should be read here bc it doesn't happen in battle menu
+            echo msg
+        break
