@@ -636,6 +636,30 @@ proc removeItemFromInventory* (p: Player, item_str: string): bool =
 proc removeItemFromInventory* (p: Player, item_index: int) =
     p.inv.delete(item_index)
 
+proc magicUse* (p: Player, mp_cost, hp_change, att_value: int, succ_msg: string, att_var: var int): bool =
+      # checks if possible to use item (respectively to pwr_magic)
+      result = true # default, overwritten later
+      if p.mp < mp_cost:
+          result = false
+          addMessage(p, "game__warn_mana")
+      elif p.pwr_tech > 10:
+          result = false
+          addMessage(p, "game__warn_tech")
+      else:
+          p.mp    -= mp_cost
+          p.hp    += hp_change
+          att_var  = att_value
+          addMessage(p, succ_msg)
+
+proc techUse* (p: Player, att_value: int, att_var: var int): bool =
+    # checks if possible to use item (respectively to pwr_tech)
+    result = true # default, overwritten later
+    if p.pwr_magic > 10:
+        result = false
+        addMessage(p, "game__warn_magic")
+    else:
+        att_var  = att_value
+
 proc use* (p: Player, item_index: int): bool =
     result       = true # to be overwritten
     var consumed = true # to be overwritten if not
@@ -681,8 +705,10 @@ proc use* (p: Player, item_index: int): bool =
             of "beer":
                 p.hp += 8
                 p.sp -= 15
-            of "scroll_heal":
-                consumed = magicUse(10, 20, "item__generic_heal")
+            of "scroll_heal": # technically can work for any UNIQUE scroll
+                let data = item.scroll
+                var nah  = 0  # placeholder because there's no attack in inventory lol
+                consumed = magicUse(p, data.cost, data.hp, data.att, data.msg, nah)
             of "water":
                 p.sp += 15
                 p.hp += 3*getSurvival(p)
