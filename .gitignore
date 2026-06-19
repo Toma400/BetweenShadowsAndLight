@@ -4,8 +4,3 @@ rcedit-x64.exe
 .zed
 __pycache__
 saves/
-
-# old files
-items.py
-player.py
-test.atod

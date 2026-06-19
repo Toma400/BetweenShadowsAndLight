@@ -516,6 +516,7 @@ proc processDialogue* (g: Game) =
                             waitForPlayer()
                         else:
                             printMessages(g) # says you don't have enough money
+                            waitForPlayer()
                         removeDialogueVariable(g.player, "bullets")
                     of "2": removeDialogueVariable(g.player, "bullets")
                     else: return

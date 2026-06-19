@@ -7,9 +7,7 @@ import item
 const SMITHING_RECIPES* : Table[int, Table[string, seq[tuple[id: string, amount: int]]]] = { # first int is smithing level
     # level 0 is ommited, as it doesn't allow you to smith in OG
     1: {
-        "rapier": @[("wood", 1), ("iron", 1)],
-        #"bullet": @[("gunpowder", 1)], --> 15
-        #"arrow":  @[("wood", 1)], --> 15
+        "rapier": @[("wood", 1), ("iron", 1)]
     }.toTable,
 }.toTable
 
@@ -276,29 +274,6 @@ proc banking* (g: Game) =
                 MODE = 0
             except ValueError: continue
 
-#       elif smithing > 1:
-#         print ("[1][RAPIER][Żelazo, Drewno]")
-#         print ("[2][POCISK -15-][Proch]")
-#         print ("[3][STRZAŁA -15-][Drewno]")
-#       i_will_smith = input ("\nWpisz numer broni, którą chcesz stworzyć")
-#       elif i_will_smith == "2":
-#         if "Proch" in equip:
-#           throw_it = "Proch"
-#           inventory(6)
-#           eq_ammo += 15
-#           sp -= 15
-#         else:
-#           print ("Brakuje Ci surowca!")
-#       elif i_will_smith == "3":
-#         if "Drewno" in equip:
-#           throw_it = "Drewno"
-#           inventory(6)
-#           eq_arrows += 15
-#           sp -= 15
-#       else:
-#         "Podałeś zły numer"
-#
-
 proc cooking* (g: Game, pot: bool) =
     # pot variable decides whether we can roast something
     var MODE = 0 # 1 = roasting, 2 = boiling, 3/4 = adding to the fire/pot
@@ -411,71 +386,3 @@ proc cooking* (g: Game, pot: bool) =
                     POT.add(getInventory(g.player)[p - 1])
                     removeItemFromInventory(g.player, p - 1)
             except ValueError: continue
-
-# def cooking(cook_fry):
-#   #cook_fry: 1-ognisko, 2-ognisko z garnkiem
-#   global temp_chest
-#   global equip
-#   global sp
-#   global taken_item
-#   global throw_it
-#   if tutorial_system == 1:
-#     print (">> Gotowanie i pieczenie to nie lada sztuka, a odpowiednie składniki w rękach dobrego kucharza mogą zdziałać cuda. W grze możesz wybierać między gotowaniem a pieczeniem - zależnie, czy jesteś jedynie przy ognisku, czy może jest przy nim garnek. Z kolei gdy włączysz którąkolwiek z opcji, zasada jest podobna - kładąc odpowiednie składniki na 'szali', możesz je ugotować lub upiec, by służyły Ci lepiej. Z reguły rzeczy upieczone są smaczniejsze i lepiej leczą, z kolei zaś ugotowana woda daje Ci możliwości wykorzystania ziół, i nie zatrucia się przy okazji <<")
-#   print ("[1] Upiecz coś")
-#   if cook_fry == 2:
-#     print ("[2] Ugotuj coś")
-#   print ("[3] Odejdź")
-#   local = input("")
-#   if local == "1":
-#     temp_chest = []
-#     if tutorial_system == 1:
-#       print (">> Dość istotna uwaga: piec możesz jedną rzecz naraz. Nie kładź więc do upieczenia więcej niż jedną rzecz, gdyż możesz stracić niepotrzebnie to, co chciałeś upiec. Nie bez kozery mówi się, że 'upiec dwie pieczenie na jednym ogniu' to sztuka - sztuka raczej niedostępna wielu <<")
-#     while True:
-#       print ("\n----------------------------------")
-#       print ("Używane składniki:",temp_chest)
-#       print ("\n[1] Dodaj/weź składnik \n[2] Spróbuj upiec składnik \n[3] Odejdź")
-#       local2 = input ("")
-#       print ("\n")
-#       sp -= 5
-#       if local2 == "1":
-#         chests(0,0)
-#       elif local2 == "2":
-#         if "Szczurze Mięso" in temp_chest:
-#           print ("Upiekłeś szczurze mięso!")
-#           taken_item = "Pieczone Szczurze Mięso"
-#           inventory(5)
-#           xp_add (5)
-#           temp_chest = []
-#         else:
-#           print ("Niestety, nie udało się nic upiec!")
-#           temp_chest = []
-#       else:
-#         break
-#     pass
-#   elif local == "2":
-#     temp_chest = []
-#     while cook_fry == 2:
-#       print ("\n----------------------------------")
-#       print ("Używane składniki:",temp_chest)
-#       print ("\n[1] Dodaj/weź składniki \n[2] Spróbuj ugotować składniki \n[3] Odejdź")
-#       local3 = input ("")
-#       print ("\n")
-#       sp -= 5
-#       if local3 == "1":
-#         chests(0,0)
-#       elif local3 == "2":
-#         #woda na samym końcu!! [by nie gotować wody zawsze przy zupach]
-#         if "Woda" in temp_chest:
-#           print ("Ugotowałeś wodę")
-#           taken_item = "Podgrzana Woda"
-#           inventory(5)
-#           temp_chest = []
-#           xp_add (2)
-#         else:
-#           print ("Niestety, nie udało się nic ugotować!")
-#           temp_chest = []
-#       else:
-#         break
-#     pass
-#   else:
-#     pass

@@ -104,11 +104,17 @@ while isRunning(g):
                 for msg in getMessages(g):
                     echo msg
                 let conv = {
-                    getKey(g, "game__gui_character").toLowerAscii : mCHARACTER,
-                    getKey(g, "game__gui_inventory").toLowerAscii : mINVENTORY,
-                    getKey(g, "game__gui_location").toLowerAscii  : mLOCATION,
-                    getKey(g, "game__gui_map").toLowerAscii       : mMAP,
-                    getKey(g, "game__gui_diary").toLowerAscii     : mDIARY
+                    getKey(g, "game__gui_character").toLowerAscii    : mCHARACTER,
+                    getKey(g, "game__gui_inventory").toLowerAscii    : mINVENTORY,
+                    getKey(g, "game__gui_location").toLowerAscii     : mLOCATION,
+                    getKey(g, "game__gui_map").toLowerAscii          : mMAP,
+                    getKey(g, "game__gui_diary").toLowerAscii        : mDIARY,
+                    # can also be shortened to first letter
+                    getKey(g, "game__gui_character")[0..0].toLowerAscii : mCHARACTER,
+                    getKey(g, "game__gui_inventory")[0..0].toLowerAscii : mINVENTORY,
+                    getKey(g, "game__gui_location")[0..0].toLowerAscii  : mLOCATION,
+                    getKey(g, "game__gui_map")[0..0].toLowerAscii       : mMAP,
+                    getKey(g, "game__gui_diary")[0..0].toLowerAscii     : mDIARY,
                 }.toTable
                 let prompt = readLine(stdin)
                 if prompt.toLowerAscii in conv:
