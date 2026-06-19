@@ -87,6 +87,10 @@ proc equip (g: Game) =
             if ITEMS[it].wearable != NOT_WEARABLE or ITEMS[it].weapon != NOT_WEAPON:
                 echo getOptionKey(g, "item__" & it, ix + 1)
                 equippable.add(ix + 1)
+        if len(equippable) == 0: # nothing to equip
+            echo getKey(g, "game__gui_inv_usedno")
+            waitForPlayer()
+            break
         echo getKey(g, "game__gui_inv_useds")
         let prompt = readLine(stdin)
         if prompt == "": break
@@ -94,9 +98,11 @@ proc equip (g: Game) =
             let p = parseInt(prompt)
             if p notin equippable: continue
             else:
-                echo getKey(g, "game__gui_inv_used") & ": " & getKey(g, "item__" & inventory[p-1]) # goes first bc `equip` removes item later
+                let iid = inventory[p-1]       # keeps ID for later reference since `equip` removes the item
                 let res = equip(g.player, p-1) # `equippable` check covers type, but can still yield false if slot is used
-                if res == false: # slot used
+                if res == true:
+                    echo getKey(g, "game__gui_inv_used") & ": " & getKey(g, "item__" & iid)
+                else: # if slot used
                     echo getKey(g, "game__gui_inv_usedfl")
                 waitForPlayer()
         except ValueError: continue
@@ -109,17 +115,21 @@ proc deequip (g: Game) =
             echo getOptionKey(g, "item__" & g.player.armour.chest, 1)
         if g.player.weapon != "":
             echo getOptionKey(g, "item__" & g.player.weapon , 2)
+        if g.player.weapon == "" and g.player.armour.chest == "": # nothing to deequip
+            echo getKey(g, "game__gui_inv_useofno")
+            waitForPlayer()
+            break
         echo getKey(g, "game__gui_inv_useofds")
         let prompt = readLine(stdin)
         case prompt:
             of "1":
                 if g.player.armour.chest != "": # if we add more armour variants we need to adjust this, blah blah blah
                     echo getKey(g, "game__gui_inv_useoffd") & ": " & getKey(g, "item__" & g.player.armour.chest)
-                    discard deequip(g.player, FIST) # doesn't matter what type tbh, so FIST is good as anything else
+                    discard deequip(g.player, aCHEST)
             of "2":
                 if g.player.weapon != "":
                     echo getKey(g, "game__gui_inv_useoffd") & ": " & getKey(g, "item__" & g.player.weapon)
-                    discard deequip(g.player, aCHEST)
+                    discard deequip(g.player, FIST) # doesn't matter what type tbh, so FIST is good as anything else
             of "": break
             else: continue
         waitForPlayer()

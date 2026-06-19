@@ -162,9 +162,6 @@ while isRunning(g):
                                 startDialogue(g, COOK)
                             else: continue
                         else:   continue
-                    if isDialogueStarted(g): continue # lets `mDIALOGUE` handle everything
-                    printMessages(g)
-                    waitForPlayer()
                 of SHIP_DOCKED: # made dedicated options so it reflects changes
                     echo getOptionKey(g, "loc__ship_search_deck",  1)
                     echo getOptionKey(g, "loc__ship_look_around",  2)
@@ -177,8 +174,6 @@ while isRunning(g):
                         of "3": startDialogue(g, CAPTAIN_DOCKED)
                         of "4": switchMenu(g, mDEFAULT); continue
                         else: continue
-                    printMessages(g)
-                    waitForPlayer()
                 of DESERTED_ISLAND:
                     echo getKey(g, "loc__island")
                     echo getOptionKey(g, "loc__island_look_around", 1)
@@ -190,8 +185,6 @@ while isRunning(g):
                         of "2": island_OpenBarrel(g)
                         of "3": switchMenu(g, mDEFAULT); continue
                         else: continue
-                    printMessages(g)
-                    waitForPlayer()
                 of DESERTED_HOME:
                     echo getKey(g, "loc__abhouse_enter")
                     echo getKey(g, "loc__abhouse_enter2")
@@ -206,8 +199,6 @@ while isRunning(g):
                         of "3": home_Sleep(g.player)
                         of "4": switchMenu(g, mDEFAULT); continue
                         else: continue
-                    printMessages(g)
-                    waitForPlayer()
                 of DOCKS:
                     echo getKey(g, "loc__docks")
                     echo getOptionKey(g, "loc__docks_que1", 1)
@@ -225,8 +216,6 @@ while isRunning(g):
                         of "5": startDialogue(g, ATG_SCOUT)
                         of "6": switchMenu(g, mDEFAULT); continue
                         else: continue
-                    printMessages(g)
-                    waitForPlayer()
                 of EVROS:
                     echo getKey(g, "loc__evros")
                     echo getOptionKey(g, "loc__evros_que1", 1)
@@ -244,8 +233,6 @@ while isRunning(g):
                         of "5": startDialogue(g, PAPERBOY)
                         of "6": switchMenu(g, mDEFAULT); continue
                         else: continue
-                    printMessages(g)
-                    waitForPlayer()
                 of FIELDS:
                     echo getKey(g, "loc__fields")
                     echo getOptionKey(g, "loc__fields_que1", 1)
@@ -268,10 +255,11 @@ while isRunning(g):
                                 getGatherableItems(g, "wheat", WHEAT_GROWTH) # waitForPlayer() happens later
                         of "6": switchMenu(g, mDEFAULT); continue
                         else: continue
-                    printMessages(g)
-                    waitForPlayer()
                 of BAEDOOR:
                     discard # not achievable
+            if isDialogueStarted(g): continue # lets `mDIALOGUE` handle everything
+            printMessages(g)
+            waitForPlayer()
 
         of mMAP:
             echo LocationMap

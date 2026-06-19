@@ -1,6 +1,7 @@
 # Used for handling start of the game
 import std/strutils
 import std/tables
+import saves
 import game
 
 proc initCharacter* (g: Game, player_tuple: var tuple[name: string,
@@ -19,7 +20,11 @@ proc initCharacter* (g: Game, player_tuple: var tuple[name: string,
         echo getKey(g, "game__crq_1")
         let prompt = readLine(stdin)
         if prompt != "":
-            player_tuple.name = prompt
+            if prompt notin listSaves():
+                player_tuple.name = prompt # breaks
+            else: # character name exists
+                echo getKey(g, "game__crq_r")
+                waitForPlayer()
         clearScreen()
     # gender pick
     while player_tuple.gender == VOIDG:
