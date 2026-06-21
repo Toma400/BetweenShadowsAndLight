@@ -377,6 +377,7 @@ game__encounter      = "Suddenly I saw"
 game__gather_succ    = "I was able to gather"
 game__gather_fail    = "I need to wait a bit for them to grow back."
 # GUI - messages
+game__warn_crash     = "Game crashed! Error log can be found in -crash_log.txt- file which you can send to developer."
 game__warn_weight    = "You are overburdened!"
 game__warn_tired     = "You are tired!"
 game__warn_poison    = "You are poisoned!"

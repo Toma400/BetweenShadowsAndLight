@@ -377,6 +377,7 @@ game__encounter      = "Nagle pojawił się"
 game__gather_succ    = "Udało mi się zebrać"
 game__gather_fail    = "Muszę trochę poczekać, aż odrosną."
 # GUI - messages
+game__warn_crash     = "Gra nieoczekiwanie się zakończyła! Informacje o błędzie znajdziesz w pliku -crash_log.txt-, który możesz wysłać do twórcy gry."
 game__warn_weight    = "Jesteś przeciążony!"
 game__warn_tired     = "Jesteś zmęczony!"
 game__warn_poison    = "Jesteś zatruty!"
