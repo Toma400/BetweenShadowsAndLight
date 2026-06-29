@@ -219,7 +219,7 @@ proc banking* (g: Game) =
     var MODE = 0 # 1 = deposit money, 2 = withdraw money
     while true:
         clearScreen()
-        echo getKey(g, "game_bank")
+        echo getKey(g, "game__bank")
         echo getKey(g, "game__gui_money") & ": " & $g.player.money
         echo getKey(g, "game__bank_money") & ": " & $g.player.bank
         if MODE == 0: # default

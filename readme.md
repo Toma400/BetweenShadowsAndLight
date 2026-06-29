@@ -83,8 +83,25 @@ for me to make new version just to add it.
   - Using explosives or scrolls limits your choice only to see relevant items, making
     it distinct from picking up inventory itself
 
+### Still to be added?
+- various shortcuts being either initial letter or number for various menu items
+- unifying some `back/cancel/leave/etc.`
+- checking redundant keys in translation files
+- TG quest
+  - sneak/lock scenes happen immediately, w/o waitForPlayer() even
+  - the same is with scout approaching us immediately after leaving warehouse
+  - ...and we can't even tell him 'no', he takes silk from us right away
+  - his dialogue could also be a bit more 'breaky'
+- when reentering warehouse after breaking, it can prompt to us `lock was opened`
+  despite not being able to sneak past guards (does lock count happen no matter
+  the sneak success/failure?)
+- `you are tired` message appeared during purchase - it'd be good to check when
+  adding messages happen, and set smart resetter and/or improve placement of
+  updates
+
 ### New features (1.2+ version)
 The list here is more of loose planning than anything concrete until 1.2 version is out.\
+- rename of `location/map` into `activities/travel` for easier understanding (IoA parity)
 - ett "race" replaced by latoka? (with needed stat changes?) due to etts being extremely
   niche in comparison and a subgroup (culture) within a race
   - to keep compatibility we could keep IDs (stats only apply
@@ -143,6 +160,7 @@ The list here is more of loose planning than anything concrete until 1.2 version
 
 ### New cheats systematised (to be transferred to BE)
 - `cheat` in main menu transports you out of tutorial and gives some money
+- `cheat` when talking to captain lets you visit abandoned island
 - combat
   - `heal` - heals you to maximum health
   - `kill` - kills enemy immediately

@@ -247,7 +247,11 @@ proc loot (g: Game, loot: var seq[string]) =
                 echo getOptionKey(g, "item__" & $dit.kind, ix + 1) & ": " & $dit.amount
         echo getKey(g, "game__combat_loot")
         let prompt = readLine(stdin)
-        if prompt == "": break # ends looting
+        if prompt in ["", "0"]: # ends looting (enter softly skips, 0 skips immediately)
+            if len(loot) > 0 and prompt == "":
+                echo getKey(g, "")
+                if readLine(stdin) != "0": continue # goes back to looting if 0 is written
+            break # ends looting unless above
         try:
             let p = parseInt(prompt)
             if p <= 0 or p > len(loot): continue

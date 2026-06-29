@@ -261,7 +261,7 @@ proc processDialogue* (g: Game) =
                 echo getKey(g, "loc__docks_atg_suc4")
                 echo getKey(g, "loc__docks_atg_suc5")
                 discard removeItemFromInventory(g.player, "silk")
-                addItemToInventory(g.player, "")
+                addItemToInventory(g.player, "atg_recommendation")
                 finishQuest(g.player, ATG_1_SILKBOY, 20)
                 # recommendation is only conveyed by letter, there's no point in adding quest
                 # (it also forces player to continue ATG, while in reality it was more of an introduction/taste)

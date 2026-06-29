@@ -47,7 +47,11 @@ type
     BULLET = "bullet"
     ARROW  = "arrow"
 
-proc isBookType* (item_str: string): bool = return "book" in item_str or "newspaper" in item_str or "recipe" in item_str
+const SpecialBooks = [
+    "atg_recommendation"
+]
+
+proc isBookType* (item_str: string): bool = return "book" in item_str or "newspaper" in item_str or "recipe" in item_str or item_str in SpecialBooks
 #proc isWearable* (item_str: string): bool = ITEMS[item_str] # to filter items that can be worn?
 # similar to activators?
 # similar to readable things? (separate type?)

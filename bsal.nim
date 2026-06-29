@@ -30,13 +30,13 @@ proc run(g, b: var Game) =
               echo getKey(g, "menu__settings")
               echo getKey(g, "menu__quit")
               let prompt = readLine(stdin)
-              if prompt.toLowerAscii in [getKey(g, "menu__start").toLowerAscii]:
+              if prompt.toLowerAscii in [getKey(g, "menu__start").toLowerAscii, "1"]:
                   switchMenu(g, mDEFAULT)
-              elif prompt.toLowerAscii in [getKey(g, "menu__load").toLowerAscii]:
+              elif prompt.toLowerAscii in [getKey(g, "menu__load").toLowerAscii, "2"]:
                   switchMenu(g, LOAD)
-              elif prompt.toLowerAscii in [getKey(g, "menu__settings").toLowerAscii]:
+              elif prompt.toLowerAscii in [getKey(g, "menu__settings").toLowerAscii, "3"]:
                   switchMenu(g, SETTINGS)
-              elif prompt.toLowerAscii in [getKey(g, "menu__quit").toLowerAscii, "q"]:
+              elif prompt.toLowerAscii in [getKey(g, "menu__quit").toLowerAscii, "4", "q"]:
                   exitGame(g)
 
           of LOAD:
@@ -116,6 +116,12 @@ proc run(g, b: var Game) =
                       getKey(g, "game__gui_location")[0..0].toLowerAscii  : mLOCATION,
                       getKey(g, "game__gui_map")[0..0].toLowerAscii       : mMAP,
                       getKey(g, "game__gui_diary")[0..0].toLowerAscii     : mDIARY,
+                      # and also has numerical variant
+                      "1" : mCHARACTER,
+                      "2" : mINVENTORY,
+                      "3" : mLOCATION,
+                      "4" : mMAP,
+                      "5" : mDIARY,
                   }.toTable
                   let prompt = readLine(stdin)
                   if prompt.toLowerAscii in conv:
@@ -302,7 +308,7 @@ proc run(g, b: var Game) =
                   "[" & getKey(g, "game__gui_drsavequit") & "]" & " " &
                   "[" & getKey(g, "game__gui_drquit")     & "]"
               let prompt = readLine(stdin).toLowerAscii
-              if prompt == getKey(g, "game__gui_drdiary").toLowerAscii:
+              if prompt in [getKey(g, "game__gui_drdiary").toLowerAscii, "1"]:
                   clearScreen()
                   echo DIVIDER
                   echo "{ " & getKey(g, "game__gui_drdiary2") & " }"
@@ -311,14 +317,14 @@ proc run(g, b: var Game) =
                   echo DIVIDER
                   waitForPlayer()
                   continue
-              elif prompt == getKey(g, "game__gui_drsave").toLowerAscii:
+              elif prompt in [getKey(g, "game__gui_drsave").toLowerAscii, "2"]:
                   saveGame(g)
                   switchMenu(g, mDEFAULT)
-              elif prompt == getKey(g, "game__gui_drsavequit").toLowerAscii:
+              elif prompt in [getKey(g, "game__gui_drsavequit").toLowerAscii, "3"]:
                   saveGame(g)
                   resetGameData(g)
                   switchMenu(g, START)
-              elif prompt == getKey(g, "game__gui_drquit").toLowerAscii:
+              elif prompt in [getKey(g, "game__gui_drquit").toLowerAscii, "4"]:
                   resetGameData(g)
                   switchMenu(g, START)
               else:
