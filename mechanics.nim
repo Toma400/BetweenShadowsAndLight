@@ -36,8 +36,8 @@ const BOILING_RECIPES* : Table[string, seq[string]] = {
 
 const ROASTING_RECIPES* : Table[string, string] = {
     # this one is 1 -> 1 recipe, as I don't imagine it needing multiple items
-    "rat_meat" : "rat_meat_cooked",
-    "herring"  : "herring_cooked",
+    "rat_meat" : "rat_meat_roasted",
+    "herring"  : "herring_roasted",
 }.toTable
 
 proc hasAllResources* (g: Game, reqseq: seq[tuple[id: string, amount: int]]): bool =
@@ -304,7 +304,7 @@ proc cooking* (g: Game, pot: bool) =
                     if pot: MODE = 2
                 of "3": break
                 else: continue
-        elif MODE == 1:
+        elif MODE == 1: # roasting
             if g.tutorial:
                 echo getTutorialKey(g, "game__tut_10")
             if FIRE == "": # empty fire
@@ -327,7 +327,7 @@ proc cooking* (g: Game, pot: bool) =
                         waitForPlayer()
                 of "2": MODE = 0
                 else: continue
-        elif MODE == 2:
+        elif MODE == 2: # cooking
             echo getOptionKey(g, "game__cooking_citem", 1)
             if len(POT) > 0:
                 echo getOptionKey(g, "game__cooking_cdo", 2)

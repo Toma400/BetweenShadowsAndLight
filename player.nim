@@ -602,6 +602,11 @@ proc sleep* (p: Player) =
     for tim in Timer.low..Timer.high:
         resetTimer(p, tim)
 
+proc levelUp* (p: Player, lvl_count: int) =
+    # more of a helper, see also `game.levelUp` proc that uses this one
+    p.level += lvl_count
+    p.xp     = 0
+
 proc isQuestActive*     (p: Player, quest: Quest): bool = return quest in p.quests
 proc isQuestFinished*   (p: Player, quest: Quest): bool = return quest in p.quests_done
 proc getActiveQuests*   (p: Player): seq[Quest]         = return p.quests

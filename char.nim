@@ -10,7 +10,7 @@ proc characterStatistics* (g: Game) =
       echo getKey(g, "race__"   & ($getRace(g.player)).toLowerAscii)
       echo getKey(g, "class__"  & ($getClass(g.player)).toLowerAscii)
       echo getKey(g, "game__gui_level")  & ": " & $getLevel(g.player)
-      echo getKey(g, "game__gui_xp")     & ": " & $getExperience(g.player) & " / " & $getMaxWeight(g.player)
+      echo getKey(g, "game__gui_xp")     & ": " & $getExperience(g.player) & " / " & $calculateExperienceCap(g.player)
       echo getKey(g, "game__gui_sp")     & ": " & $g.player.sp
       echo "{" & getKey(g, "game__gui_health") & ": " & $g.player.hp & " / " & $getMaxHealth(g.player) & " | " &
                  getKey(g, "game__gui_mana")   & ": " & $g.player.mp & " / " & $getMaxMana(g.player)   & " | " &
@@ -42,13 +42,5 @@ proc characterStatistics* (g: Game) =
       echo getKey(g, "game__gui_sneaking")      & ": " & $getSneaking(g.player)
       # skills
       waitForPlayer() # let player see statistics before they are moved to old menu
-# basic_armor()
-# print ("Twoja postać:","\n\n[",name,"]\n",gender,"\n",race,"\n",craft,"\n")
-# print ("Poziom", level, "\n")
-# print ("-Punkty doświadczenia:",xp,"/",xp_level,"-")
-# print ("-Wypoczęcie:",sp,"-")
-# print ("[HP",hp,"/",hp_level,"][Mana",mp,"/",mp_level,"][Atak",eq_attack,"][Obrona",eq_defence,"(",armor_hp,"%)]")
-# if eq_mdefence > 0:
-#   print ("[Obrona magiczna",eq_mdefence,"]")
 
       switchMenu(g, mDEFAULT)

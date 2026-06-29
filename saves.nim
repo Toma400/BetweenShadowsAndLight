@@ -3,16 +3,12 @@ import std/private/oscommon
 import std/private/osdirs
 import std/strformat
 import std/strutils
-import std/sequtils
 import std/tables
 import parsetoml
 import player
 import game
 import item
 
-proc toTable (o: object): OrderedTable =
-  for name, val in fieldPairs(o):
-    result[name] = val
 proc toStringedTable (o: object): string =
   for name, val in fieldPairs(o):
     let nnn = name

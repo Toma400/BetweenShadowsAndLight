@@ -2,7 +2,6 @@ import std/strformat
 import std/strutils
 import std/tables
 import parsetoml
-#import location
 import player
 import item
 import lang
@@ -274,12 +273,12 @@ proc shop* (g: Game, npc: NPC) =
         if can_buy: # can_buy
             echo "{" & getKey(g, "game__trade_seller")  & "}"
             for ix, it in buy_offers.pairs():
-                echo getOptionKey(g, "item__" & it.id, ix + 1) & ": " & $it.value # no need for getter
+                echo getOptionKey(g, fmt"item__{it.id}", ix + 1) & ": " & $it.value # no need for getter
         if can_sell: # can_sell
             echo "{" & getKey(g, "game__gui_inventory") & "}"
             for ix, it in getInventory(g.player).pairs():
                 if isInOfferTable(sell_offers, it):
-                    echo getOptionKey(g, "item__" & it, ix + 1) & ": " & $getValueFromOfferTable(sell_offers, it)
+                    echo getOptionKey(g, fmt"item__{it}", ix + 1) & ": " & $getValueFromOfferTable(sell_offers, it)
         echo DIVIDER
         echo getKey(g, "game__trade_money") & ": " & $g.player.money
         echo DIVIDER
@@ -308,7 +307,7 @@ proc shop* (g: Game, npc: NPC) =
                 else: # correct pick!
                     let item = buy_offers[p-1]
                     if buy(g.player, item.id, item.value) == true:
-                        echo getKey(g, "game__trade_bought") & " " & getKey(g, "item__" & item.id)
+                        echo getKey(g, "game__trade_bought") & " " & getKey(g, fmt"item__{item.id}")
                     printMessages(g)
                     waitForPlayer()
                     continue
@@ -328,7 +327,7 @@ proc shop* (g: Game, npc: NPC) =
                 else: # correct pick!
                     let item_str = getInventory(g.player)[p-1]
                     if sell(g.player, item_str, getValueFromOfferTable(sell_offers, item_str)) == true:
-                        echo getKey(g, "game__trade_sold") & " " & getKey(g, "item__" & item_str)
+                        echo getKey(g, "game__trade_sold") & " " & getKey(g, fmt"item__{item_str}")
                     printMessages(g)
                     waitForPlayer()
                     continue
@@ -339,7 +338,7 @@ proc chooseAttributeUpgrade* (g: Game, cond: var bool) =
         clearScreen()
         echo getKey(g, "game__level_up_attr")
         for i, a in ["strength", "dexterity", "intelligence", "endurance", "charisma"]:
-            echo getOptionKey(g, "game__gui_" & a, i + 1)
+            echo getOptionKey(g, fmt"game__gui_{a}", i + 1)
         let prompt = readLine(stdin)
         case prompt:
             of "1": setStrength(g.player, getStrength(g.player) + 1);         cond = true
@@ -355,7 +354,7 @@ proc chooseSkillUpgrade* (g: Game, cond: var bool) =
         echo getKey(g, "game__level_up_sk")
         for i, s in ["swords", "bows", "guns", "spellcasting", "connection", "trade", "repair", "healing",
                      "lockpicking", "smithing", "herbalism", "vehicle_drive", "trapspotting", "survival", "sneaking"]:
-            echo getOptionKey(g, "game__gui_" & s, i + 1)
+            echo getOptionKey(g, fmt"game__gui_{s}", i + 1)
         let prompt = readLine(stdin)
         case prompt:
             of "1": setSwords(g.player, getSwords(g.player) + 1);              cond = true
@@ -375,17 +374,19 @@ proc chooseSkillUpgrade* (g: Game, cond: var bool) =
             of "15": setSneaking(g.player, getSneaking(g.player) + 1);         cond = true
             else: discard # just loops again
 
-proc levelUp* (g: Game) =
+proc levelUp* (g: Game, lvl_count: int = 1) =
+    # lvl_count used primarily to allow easy `+0` (for char init)
     var # bool checkers
       at = false
       sk = false
     chooseAttributeUpgrade(g, at)
     chooseSkillUpgrade(g, sk)
+    levelUp(g.player, lvl_count)
 
 proc getGatherableItems* (g: Game, item_yield: string, tim: Timer) =
     if isTimerStarted(g.player, tim) == false:
         g.player.sp -= 15
-        echo getKey(g, "game__gather_succ") & ": " & getKey(g, "item__" & item_yield)
+        echo getKey(g, "game__gather_succ") & ": " & getKey(g, fmt"item__{item_yield}")
         setTimer(g.player, tim)
         addItemToInventory(g.player, item_yield)
     else:

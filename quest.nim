@@ -1,4 +1,3 @@
-import location
 import player
 import battle
 import game

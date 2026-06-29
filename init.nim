@@ -76,4 +76,4 @@ proc initCharacter* (g: Game, player_tuple: var tuple[name: string,
 
     # after all picks are done
     createCharacter(g, player_tuple.name, player_tuple.gender, player_tuple.race, player_tuple.class)
-    levelUp(g) # put here so it doesn't get overwritten, for player the order is invisible
+    levelUp(g, 0) # put here so it doesn't get overwritten, for player the order is invisible
