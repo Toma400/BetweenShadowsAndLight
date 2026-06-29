@@ -600,13 +600,17 @@ proc processDialogue* (g: Game) =
                         of "3": endDialogue(g, mLOCATION)
                         else: return
                 else: # resign
-                    if not hasItem(g.player, "sickle"): # early return in case you don't have sickle to return to her
-                        removeDialogueVariable(g.player, "resign") # otherwise ends in infinite loop
+                    if not hasItem(g.player, "sickle") and "sickle" notin getUsedInventory(g.player):
+                        # early return in case you don't have sickle to return to her
+                        removeDialogueVariable(g.player, "resign") # prevents infinite loop
                         echo getKey(g, "loc__fields_farmer_rsgn2")
                         waitForPlayer()
                         return
                     # if you have sickle
+                    if g.player.weapon == "sickle": # deequipping means removal will work later
+                        discard deequip(g.player, FIST)
                     echo getKey(g, "loc__fields_farmer_rsgn")
                     finishQuest(g.player, WORK_ON_A_FARM, 0)
                     discard removeItemFromInventory(g.player, "sickle")
                     waitForPlayer()
+                    endDialogue(g, mLOCATION)
