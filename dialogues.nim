@@ -211,7 +211,7 @@ proc processDialogue* (g: Game) =
                 if getTimerCountDownValue(g.player, WAREHOUSE_QUEST) == 0: # night comes
                     echo getOptionKey(g, "loc__docks_atg_burg1", 1)
                     echo getOptionKey(g, "loc__docks_atg_burg2", 2)
-                    echo getOptionKey(g, "loc__docks_atg_burg3", 3)
+                    echo getOptionKey(g, "game__leave", 3)
                     let prompt = readLine(stdin)
                     case prompt:
                       of "1":
@@ -270,7 +270,7 @@ proc processDialogue* (g: Game) =
             elif isQuestFinished(g.player, ATG_1_SILKBOY):
                 echo getKey(g, "loc__docks_atg_reenter")
                 echo getOptionKey(g, "loc__docks_atg_burg1", 1)
-                echo getOptionKey(g, "loc__docks_atg_burg3", 2)
+                echo getOptionKey(g, "game__leave", 2)
                 let prompt = readLine(stdin)
                 case prompt:
                     of "1":
@@ -470,7 +470,7 @@ proc processDialogue* (g: Game) =
         of PAPERBOY:
             echo getKey(g, "loc__evros_newspaper")
             echo getOptionKey(g, "loc__evros_newspaper_buy", 1)
-            echo getOptionKey(g, "loc__evros_newspaper_qui", 2)
+            echo getOptionKey(g, "game__leave", 2)
             let prompt = readLine(stdin)
             case prompt:
                 of "1":
@@ -557,7 +557,7 @@ proc processDialogue* (g: Game) =
                     echo getKey(g, "loc__fields_farmer")
                     if not isQuestFinished(g.player, WORK_ON_A_FARM): # if it's meant to be repicked, change it to something different?
                         echo getOptionKey(g, "loc__fields_farmer_ask", 1)
-                    echo getOptionKey(g, "game__lock_give_up", 2)
+                    echo getOptionKey(g, "game__leave", 2)
                     let prompt = readLine(stdin)
                     case prompt:
                         of "1":
@@ -586,7 +586,7 @@ proc processDialogue* (g: Game) =
                     if hasItem(g.player, "wheat"):
                         echo getOptionKey(g, "loc__fields_farmer_work1", 1)
                     echo getOptionKey(g, "loc__fields_farmer_work2", 2)
-                    echo getOptionKey(g, "game__lock_give_up", 3)
+                    echo getOptionKey(g, "game__leave", 3)
                     let prompt = readLine(stdin)
                     case prompt:
                         of "1":
@@ -601,6 +601,7 @@ proc processDialogue* (g: Game) =
                         else: return
                 else: # resign
                     if not hasItem(g.player, "sickle"): # early return in case you don't have sickle to return to her
+                        removeDialogueVariable(g.player, "resign") # otherwise ends in infinite loop
                         echo getKey(g, "loc__fields_farmer_rsgn2")
                         waitForPlayer()
                         return

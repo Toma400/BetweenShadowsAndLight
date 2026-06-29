@@ -76,6 +76,9 @@ for me to make new version just to add it.
     lore and keeping scope to Ansur only
   - Raised TG quest experience reward to 20 due to the quest being fairly difficult
   - Made TG recommendation letter description, as it was lacking in OG
+- Changed wheat gathering to be based on sickle in inventory instead of quest
+  active - which technically results in the same behaviour, but can allow for
+  additional activity in case further versions add buyable sickle
 - Small changes to combat
   - Using explosives or scrolls limits your choice only to see relevant items, making
     it distinct from picking up inventory itself

@@ -1,4 +1,5 @@
 import std/strutils
+import std/sequtils
 import std/tables
 import player
 import game
@@ -314,7 +315,6 @@ proc cooking* (g: Game, pot: bool) =
             echo getOptionKey(g, "game__leave", 2)
             let prompt = readLine(stdin)
             case prompt:
-                of "":  MODE = 0
                 of "1":
                     if FIRE == "": MODE = 3 # if empty, lets you choose item to put there
                     else: # cook stuff
@@ -334,7 +334,6 @@ proc cooking* (g: Game, pot: bool) =
             echo getOptionKey(g, "game__leave", 3)
             let prompt = readLine(stdin)
             case prompt:
-                of "":  MODE = 0
                 of "1": MODE = 4
                 of "2": # cook stuff
                     if len(POT) > 0:
@@ -355,16 +354,19 @@ proc cooking* (g: Game, pot: bool) =
                 else: continue
         elif MODE == 3: # adding to the fire
             echo DIVIDER
+            var options = newSeq[int]() # numbers available
             for ix, it in getInventory(g.player).pairs():
-                echo "- " & getOptionKey(g, "item__" & it, ix + 1)
+                if it in toSeq(ROASTING_RECIPES.keys): # filter
+                    echo "- " & getOptionKey(g, "item__" & it, ix + 1)
+                    add(options, ix + 1)
             echo DIVIDER
-            echo getKey(g, "game__cooking_ritem")
+            echo getKey(g, "game__cooking_ritemb")
 
             let prompt = readLine(stdin)
             if prompt == "": MODE = 1
             try:
                 let p = parseInt(prompt)
-                if p <= 0 or p > len(getInventory(g.player)): continue
+                if p notin options: continue
                 else: # correct pick!
                     FIRE = getInventory(g.player)[p - 1]
                     removeItemFromInventory(g.player, p - 1)
@@ -372,16 +374,19 @@ proc cooking* (g: Game, pot: bool) =
             except ValueError: continue
         elif MODE == 4: # adding to the pot
             echo DIVIDER
+            var options = newSeq[int]() # numbers available
             for ix, it in getInventory(g.player).pairs():
-                echo "- " & getOptionKey(g, "item__" & it, ix + 1)
+                if ITEMS[it].boil == true:
+                    echo "- " & getOptionKey(g, "item__" & it, ix + 1)
+                    add(options, ix + 1)
             echo DIVIDER
-            echo getKey(g, "game__cooking_citem")
+            echo getKey(g, "game__cooking_citemb")
 
             let prompt = readLine(stdin)
             if prompt == "": MODE = 2
             try:
                 let p = parseInt(prompt)
-                if p <= 0 or p > len(getInventory(g.player)): continue
+                if p notin options: continue
                 else: # correct pick!
                     POT.add(getInventory(g.player)[p - 1])
                     removeItemFromInventory(g.player, p - 1)

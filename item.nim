@@ -30,6 +30,7 @@ type
     attack*  : int        # defaults to 0, meaning no weapon type
     defence* : int        # defaults to 0, meaning no armour type (or broken armour)
     ingr*    : bool       # if can be used on alchemy table
+    boil*    : bool       # if can be boiled
     health*  : int        # used by WearableType
     use_val* : int        # used by ConsumableType
     use_str* : string     # additional string printed after use (keep empty if not needed)
@@ -84,14 +85,14 @@ const ITEMS* = { # ID : object
     "herring_roasted"  : Item(weight: 0,             use: REG_HEAL, use_val: 15), # pieczony śledź
     "beer"             : Item(weight: 0,             use: UNIQUE),                # piwo
     # --- UTILITIES ---
-    "water"        : Item(weight: 0, ingr: true), # woda
-    "water_cooked" : Item(weight: 0, ingr: true), # podgrzana woda
-    "iron"         : Item(weight: 2),             # żelazo
-    "wood"         : Item(weight: 1),             # drewno
-    "wheat"        : Item(weight: 0, ingr: true), # pszenica
-    "parchment"    : Item(weight: 0),             # pergamin
-    "gunpowder"    : Item(weight: 0, ingr: true), # proch
-    "silk"         : Item(weight: 2),             # jedwab
+    "water"        : Item(weight: 0, ingr: true, boil: true), # woda
+    "water_cooked" : Item(weight: 0, ingr: true),             # podgrzana woda
+    "iron"         : Item(weight: 2),                         # żelazo
+    "wood"         : Item(weight: 1),                         # drewno
+    "wheat"        : Item(weight: 0, ingr: true),             # pszenica
+    "parchment"    : Item(weight: 0),                         # pergamin
+    "gunpowder"    : Item(weight: 0, ingr: true),             # proch
+    "silk"         : Item(weight: 2),                         # jedwab
     # --- WEAPONS ---
     "rusty_knife"     : Item(weight: 1, attack:  4, weapon: CLOSE_COMBAT), # zardzewiały nóż
     "sickle"          : Item(weight: 1, attack:  4, weapon: CLOSE_COMBAT), # sierp
