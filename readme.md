@@ -81,7 +81,12 @@ for me to make new version just to add it.
     it distinct from picking up inventory itself
 
 ### New features (1.2+ version)
-The list here is more of loose planning than anything concrete until 1.2 version is out.
+The list here is more of loose planning than anything concrete until 1.2 version is out.\
+- ett "race" replaced by latoka? (with needed stat changes?) due to etts being extremely
+  niche in comparison and a subgroup (culture) within a race
+  - to keep compatibility we could keep IDs (stats only apply
+    on initial character creation) or make etts exist in code, but
+    not be pickable
 - if not available already: trading would improve trade skill, and trade skill would
   lower the prices?
 - decrease level cap? (100 xp for second level is ridiculous)
@@ -115,6 +120,7 @@ The list here is more of loose planning than anything concrete until 1.2 version
   - survey for staffs being achievable in game even
 - some new books, this time pickable? maybe even one more magazine that would
   change over time
+- addition of non-binary gender
 - questing
   - Thieves Guild
     - TG follow-up quest to expand on changed lore & offer any questline-like experience

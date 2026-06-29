@@ -56,9 +56,10 @@ proc read (g: Game) =
 
 proc use (g: Game) =
     let PROHIB_CT = [NOT_CONSUMABLE, BATTLE] # gatekeeps battle too
-    let inventory = getInventory(g.player)
-    var allowed   = newSeq[int]() # allows for type checks later
     while true:
+        let inventory = getInventory(g.player)
+        var allowed   = newSeq[int]() # allows for type checks later
+
         clearScreen()
         echo "{ " & getKey(g, "game__gui_inventory") & " }"
         for ix, it in inventory.pairs():
@@ -78,9 +79,10 @@ proc use (g: Game) =
         except ValueError: continue
 
 proc equip (g: Game) =
-    var equippable : seq[int] # will store valid choices
     while true:
-        let inventory = getInventory(g.player) # in loop because it needs to be updated
+        let inventory  = getInventory(g.player) # in loop because it needs to be updated
+        var equippable = newSeq[int]()          # will store valid choices
+
         clearScreen()
         echo "{ " & getKey(g, "game__gui_inventory") & " }"
         for ix, it in inventory.pairs():
@@ -135,8 +137,9 @@ proc deequip (g: Game) =
         waitForPlayer()
 
 proc throw (g: Game) =
-    let inventory = getInventory(g.player)
     while true:
+        let inventory = getInventory(g.player)
+        
         clearScreen()
         echo "{ " & getKey(g, "game__gui_inventory") & " }"
         for ix, it in inventory.pairs():

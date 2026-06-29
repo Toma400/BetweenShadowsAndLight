@@ -2,5 +2,7 @@ Between Shadows and Light.exe
 BetweenShadowsAndLight.zip
 rcedit-x64.exe
 .zed
+.idea
 __pycache__
 saves/
+crash_log.txt
