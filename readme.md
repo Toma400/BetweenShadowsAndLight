@@ -16,22 +16,21 @@ in nothing except being located in the same area.
 
 ### Remake
 That's why I decided to start writing a remake - a proper, terminal
-version, like the BSaL from seven years ago.
+version, like the BSaL from eight years ago.
 It is meant to preserve almost every of original's quirks, but
 improve its code quality, make it crash-free and fix the more
 important bugs. And, most importantly, provide English version, so
 that more people can see how BSaL looked and felt.
 
 ### Roadmap
-| Version | Features planned                                                                                                           |
-|:-------:|:---------------------------------------------------------------------------------------------------------------------------|
-|   1.0   | Exact features from original BSaL, fixing CTD issues and broken quests that didn't "be buggy as a feature"                 |
-|   1.1   | Fixing any bugs found in 1.0                                                                                               |
-|   1.2   | Expanding BSaL in a way that let you utilise all unused items                                                              |
-|   1.3   | Expanding BSaL with more locations/NPCs so that all unused mechanics are used (ideally also making use of more statistics) |
-|   1.4   | Adding more translations provided by community                                                                             |
+| Version | Features planned                                                                                         |
+|:-------:|:---------------------------------------------------------------------------------------------------------|
+|   1.0   | Exact features from original BSaL, fixing CTD issues and broken quests that weren't "buggy as a feature" |
+|   1.1   | Fixing any bugs found in 1.0                                                                             |
+|   1.2   | Expanding BSaL in a way that let you utilise more unused items, statistics, mechanics etc.               |
+|   1.3   | Adding more translations provided by community                                                           |
 
-Any updates past 1.4 are unlikely, but if new translation is added, it may be a reason
+Any updates past 1.3 are unlikely, but if new translation is added, it may be a reason
 for me to make new version just to add it.
 
 ### Features
@@ -99,6 +98,7 @@ for me to make new version just to add it.
 - `you are tired` message appeared during purchase - it'd be good to check when
   adding messages happen, and set smart resetter and/or improve placement of
   updates
+- Heresur cheat? (see `Legacy` code, introduces OP character)
 
 ### New features (1.2+ version)
 The list here is more of loose planning than anything concrete until 1.2 version is out.\
@@ -165,7 +165,4 @@ The list here is more of loose planning than anything concrete until 1.2 version
 - combat
   - `heal` - heals you to maximum health
   - `kill` - kills enemy immediately
-
-### Lore notes (to be transferred to BE and removed from here)
-- (website) 29.7.18 - new version
 -->
