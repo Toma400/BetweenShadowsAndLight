@@ -83,6 +83,7 @@ for me to make new version just to add it.
   - Using explosives or scrolls limits your choice only to see relevant items, making
     it distinct from picking up inventory itself
 
+<!--
 ### Still to be added?
 - various shortcuts being either initial letter or number for various menu items
 - unifying some `back/cancel/leave/etc.`
@@ -167,3 +168,4 @@ The list here is more of loose planning than anything concrete until 1.2 version
 
 ### Lore notes (to be transferred to BE and removed from here)
 - (website) 29.7.18 - new version
+-->
