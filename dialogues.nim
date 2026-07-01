@@ -217,6 +217,7 @@ proc processDialogue* (g: Game) =
                       of "1":
                           if crouch(g.player, 5):
                               echo getKey(g, "loc__docks_atg_burgenter")
+                              waitForPlayer()
                               if lock(g.player, 8):
                                   echo getKey(g, "loc__docks_atg_burgwin")
                                   waitForPlayer()
