@@ -1,15 +1,18 @@
 # 1.2
-- renamed `location/map` menu options to `activites/travel`, indicating better their use (and making it IoA parity)
-- changed RNG for normal pirate to 1
+- race changes
+  - etts replaced by latoka to both accommodate lore more accurately and include more diverse build possibilities
+  - latoka will have bonus to charisma as the only race in BRPGS 2.1, meaning their build
+  - saves from 1.0-1.1 using ett race will still be able to play as ett race, but this option won't be available
+    from character creation menu
+- enemy changes
+  - changed RNG for normal pirate to 1
+- QoL / UX
+  - renamed `location/map` menu options to `activites/travel`, indicating better their use (and making it IoA parity)
 
 # Possible todos
-- ett "race" replaced by latoka? (with needed stat changes?) due to etts being extremely
-  niche in comparison and a subgroup (culture) within a race
-  - to keep compatibility we could keep IDs (stats only apply
-    on initial character creation) or make etts exist in code, but
-    not be pickable
 - if not available already: trading would improve trade skill, and trade skill would
-  lower the prices?
+  lower the prices? (soft version of it would be small xp gain which could be used for
+  trading in levelup bonus)
 - decrease level cap? (100 xp for second level is ridiculous)
 - smithing recipes for level 2/3? maybe actually make level 1 get less items
 - also make smith be able to train you in smithing (both for 0->1 and 1->2/3), maybe for
@@ -57,6 +60,7 @@
       forgiving
     - set lock-after-burglary to 8, so that only guards attention is higher, but lock
       level remains the same - makes little sense to up its level here
+- survey of all texts to improve their quality
 
 # Loose ideas
 - some sort of gambling game in tavern with simple mechanics?

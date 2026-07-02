@@ -15,7 +15,8 @@ type
   Race* = enum
     HUMAN
     VINDEAN
-    ETT #???
+    ETT      # unavailable in 1.2+, replaced by latoka
+    LATOKA
     PAHTRI
     VOITRI
     ORMATH
@@ -187,7 +188,8 @@ let getdGender* = {
 }.toTable
 let getdRace* = {
     "human":   HUMAN,
-    "ett":     ETT,
+    "latoka":  LATOKA,
+    #"ett":     ETT,
     "vindean": VINDEAN,
     "pahtri":  PAHTRI,
     "voitri":  VOITRI,
@@ -260,6 +262,13 @@ proc setRaceModifiers (p: var Player) =
           p.attrs.intelligence += 1
           p.attrs.endurance    += 1
           p.attrs.dexterity    -= 2
+          p.pwr_tech  += 5
+          p.pwr_magic -= 5
+      of LATOKA:
+          p.attrs.charisma     += 1
+          p.attrs.intelligence += 1
+          p.attrs.endurance    += 1
+          p.attrs.strength     -= 2
           p.pwr_tech  += 5
           p.pwr_magic -= 5
       of PAHTRI:
