@@ -190,8 +190,8 @@ item__hyerbitus_use = "This herb isn't that good raw it seems." # cut the OG's p
 # GUI - buttons
 game__gui_character = "Character"
 game__gui_inventory = "Inventory"
-game__gui_location  = "Location"
-game__gui_map       = "Map"
+game__gui_location  = "Activities"
+game__gui_map       = "Travel"
 game__gui_diary     = "Diary"
 # GUI - character
 game__gui_chinit    = "Your character"

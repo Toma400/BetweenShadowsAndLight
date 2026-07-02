@@ -25,7 +25,7 @@ const ENEMIES* : Table[Enemy, tuple[lvl, hp, dmg, rng, xp_gained, detect: int]] 
     # pirates got `detect` value based on my perception of mechanic, their values
     # weren't noted in OG due to their `i_crouch` switch being false
     PIRATE_WOUNDED : (lvl: 1, hp: 40, dmg:  5, rng: 0, xp_gained: 18, detect:  7),
-    PIRATE         : (lvl: 1, hp: 70, dmg: 10, rng: 0, xp_gained: 22, detect: 10),
+    PIRATE         : (lvl: 1, hp: 70, dmg: 10, rng: 1, xp_gained: 22, detect: 10),
 }.toTable
 
 const LOOT_TABLE* : Table[Enemy, seq[string]] = {

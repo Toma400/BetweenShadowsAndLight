@@ -190,8 +190,8 @@ item__hyerbitus_use = "Na surowo ta roślina nie jest zbyt dobra.." # cut the OG
 # GUI - buttons
 game__gui_character = "Postać"
 game__gui_inventory = "Ekwipunek"
-game__gui_location  = "Lokacja"
-game__gui_map       = "Mapa"
+game__gui_location  = "Aktywności"
+game__gui_map       = "Podróż"
 game__gui_diary     = "Dziennik"
 # GUI - character
 game__gui_chinit    = "Twoja postać"

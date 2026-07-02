@@ -42,7 +42,7 @@ type
     DESERTED_HOME
     BAEDOOR # dummy location, also unused in OG
 
-const VERSION = 1.0
+const VERSION = 1.2
 const AUTHOR  = "Toma400"
 const LICENCE = "All Rights Reserved"
 const LOGO* = """|__) __|_    _ _ _   (_ |_  _  _| _     _   _  _  _|  |  . _ |_ |_
