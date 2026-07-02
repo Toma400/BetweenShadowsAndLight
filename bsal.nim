@@ -264,7 +264,7 @@ proc run(g, b: var Game) =
                           of "3": getGatherableItems(g, "hyerbitus", HYERBITUS_GROWTH) # waitForPlayer() happens later
                           of "4": cooking(g, true)
                           of "5":
-                              if hasItem(g.player, "sickle"):
+                              if hasItemAnywhere(g.player, "sickle"):
                                   getGatherableItems(g, "wheat", WHEAT_GROWTH) # waitForPlayer() happens later
                           of "6": switchMenu(g, mDEFAULT); continue
                           else: continue

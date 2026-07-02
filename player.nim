@@ -627,6 +627,11 @@ proc finishQuest* (p: Player, quest: Quest, xp_gained: int) =
 proc hasItem* (p: Player, item_str: string): bool =
     return item_str in p.inv
 
+proc hasItemAnywhere* (p: Player, item_str: string): bool =
+    # variation that checks both inventory and equipment
+    # -- needs separate handling for both --
+    return item_str in @[p.armour.chest, p.weapon] & p.inv
+
 proc addItemToInventory* (p: Player, item_str: string) =
     p.inv.add(item_str)
     p.weight += ITEMS[item_str].weight
