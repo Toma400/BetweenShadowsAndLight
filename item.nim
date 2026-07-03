@@ -138,7 +138,7 @@ const BROKEN_VARIANT* = {
 const CHESTS_PREFAB* : Table[Chest, (int, seq[string])] = {
     DESERTED_BARREL: (0, @["4 coins", "15 locks", "sweet_roll", "herring", "herring", "herring"]),
     SHELTER_CHEST:   (0, @["500 coins", "decor_shotgun", "chainmail"]),
-    WAREHOUSE_CHEST: (0, @["300 coins", "silk"]),
+    WAREHOUSE_CHEST: (0, @["120 coins", "silk", "gunpowder"]),
     BANK_CHEST:      (0, @[]),
 }.toTable
 

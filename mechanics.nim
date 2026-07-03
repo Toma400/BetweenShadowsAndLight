@@ -8,7 +8,10 @@ import item
 const SMITHING_RECIPES* : Table[int, Table[string, seq[tuple[id: string, amount: int]]]] = { # first int is smithing level
     # level 0 is ommited, as it doesn't allow you to smith in OG
     1: {
-        "rapier": @[("wood", 1), ("iron", 1)]
+        "sickle": @[("iron", 1)]
+    }.toTable,
+    2: {
+        "rapier": @[("wood", 1), ("iron", 2)]
     }.toTable,
 }.toTable
 

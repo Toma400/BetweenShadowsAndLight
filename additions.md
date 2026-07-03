@@ -6,6 +6,12 @@
     from character creation menu
 - enemy changes
   - changed RNG for normal pirate to 1
+- smithing changes
+  - added smithing recipe for level 1: sickle
+  - rapier can be smithed on level 2 instead of 1, and requires one more piece of iron
+- chests' contents
+  - decreased amount of gold found in warehouse chest to make it less OP
+  - added gunpowder to warehouse chest to make it obtainable item
 - QoL / UX
   - renamed `location/map` menu options to `activites/travel`, indicating better their use (and making it IoA parity)
 
@@ -21,7 +27,6 @@
   skill; and make smithing and repair have chance to improve your skill after success
   - note: it may be that `repair` was meant just for vehicle-sque things, see `tut4`
     string that explains it.. definitely a shit to be more precise in BRPGS 3.0
-- add gunpowder to warehouse chest so it can be found in BSaL
 - while the game actually tells you in tutorial alchemy skills can affect chances of you
   making potion, it doesn't do anything to actually gatekeep that - so if we were to add
   more potions, it'd make sense to make something that rolls against player's skill
