@@ -6,6 +6,8 @@
     from character creation menu
 - enemy changes
   - changed RNG for normal pirate to 1
+- NPC changes
+  - tavern barman has now additional gossip dialogue (circulating between gossip options)
 - smithing changes
   - added smithing recipe for level 1: sickle
   - rapier can be smithed on level 2 instead of 1, and requires one more piece of iron

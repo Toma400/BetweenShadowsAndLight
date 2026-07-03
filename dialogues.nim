@@ -1,9 +1,13 @@
+import std/strformat
+import std/random
 import std/tables
 import mechanics
 import cheats
 import player
 import game
 import item
+
+randomize()
 
 proc processDialogue* (g: Game) =
     # use `vars` and `dial_vars` for dialogue checks against events!
@@ -342,17 +346,22 @@ proc processDialogue* (g: Game) =
             if "buy_sleep" notin getDialogueVariables(g.player):
                 echo getKey(g, "loc__docks_tavern")
                 echo getOptionKey(g, "loc__docks_tavern_que1", 1)
+                echo getOptionKey(g, "loc__docks_tavern_que2", 2)
                 if not checkVariable(g.player, TAVERN_KEY):
-                    echo getOptionKey(g, "loc__docks_tavern_que2", 2)
-                echo getOptionKey(g, "loc__docks_tavern_que3", 3) # in OG this was guarded by reverse check to the above
-                echo getOptionKey(g, "loc__docks_tavern_que4", 4)
+                    echo getOptionKey(g, "loc__docks_tavern_que3", 3)
+                echo getOptionKey(g, "loc__docks_tavern_que4", 4) # in OG this was guarded by reverse check to the above
+                echo getOptionKey(g, "loc__docks_tavern_que5", 5)
                 let prompt = readLine(stdin)
                 case prompt:
                     of "1": shop(g, TAVERN_BARMAN)
                     of "2":
+                        const GOSSIPS = [1, 2, 3]
+                        echo getKey(g, fmt"loc__docks_tavern_gos{sample(GOSSIPS)}")
+                        waitForPlayer()
+                    of "3":
                         if not checkVariable(g.player, TAVERN_KEY):
                             addDialogueVariable(g.player, "buy_sleep")
-                    of "3":
+                    of "4":
                         if checkVariable(g.player, TAVERN_KEY):
                             sleep(g.player)
                             echo getKey(g, "loc__docks_tavern_sleep")
@@ -361,7 +370,7 @@ proc processDialogue* (g: Game) =
                         else: # ...but this option existed despite the OG check above not telling player to click on 3
                             echo getKey(g, "loc__docks_tavern_noslep") # so I decided to keep nice deny answer more visible
                             waitForPlayer()
-                    of "4": endDialogue(g, mLOCATION)
+                    of "5": endDialogue(g, mLOCATION)
                     else: return
             else: # 'shop' section for renting the bed
                 echo getKey(g, "loc__docks_tavern_zzzzz")
