@@ -2,6 +2,8 @@
 - made farming wheat possible also with sickle equipped
 
 # Todo:
+- not sure if having 0 ammo prompts any message to indicate you started using
+  fists - if not, it should
 - magic modifiers being used?
 - various shortcuts being either initial letter or number for various menu items
 - unifying some `back/cancel/leave/etc.`
