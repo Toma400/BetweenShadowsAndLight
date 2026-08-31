@@ -263,7 +263,7 @@ proc chest* (g: Game, raw_val: var (int, seq[string])) = # variant to get direct
 proc shop* (g: Game, npc: NPC) =
     # mode for purchase (0 = none, 1 = buy, 2 = sell)
     var MODE   = 0
-    let buy_offers  = if npc in BUYING_OFFERS: BUYING_OFFERS[npc] else: @[] # .id / .value
+    let buy_offers  = if npc in BUYING_OFFERS:  BUYING_OFFERS[npc]  else: @[] # .id / .value
     let sell_offers = if npc in SELLING_OFFERS: SELLING_OFFERS[npc] else: @[] # .id / .value
     let can_buy  = len(buy_offers)  > 0
     let can_sell = len(sell_offers) > 0

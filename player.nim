@@ -2,6 +2,7 @@ import std/strformat
 import std/strutils
 import std/tables
 import std/random
+import std/math
 import item
 
 randomize()
@@ -170,6 +171,32 @@ const SELLING_OFFERS* : Table[NPC, seq[tuple[id: string, value: int]]] = {
     SMITH    : @[("iron", 10)],
     MERCHANT : @[("bandit_revolver", 11), ("decor_shotgun", 110), ("potion_health_small", 8), ("silk", 100)],
 }.toTable
+# Variables to be used (above should be public because they are used by `saves`)
+var BUYING_OFFERS_USED*  = BUYING_OFFERS
+var SELLING_OFFERS_USED* = SELLING_OFFERS
+
+proc discount* (skill_val, item_cost: int): int
+var BUYING_OFFERS_COPY  = BUYING_OFFERS
+var LEVEL_TESTED        = 5
+# var SELLING_OFFERS_COPY = SELLING_OFFERS
+for npc, offer in BUYING_OFFERS_COPY:
+    echo npc
+    var new_offer = newSeq[tuple[id: string, value: int]]()
+    for ix, item in offer.pairs():
+        echo item.id
+        new_offer.add(
+          (
+            id:    item.id,
+            value: item.value - discount(LEVEL_TESTED, item.value)
+          )
+        )
+        echo fmt"{BUYING_OFFERS[npc][ix].value} -> {new_offer[ix].value}"
+    BUYING_OFFERS_COPY[npc] = new_offer
+echo ">>>>>>>>>"
+for npc, offer in BUYING_OFFERS_COPY:
+    echo npc
+    echo offer
+discard readLine(stdin)
 # proc to check existence of particular product in tables above
 proc isInOfferTable* (oftable: seq[tuple[id: string, value: int]], item_id: string): bool =
     for it in oftable:
@@ -795,6 +822,83 @@ proc getUsedInventory* (p: Player): seq[string] =
     for kind, arm_piece in p.armour.fieldPairs():
         if arm_piece != "": result.add(arm_piece)
     if p.weapon       != "": result.add(p.weapon)
+
+proc discount* (skill_val, item_cost: int): int =
+    # discount coming from `trade` skill, +/- value should be determined by relevant buy/sell/echo procs
+    # uint used to ensure positive number
+    # TODO: problems I see here is that skill does very little to whatever discount value is
+    #       maybe doing skill_val *2 would help?
+    #       and we should probably rather do discount() on shop offers than buy/sell proc, because
+    #       this helps us to not interfere with other situations (see `use_discount` I needed to
+    #       use) and it'd keep us consistent
+    #       separate problem is, how often should shop offers refresh with discount() changes, because
+    #       doing so each shop loading is ridiculous idea
+    if skill_val > 0:
+        var ic_mod  = 0 # modifier for when we need to also mimic higher price to get adequate discount
+        let divider =
+            # cost ranges have different rules for skill_val calculations
+            if item_cost < 15:
+                #  $8
+                #  1: 8/9 = 0
+                #  2: 8/8 = 1
+                #  3: 8/7 = 1
+                #  4: 8/6 = 1
+                #  5: 8/5 = 1
+                #  6: 8/4 = 2
+                if skill_val < 7: 10 - skill_val # caps at level 6
+                else: 4
+            elif item_cost in 16..35:
+                #  $35
+                #  1: 35/16 = 2
+                #  2: 35/14 = 2
+                #  3: 35/12 = 2
+                #  4: 35/10 = 3
+                #  5: 35/8  = 4
+                #  6: 35/6  = 5
+                if skill_val < 4: 18 - skill_val * 2
+                else: 6
+            elif item_cost in 36..99:
+                ic_mod = int(10*(67/item_cost)) # 36 gets +18, 67 gets + 10, 98 gets + 0, approximately
+                if skill_val < 4: 29 - skill_val * 3
+                else: 5
+            elif item_cost in 100..900:
+                if skill_val < 4: 60 - skill_val
+                else: 5
+            else: # 900+ prices (not sure if achievable in game anyway)
+                if skill_val < 4: 100 - skill_val
+                else: 5
+        let upper_cap = floorDiv(item_cost + ic_mod, divider)
+        echo fmt"{item_cost}/{divider}:::{skill_val}..{upper_cap}"
+        # skill_val -1
+        # lvl 1
+        # 8 -> 8
+        # 50 -> 50   // 0..
+        # 100 -> 100 // 0..3
+        # lvl 2
+        # 8 -> 8    // 1..0
+        # 50 -> 48  // 1..2   /30
+        # 100 -> 97 // 1..3   /30
+        # lvl 3
+        # 8 -> 7    // 2..1   /10 upDiv?
+        # lvl 4
+        # 8 -> 7
+        # lvl 5
+        # 8 -> 7
+        # lvl 6
+        # 8 -> 6
+        # (exponential, so 8 -> 5 on lvl 12 or sth)
+        # lvl 4-5 the same for 8
+        # lvl 6
+        # 8 -> 6
+        # 3 cool ideas for when to recalculate:
+        # - at game load (yea, yea, allows for cheesing, who cares)
+        # - at levelup (naturally)
+        # - at intervals of TIMER, but it'd be long one, to simulate day/night or maybe weekly changes
+        #  - if week, we could simply do ATG TIMER * 14 (assuming you await half a day on ATG)
+        if skill_val < upper_cap:
+            return rand(skill_val..upper_cap)
+        else: return upper_cap
+    else: return 0 # trade skill at 0 gives you no discount (technically impossible to reach as default trade is 1)
 
 proc buy* (p: Player, item_str: string, value: int): bool =
     if value > p.money:

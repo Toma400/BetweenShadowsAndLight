@@ -120,12 +120,34 @@ proc saveGame* (g: Game) =
         {tm}
         """.unindent())
         close(qf)
+    block TradesFile:
+        let tf = open(fmt"saves/{nm}/trades.toml", fmWrite)
+        var bl = "" # buying list
+        var sl = "" # selling list
+        for npc, offer in BUYING_OFFERS_USED:
+            bl.add(fmt"[BUY.{npc}]" & "\n")
+            for i in offer:
+                bl.add(fmt"{i.id}: {i.value}" & "\n")
+        for npc, offer in SELLING_OFFERS_USED:
+            bl.add(fmt"[SELL.{npc}]" & "\n")
+            for i in offer:
+                bl.add(fmt"{i.id}: {i.value}" & "\n")
+        tf.write(fmt"""
+        [BUY]
+        {bl}
+        [SELL]
+        {sl}
+        """)
+        close(tf)
 
 proc loadGame* (nm: string): Game =
     let pf = parseFile(fmt"saves/{nm}/player.toml")    # player file
     let sf = parseFile(fmt"saves/{nm}/stats.toml")     # stats file
     let ef = parseFile(fmt"saves/{nm}/inventory.toml") # inventory file
     let qf = parseFile(fmt"saves/{nm}/quests.toml")    # quests file
+    let tf =
+        if fileExists(fmt"saves/{nm}/trades.toml"): parseFile(fmt"saves/{nm}/trades.toml")
+        else:                                       ?(-1) # sets "None" value as parsable int identifier
     result = newGame() # accomodating for `ref`
     # menu is overridden in `bsal.nim` after the load
     result.location = parseEnum[Location](pf["location"].getStr())
@@ -148,6 +170,31 @@ proc loadGame* (nm: string): Game =
                 getInt(chest_data["lock"]),
                 chest_items
             )
+    block TradeSetter:
+        # ensures saves' compatibility for 1.0-1.1 and future versions (new NPCs)
+        BUYING_OFFERS_USED  = BUYING_OFFERS
+        SELLING_OFFERS_USED = SELLING_OFFERS
+        if tf.getInt(0) == 0: # tf is not `int` (= file is not None, as declared earlier)
+            for npc_key, _ in tf["BUY"].getTable():
+                let npc = parseEnum[NPC](npc_key)
+                block reset: # otherwise we'd have two combating offers, vanilla and saved one
+                    BUYING_OFFERS_USED[npc] = newSeq[tuple[id: string, value: int]]()
+                    # the offers will reset on timer/levelup anyway, but yes, new offers
+                    # from updates will not be available straight away
+                for offer_id, offer_val in tf["BUY"][npc_key].getTable():
+                    BUYING_OFFERS_USED[npc].add(
+                      (id:    offer_id,
+                       value: offer_val.getInt())
+                    )
+            for npc_key, offer_key in tf["SELL"].getTable():
+                let npc = parseEnum[NPC](npc_key)
+                block reset: # see notes for BUY section above
+                    SELLING_OFFERS_USED[npc] = newSeq[tuple[id: string, value: int]]()
+                for offer_id, offer_val in tf["SELL"][npc_key].getTable():
+                    SELLING_OFFERS_USED[npc].add(
+                      (id:    offer_id,
+                       value: offer_val.getInt())
+                    )
     block PlayerBuilder:
         # stats
         result.player = newPlayer(name   = nm,

@@ -1,13 +1,17 @@
 # 1.2
 - race changes
   - etts replaced by latoka to both accommodate lore more accurately and include more diverse build possibilities
-  - latoka will have bonus to charisma as the only race in BRPGS 2.1, meaning their build
+  - latoka will have bonus to charisma as the only race in BRPGS 2.1, meaning their build will work well for
+    trading-focused characters
   - saves from 1.0-1.1 using ett race will still be able to play as ett race, but this option won't be available
     from character creation menu
 - enemy changes
   - changed RNG for normal pirate to 1
 - NPC changes
   - tavern barman has now additional gossip dialogue (circulating between gossip options)
+- trading changes
+  - buy/sell values now depend on `trade` skill, lowering buying prices and increasing selling ones slightly
+  - calculation of values happens now every in-game week or upon levelup
 - smithing changes
   - added smithing recipe for level 1: sickle
   - rapier can be smithed on level 2 instead of 1, and requires one more piece of iron
@@ -68,6 +72,7 @@
     - set lock-after-burglary to 8, so that only guards attention is higher, but lock
       level remains the same - makes little sense to up its level here
 - survey of all texts to improve their quality
+- check if savegames work similar as CHESTS, as in, they are compatibile if we were to add more timers
 
 # Loose ideas
 - some sort of gambling game in tavern with simple mechanics?
